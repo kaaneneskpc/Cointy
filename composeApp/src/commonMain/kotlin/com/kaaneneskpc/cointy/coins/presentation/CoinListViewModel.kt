@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import com.kaaneneskpc.cointy.core.domain.Result
+import com.kaaneneskpc.cointy.core.util.formatCoinPrice
+import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
+import com.kaaneneskpc.cointy.core.util.toUiText
 import kotlinx.coroutines.flow.update
 
 class CoinListViewModel(
@@ -34,8 +37,8 @@ class CoinListViewModel(
                                 symbol = coinItem.coin.symbol,
                                 name = coinItem.coin.name,
                                 iconUrl = coinItem.coin.iconUrl,
-                                formattedPrice = coinItem.price.toString(),
-                                formattedChange = coinItem.change.toString(),
+                                formattedPrice = formatCoinPrice(coinItem.price),
+                                formattedChange = formatCoinPricePercentage(coinItem.change),
                                 isPositive = coinItem.change >= 0
                             )
                         }
@@ -47,7 +50,7 @@ class CoinListViewModel(
                 _state.update {
                     it.copy(
                         coins = emptyList(),
-                        error = null
+                        error = coinResponse.error.toUiText()
                     )
                 }
             }
