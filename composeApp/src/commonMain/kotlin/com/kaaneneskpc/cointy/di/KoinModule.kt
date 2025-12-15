@@ -16,6 +16,7 @@ import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioViewModel
 import com.kaaneneskpc.cointy.trade.domain.BuyCoinUseCase
 import com.kaaneneskpc.cointy.trade.domain.SellCoinUseCase
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyViewModel
+import com.kaaneneskpc.cointy.trade.presentation.sell.SellViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -58,4 +59,5 @@ val sharedModule = module {
     singleOf(::BuyCoinUseCase)
     singleOf(::SellCoinUseCase)
     viewModel { (coinId: String) -> BuyViewModel(get(), get(), get(), coinId) }
+    viewModel { (coinId: String) -> SellViewModel(get(), get(), get(), coinId) }
 }
