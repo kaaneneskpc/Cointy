@@ -80,7 +80,6 @@ fun TradeScreen(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Header Section with Gradient
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,8 +107,7 @@ fun TradeScreen(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
-                        
-                        // Coin Info Card
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -161,8 +159,7 @@ fun TradeScreen(
                         }
                     }
                 }
-                
-                // Main Content Section
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,8 +167,7 @@ fun TradeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(32.dp))
-                    
-                    // Amount Input Card
+
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -208,8 +204,7 @@ fun TradeScreen(
                             )
                             
                             Spacer(modifier = Modifier.height(16.dp))
-                            
-                            // Available Amount Display
+
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -228,8 +223,7 @@ fun TradeScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-                            
-                            // Error Message
+
                             if (state.error != null) {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Box(
@@ -256,8 +250,7 @@ fun TradeScreen(
                     }
                     
                     Spacer(modifier = Modifier.weight(1f))
-                    
-                    // Action Button
+
                     Button(
                         onClick = onSubmitClicked,
                         modifier = Modifier

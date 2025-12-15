@@ -84,7 +84,6 @@ fun CoinListContent(
         
         when {
             state.coins.isEmpty() && state.error == null -> {
-                // Loading state
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -96,7 +95,6 @@ fun CoinListContent(
                 }
             }
             state.error != null -> {
-                // Error state
                 ErrorContent(error = state.error)
             }
             else -> {
@@ -127,7 +125,6 @@ fun CoinList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            // Modern Header Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -199,7 +196,6 @@ private fun CoinListItem(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Coin Icon with Background
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -223,8 +219,7 @@ private fun CoinListItem(
             }
             
             Spacer(modifier = Modifier.width(16.dp))
-            
-            // Coin Info
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -248,8 +243,7 @@ private fun CoinListItem(
             }
             
             Spacer(modifier = Modifier.width(12.dp))
-            
-            // Price and Change
+
             Column(
                 horizontalAlignment = Alignment.End,
             ) {
@@ -411,12 +405,10 @@ fun CoinChartDialog(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Price Statistics Cards
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Current Price Card
                         Card(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp),
@@ -442,8 +434,7 @@ fun CoinChartDialog(
                                 )
                             }
                         }
-                        
-                        // Change Card
+
                         Card(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp),
@@ -474,8 +465,7 @@ fun CoinChartDialog(
                             }
                         }
                     }
-                    
-                    // Min/Max Row
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -513,8 +503,7 @@ fun CoinChartDialog(
                             )
                         }
                     }
-                    
-                    // Chart Container with modern styling
+
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()

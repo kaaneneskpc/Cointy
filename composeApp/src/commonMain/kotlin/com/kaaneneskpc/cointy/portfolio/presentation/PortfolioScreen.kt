@@ -165,8 +165,7 @@ private fun PortfolioBalanceSection(
             }
             
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Cash Balance Card
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -250,7 +249,6 @@ private fun PortfolioCoinsList(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Section Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -270,8 +268,7 @@ private fun PortfolioCoinsList(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
-                
-                // Coins List
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
@@ -316,7 +313,6 @@ fun CoinListItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Coin Icon
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -333,8 +329,7 @@ fun CoinListItem(
             }
             
             Spacer(modifier = Modifier.width(16.dp))
-            
-            // Coin Info
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -353,8 +348,7 @@ fun CoinListItem(
             }
             
             Spacer(modifier = Modifier.width(12.dp))
-            
-            // Value and Performance
+
             Column(
                 horizontalAlignment = Alignment.End
             ) {

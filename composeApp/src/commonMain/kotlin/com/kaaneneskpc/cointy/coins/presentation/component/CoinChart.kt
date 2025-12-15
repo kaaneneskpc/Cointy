@@ -25,8 +25,7 @@ fun CoinChart(
     val range = max - min
     val isPositive = nodes.last() > nodes.first()
     val lineColor = if (isPositive) profitColor else lossColor
-    
-    // Create gradient colors for fill
+
     val fillGradientStart = if (isPositive) {
         profitColor.copy(alpha = 0.3f)
     } else {
@@ -46,8 +45,7 @@ fun CoinChart(
         val chartHeight = size.height - padding * 2
         val startX = padding
         val startY = padding
-        
-        // Draw grid lines for better readability
+
         val gridColor = Color.Gray.copy(alpha = 0.1f)
         val gridLineCount = 4
         for (i in 0..gridLineCount) {
@@ -59,16 +57,14 @@ fun CoinChart(
                 strokeWidth = 1.dp.toPx()
             )
         }
-        
-        // Calculate points with smooth interpolation
+
         val points = nodes.mapIndexed { index, value ->
             val x = startX + (index * chartWidth / (nodes.size - 1).coerceAtLeast(1))
             val normalizedValue = if (range > 0) (value - min) / range else 0.5f
             val y = startY + chartHeight * (1 - normalizedValue.toFloat())
             Offset(x, y)
         }
-        
-        // Create smooth path using cubic bezier curves
+
         val smoothPath = Path()
         val fillPath = Path()
         
@@ -98,14 +94,12 @@ fun CoinChart(
                     next.x, next.y
                 )
             }
-            
-            // Close the fill path
+
             val lastPoint = points.last()
             fillPath.lineTo(lastPoint.x, startY + chartHeight)
             fillPath.close()
         }
-        
-        // Draw gradient fill under the curve
+
         drawPath(
             path = fillPath,
             brush = Brush.verticalGradient(
@@ -114,8 +108,7 @@ fun CoinChart(
                 endY = startY + chartHeight
             )
         )
-        
-        // Draw the main chart line with smooth curves
+
         drawPath(
             path = smoothPath,
             color = lineColor,
@@ -125,15 +118,13 @@ fun CoinChart(
                 join = androidx.compose.ui.graphics.StrokeJoin.Round
             )
         )
-        
-        // Draw data points as small circles for better visibility
+
         points.forEach { point ->
             drawCircle(
                 color = lineColor,
                 radius = 3.dp.toPx(),
                 center = point
             )
-            // Add subtle glow effect
             drawCircle(
                 color = lineColor.copy(alpha = 0.2f),
                 radius = 6.dp.toPx(),
