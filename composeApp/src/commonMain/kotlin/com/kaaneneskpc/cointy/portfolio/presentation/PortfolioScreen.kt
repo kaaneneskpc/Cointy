@@ -21,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +31,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -69,10 +75,11 @@ fun PortfolioContent(
     onDiscoverCoinsClicked: () -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inversePrimary)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 24.dp)
+
     ) {
         PortfolioBalanceSection(
             portfolioValue = state.portfolioValue,
@@ -96,54 +103,126 @@ private fun PortfolioBalanceSection(
     onBuyButtonClicked: () -> Unit,
 ) {
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .fillMaxHeight(0.3f)
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.inversePrimary)
-            .padding(32.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+                    )
+                )
+            )
+            .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
         ) {
-            Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "Total Value:",
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                text = "Portfolio",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = portfolioValue,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-            )
-            Row {
-                Text(
-                    text = "Cash Balance: ",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = cashBalance,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Total Portfolio Value",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = portfolioValue,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Cash Balance Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Cash Balance",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = cashBalance,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            
             if (showBuyButton) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = onBuyButtonClicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .shadow(
+                            elevation = 6.dp,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
                     ),
-                    contentPadding = PaddingValues(horizontal = 64.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
                 ) {
                     Text(
-                        text = "Buy Coin",
+                        text = "Discover & Buy Coins",
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -158,11 +237,8 @@ private fun PortfolioCoinsList(
     onDiscoverCoinsClicked: () -> Unit,
 ) {
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
         if (coins.isEmpty()) {
@@ -172,19 +248,34 @@ private fun PortfolioCoinsList(
             return@Box
         } else {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
-                Text(
-                    text = "💰 Owned Coins: ",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                // Section Header
+                Row(
                     modifier = Modifier
-                        .padding(16.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Your Assets",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "${coins.size} ${if (coins.size == 1) "coin" else "coins"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    )
+                }
+                
+                // Coins List
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(coins) { coin ->
                         CoinListItem(
@@ -203,52 +294,101 @@ fun CoinListItem(
     coin: UiPortfolioCoinItem,
     onCoinItemClicked: (String) -> Unit,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 onCoinItemClicked.invoke(coin.id)
             }
-            .padding(16.dp)
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        AsyncImage(
-            model = coin.iconUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.padding(4.dp).clip(CircleShape).size(40.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            modifier = Modifier.weight(1f)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = coin.name,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize,
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = coin.amountInUnitText,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = MaterialTheme.typography.titleSmall.fontSize,
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = coin.amountInFiatText,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize,
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = coin.performancePercentText,
-                color = if (coin.isPositive) LocalCoinRoutineColorsPalette.current.profitGreen else LocalCoinRoutineColorsPalette.current.lossRed,
-                fontSize = MaterialTheme.typography.titleSmall.fontSize,
-            )
+            // Coin Icon
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = coin.iconUrl,
+                    contentDescription = coin.name,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            // Coin Info
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = coin.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = coin.amountInUnitText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            // Value and Performance
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = coin.amountInFiatText,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(
+                            if (coin.isPositive) {
+                                LocalCoinRoutineColorsPalette.current.profitGreen.copy(alpha = 0.15f)
+                            } else {
+                                LocalCoinRoutineColorsPalette.current.lossRed.copy(alpha = 0.15f)
+                            }
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = coin.performancePercentText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (coin.isPositive) {
+                            LocalCoinRoutineColorsPalette.current.profitGreen
+                        } else {
+                            LocalCoinRoutineColorsPalette.current.lossRed
+                        },
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
         }
     }
 }
@@ -261,27 +401,71 @@ fun PortfolioEmptySection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(32.dp)
     ) {
-        Text(
-            text = "No coins in your portfolio yet.",
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = MaterialTheme.typography.titleSmall.fontSize
-        )
-        Button(
-            onClick = onDiscoverCoinsClicked,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(24.dp)
+                ),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
             ),
-            contentPadding = PaddingValues(horizontal = 64.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
-            Text(
-                text = "Discover coins",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "💰",
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "Your Portfolio is Empty",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Start building your crypto portfolio by discovering and buying coins",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+                Button(
+                    onClick = onDiscoverCoinsClicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .shadow(
+                            elevation = 6.dp,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
+                ) {
+                    Text(
+                        text = "Discover & Buy Coins",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
         }
     }
 }
