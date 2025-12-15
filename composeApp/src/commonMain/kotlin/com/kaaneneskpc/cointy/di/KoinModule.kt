@@ -1,10 +1,13 @@
 package com.kaaneneskpc.cointy.di
 
+import androidx.room.RoomDatabase
 import com.kaaneneskpc.cointy.coins.data.remote.impl.CoinRemoteDataSourceImpl
 import com.kaaneneskpc.cointy.coins.domain.GetCoinPriceHistoryUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinsListUseCase
 import com.kaaneneskpc.cointy.coins.domain.api.CoinRemoteDataSource
 import com.kaaneneskpc.cointy.coins.presentation.CoinListViewModel
+import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
+import com.kaaneneskpc.cointy.core.database.portfolio.getPortfolioDatabase
 import com.kaaneneskpc.cointy.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
@@ -29,6 +32,13 @@ expect val platformModule: Module
 val sharedModule = module {
     //Core
     single<HttpClient> { HttpClientFactory.create(get()) }
+
+    //Portfolio
+    single { getPortfolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>()) }
+    single { get<PortfolioDatabase>().portfolioDao() }
+    single { get<PortfolioDatabase>().userBalanceDao() }
+
+    //CoinList
     viewModel { CoinListViewModel(get(), get()) }
     singleOf(::GetCoinsListUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
