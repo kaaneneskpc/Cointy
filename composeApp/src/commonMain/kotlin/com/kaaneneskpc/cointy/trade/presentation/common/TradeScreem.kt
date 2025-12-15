@@ -10,18 +10,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,19 +33,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.kaaneneskpc.cointy.trade.presentation.common.component.rememberCurrencyVisualTransformation
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -53,90 +58,238 @@ fun TradeScreen(
     onSubmitClicked: () -> Unit,
 ) {
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
+        if (state.isLoading) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
             ) {
-                AsyncImage(
-                    model = state.coin?.iconUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.padding(4.dp).clip(CircleShape).size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = state.coin?.name ?: "",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(4.dp).testTag("trade_screen_coin_name")
+                CircularProgressIndicator(
+                    color = when (tradeType) {
+                        TradeType.BUY -> LocalCoinRoutineColorsPalette.current.profitGreen
+                        TradeType.SELL -> LocalCoinRoutineColorsPalette.current.lossRed
+                    },
+                    modifier = Modifier.size(48.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = when (tradeType) {
-                    TradeType.BUY -> "Buy Amount"
-                    TradeType.SELL -> "Sell Amount"
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            CenteredDollarTextField(
-                amountText = state.amount,
-                onAmountChange = onAmountChange
-            )
-            Text(
-                text = state.availableAmount,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(4.dp)
-            )
-            if (state.error != null) {
-                Text(
-                    text = stringResource(state.error),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = LocalCoinRoutineColorsPalette.current.lossRed,
-                    modifier = Modifier.padding(4.dp).testTag("trade_error")
-                )
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Header Section with Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+                                )
+                            )
+                        )
+                        .padding(horizontal = 24.dp, vertical = 32.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
+                    ) {
+                        Text(
+                            text = when (tradeType) {
+                                TradeType.BUY -> "Buy Coin"
+                                TradeType.SELL -> "Sell Coin"
+                            },
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                        
+                        // Coin Info Card
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    elevation = 8.dp,
+                                    shape = RoundedCornerShape(20.dp)
+                                ),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AsyncImage(
+                                    model = state.coin?.iconUrl,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape)
+                                        .testTag("trade_screen_coin_icon")
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Column(
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    Text(
+                                        text = state.coin?.name ?: "",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.testTag("trade_screen_coin_name")
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = state.coin?.symbol?.uppercase() ?: "",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Main Content Section
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    
+                    // Amount Input Card
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = RoundedCornerShape(24.dp)
+                            ),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = when (tradeType) {
+                                    TradeType.BUY -> "Enter Amount to Buy"
+                                    TradeType.SELL -> "Enter Amount to Sell"
+                                },
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                            
+                            CenteredDollarTextField(
+                                amountText = state.amount,
+                                onAmountChange = onAmountChange,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            // Available Amount Display
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surfaceContainer,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(vertical = 12.dp, horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    text = state.availableAmount,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            
+                            // Error Message
+                            if (state.error != null) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            color = LocalCoinRoutineColorsPalette.current.lossRed.copy(alpha = 0.1f),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(vertical = 12.dp, horizontal = 16.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(state.error),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = LocalCoinRoutineColorsPalette.current.lossRed,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .testTag("trade_error")
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.weight(1f))
+                    
+                    // Action Button
+                    Button(
+                        onClick = onSubmitClicked,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(16.dp)
+                            ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = when (tradeType) {
+                                TradeType.BUY -> LocalCoinRoutineColorsPalette.current.profitGreen
+                                TradeType.SELL -> LocalCoinRoutineColorsPalette.current.lossRed
+                            }
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
+                    ) {
+                        Text(
+                            text = when (tradeType) {
+                                TradeType.BUY -> "Buy Now"
+                                TradeType.SELL -> "Sell Now"
+                            },
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
-        }
-        Button(
-            onClick = onSubmitClicked,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = when (tradeType) {
-                    TradeType.BUY -> LocalCoinRoutineColorsPalette.current.profitGreen
-                    TradeType.SELL -> LocalCoinRoutineColorsPalette.current.lossRed
-                }
-            ),
-            contentPadding = PaddingValues(horizontal = 64.dp),
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp)
-        ) {
-            Text(
-                text = when (tradeType) {
-                    TradeType.BUY -> "Buy Now"
-                    TradeType.SELL -> "Sell Now"
-                },
-                style = MaterialTheme.typography.bodyLarge,
-                color = when (tradeType) {
-                    TradeType.BUY -> MaterialTheme.colorScheme.onPrimary
-                    TradeType.SELL -> MaterialTheme.colorScheme.onBackground
-                }
-            )
         }
     }
 }
@@ -152,8 +305,6 @@ fun CenteredDollarTextField(
         focusRequester.requestFocus()
     }
 
-    val currencyVisualTransformation = rememberCurrencyVisualTransformation()
-
     val displayText = amountText.trimStart('$')
 
     BasicTextField(
@@ -165,11 +316,11 @@ fun CenteredDollarTextField(
             }
         },
         modifier = modifier
-            .focusRequester(focusRequester)
-            .padding(16.dp),
+            .focusRequester(focusRequester),
         textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 48.sp,
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -178,13 +329,38 @@ fun CenteredDollarTextField(
         decorationBox = { innerTextField ->
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.height(56.dp).wrapContentWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(horizontal = 16.dp)
             ) {
-                innerTextField()
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "$",
+                        style = TextStyle(
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    innerTextField()
+                }
             }
         },
-        cursorBrush = SolidColor(Color.White),
-        visualTransformation = currencyVisualTransformation,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
     )
 }
 
