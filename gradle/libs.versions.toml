@@ -22,6 +22,7 @@ biometry = "1.4.0-alpha02"
 assertK = "0.25"
 turbine = "0.7.0"
 core-ktx = "1.7.0"
+stabilityAnalyzer = "0.6.2"
 
 [libraries]
 # Shared Libraries
@@ -80,6 +81,8 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version.ref = "stabilityAnalyzer" }
+
 
 [bundles]
 ktor = [
