@@ -244,11 +244,13 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
 
 ## 📱 Screenshots
 
+### Android
+
 <div align="center">
 
 | Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart |
 |:-:|:-:|:-:|:-:|:-:|
-| *Coming Soon* | *Coming Soon* | *Coming Soon* | *Coming Soon* | *Coming Soon* |
+| <img src="screenshots/android/portfolio.png" width="200"/> | <img src="screenshots/android/coin_discovery.png" width="200"/> | <img src="screenshots/android/buy_screen.png" width="200"/> | <img src="screenshots/android/sell_screen.png" width="200"/> | <img src="screenshots/android/price_chart.png" width="200"/> |
 
 </div>
 
