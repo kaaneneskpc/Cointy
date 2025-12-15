@@ -1,6 +1,7 @@
 package com.kaaneneskpc.cointy.di
 
 import com.kaaneneskpc.cointy.coins.data.remote.impl.CoinRemoteDataSourceImpl
+import com.kaaneneskpc.cointy.coins.domain.GetCoinPriceHistoryUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinsListUseCase
 import com.kaaneneskpc.cointy.coins.domain.api.CoinRemoteDataSource
 import com.kaaneneskpc.cointy.coins.presentation.CoinListViewModel
@@ -28,7 +29,8 @@ expect val platformModule: Module
 val sharedModule = module {
     //Core
     single<HttpClient> { HttpClientFactory.create(get()) }
-    viewModel { CoinListViewModel(get()) }
+    viewModel { CoinListViewModel(get(), get()) }
     singleOf(::GetCoinsListUseCase)
+    singleOf(::GetCoinPriceHistoryUseCase)
     singleOf(::CoinRemoteDataSourceImpl).bind<CoinRemoteDataSource>()
 }
