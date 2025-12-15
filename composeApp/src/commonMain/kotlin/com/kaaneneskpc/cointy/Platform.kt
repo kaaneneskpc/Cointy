@@ -1,7 +1,8 @@
 package com.kaaneneskpc.cointy
 
-interface Platform {
-    val name: String
+sealed class Platform {
+    data object Android: Platform()
+    data object Ios: Platform()
 }
 
-expect fun getPlatform(): Platform
+expect val platform: Platform

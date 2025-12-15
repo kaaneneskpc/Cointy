@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.kaaneneskpc.cointy.biometric.BiometricScreen
 import com.kaaneneskpc.cointy.coins.presentation.CoinListScreen
 import com.kaaneneskpc.cointy.core.navigation.Biometric
 import com.kaaneneskpc.cointy.core.navigation.Buy
@@ -31,9 +32,9 @@ fun App() {
             modifier = Modifier.fillMaxSize()
         ) {
             composable<Biometric> {
-                /*BiometricScreen {
+                BiometricScreen {
                     navController.navigate(Portfolio)
-                }*/
+                }
             }
             composable<Portfolio> {
                 PortfolioScreen(
