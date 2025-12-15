@@ -254,6 +254,16 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
 
 </div>
 
+### IOS
+
+<div align="center">
+
+| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart |
+|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/7ae637d6-b276-4a52-b849-e271eebe5269" width="200"/> | <img src="https://github.com/user-attachments/assets/4855272f-6f1a-47f7-9155-3ff72bd4dee2" width="200"/> | <img src="https://github.com/user-attachments/assets/ec6b0de0-1ed1-4a0d-9aa5-18576dada854" width="200"/> | <img src= "https://github.com/user-attachments/assets/5c57520c-fa0d-4ca2-b1e4-605a205c3fff" width="200"/> | <img src="https://github.com/user-attachments/assets/e866369d-9d6b-4748-9c63-a5e79fb12970" width="200"/> |
+
+</div>
+
 ## 🎮 How to Use
 
 1. **Authenticate**
