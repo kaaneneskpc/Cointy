@@ -9,6 +9,9 @@ import com.kaaneneskpc.cointy.coins.presentation.CoinListViewModel
 import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
 import com.kaaneneskpc.cointy.core.database.portfolio.getPortfolioDatabase
 import com.kaaneneskpc.cointy.core.network.HttpClientFactory
+import com.kaaneneskpc.cointy.portfolio.data.PortfolioRepositoryImpl
+import com.kaaneneskpc.cointy.portfolio.domain.PortfolioRepository
+import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -35,8 +38,10 @@ val sharedModule = module {
 
     //Portfolio
     single { getPortfolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>()) }
+    singleOf(::PortfolioRepositoryImpl).bind<PortfolioRepository>()
     single { get<PortfolioDatabase>().portfolioDao() }
     single { get<PortfolioDatabase>().userBalanceDao() }
+    viewModel { PortfolioViewModel(get()) }
 
     //CoinList
     viewModel { CoinListViewModel(get(), get()) }

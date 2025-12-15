@@ -95,7 +95,7 @@ fun CoinList(
                     text = "🔥 Top Coins:",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 )
             }
             items(coins) { coin ->
