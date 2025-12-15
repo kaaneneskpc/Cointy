@@ -7,12 +7,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.kaaneneskpc.cointy.coins.presentation.CoinListScreen
+import com.kaaneneskpc.cointy.core.navigation.Buy
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.kaaneneskpc.cointy.core.navigation.Coins
 import com.kaaneneskpc.cointy.core.navigation.Portfolio
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioScreen
 import com.kaaneneskpc.cointy.theme.CointyTheme
+import com.kaaneneskpc.cointy.trade.presentation.buy.BuyScreen
 
 @Composable
 @Preview
@@ -21,12 +24,12 @@ fun App() {
     CointyTheme {
         NavHost(
             navController = navController,
-            startDestination = Portfolio,
+            startDestination = Coins,
             modifier = Modifier.fillMaxSize()
         ) {
             composable<Coins> {
                 CoinListScreen {
-                    //navController.navigate("coinId")
+                    navController.navigate(Buy(it))
                 }
             }
             composable<Portfolio> {
@@ -36,6 +39,18 @@ fun App() {
                     },
                     onDiscoverCoinsClicked = {
                         navController.navigate(Coins)
+                    }
+                )
+            }
+
+            composable<Buy> { navBackStackEntry ->
+                val coinId: String = navBackStackEntry.toRoute<Buy>().coinId
+                BuyScreen(
+                    coinId = coinId,
+                    navigateToPortfolio = {
+                        navController.navigate(Portfolio) {
+                            popUpTo(Portfolio) { inclusive = true }
+                        }
                     }
                 )
             }

@@ -2,6 +2,7 @@ package com.kaaneneskpc.cointy.di
 
 import androidx.room.RoomDatabase
 import com.kaaneneskpc.cointy.coins.data.remote.impl.CoinRemoteDataSourceImpl
+import com.kaaneneskpc.cointy.coins.domain.GetCoinDetailsUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinPriceHistoryUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinsListUseCase
 import com.kaaneneskpc.cointy.coins.domain.api.CoinRemoteDataSource
@@ -12,6 +13,9 @@ import com.kaaneneskpc.cointy.core.network.HttpClientFactory
 import com.kaaneneskpc.cointy.portfolio.data.PortfolioRepositoryImpl
 import com.kaaneneskpc.cointy.portfolio.domain.PortfolioRepository
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioViewModel
+import com.kaaneneskpc.cointy.trade.domain.BuyCoinUseCase
+import com.kaaneneskpc.cointy.trade.domain.SellCoinUseCase
+import com.kaaneneskpc.cointy.trade.presentation.buy.BuyViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -47,5 +51,11 @@ val sharedModule = module {
     viewModel { CoinListViewModel(get(), get()) }
     singleOf(::GetCoinsListUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
+    singleOf(::GetCoinDetailsUseCase)
     singleOf(::CoinRemoteDataSourceImpl).bind<CoinRemoteDataSource>()
+
+    //Trade
+    singleOf(::BuyCoinUseCase)
+    singleOf(::SellCoinUseCase)
+    viewModel { (coinId: String) -> BuyViewModel(get(), get(), get(), coinId) }
 }

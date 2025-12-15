@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.stability.analyzer)
 }
 
 kotlin {
@@ -119,5 +118,14 @@ room {
 dependencies {
     ksp(libs.room.compiler)
     debugImplementation(compose.uiTooling)
+}
+
+// Force kotlin-stdlib to use a compatible version
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.21")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21")
+    }
 }
 
