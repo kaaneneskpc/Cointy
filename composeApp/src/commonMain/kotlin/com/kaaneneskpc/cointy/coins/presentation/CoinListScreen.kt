@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,10 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.kaaneneskpc.cointy.coins.presentation.component.CoinChart
+import com.kaaneneskpc.cointy.core.util.formatCoinPrice
+import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-
+import kotlin.math.abs
 
 @Composable
 fun CoinListScreen(
@@ -321,41 +324,237 @@ fun CoinChartDialog(
     uiChartState: UiChartState,
     onDismiss: () -> Unit,
 ) {
+    val colors = LocalCoinRoutineColorsPalette.current
+    val isPositive = uiChartState.sparkLine.isNotEmpty() && 
+                     uiChartState.sparkLine.last() > uiChartState.sparkLine.first()
+    
+    val currentPrice = uiChartState.sparkLine.lastOrNull() ?: 0.0
+    val minPrice = uiChartState.sparkLine.minOrNull() ?: 0.0
+    val maxPrice = uiChartState.sparkLine.maxOrNull() ?: 0.0
+    val priceChange = if (uiChartState.sparkLine.isNotEmpty()) {
+        currentPrice - uiChartState.sparkLine.first()
+    } else 0.0
+    val priceChangePercent = if (uiChartState.sparkLine.isNotEmpty() && uiChartState.sparkLine.first() != 0.0) {
+        (priceChange / uiChartState.sparkLine.first()) * 100
+    } else 0.0
+    
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(24.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
         title = {
-            Text(
-                text = "24h Price chart for ${uiChartState.coinName}",
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = uiChartState.coinName,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "24h Price Chart",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
         },
         text = {
             if (uiChartState.isLoading) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                }
-            } else {
-                CoinChart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(16.dp),
-                    nodes = uiChartState.sparkLine,
-                    profitColor = LocalCoinRoutineColorsPalette.current.profitGreen,
-                    lossColor = LocalCoinRoutineColorsPalette.current.lossRed,
-                )
+                        .height(300.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            color = colors.profitGreen
+                        )
+                        Text(
+                            text = "Loading chart data...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            } else if (uiChartState.sparkLine.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "📊",
+                            style = MaterialTheme.typography.displayMedium
+                        )
+                        Text(
+                            text = "No chart data available",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Price Statistics Cards
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Current Price Card
+                        Card(
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Current",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "$${formatCoinPrice(currentPrice)}",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                        
+                        // Change Card
+                        Card(
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isPositive) {
+                                    colors.profitGreen.copy(alpha = 0.15f)
+                                } else {
+                                    colors.lossRed.copy(alpha = 0.15f)
+                                }
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "24h Change",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = formatCoinPricePercentage(priceChangePercent),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isPositive) colors.profitGreen else colors.lossRed
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Min/Max Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "Low:",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                            Text(
+                                text = formatCoinPrice(minPrice),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.lossRed
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "High:",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                            Text(
+                                text = formatCoinPrice(maxPrice),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.profitGreen
+                            )
+                        }
+                    }
+                    
+                    // Chart Container with modern styling
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(280.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        ) {
+                            CoinChart(
+                                modifier = Modifier.fillMaxSize(),
+                                nodes = uiChartState.sparkLine,
+                                profitColor = colors.profitGreen,
+                                lossColor = colors.lossRed,
+                            )
+                        }
+                    }
+                }
             }
         },
         confirmButton = {},
         dismissButton = {
             Button(
-                onClick = onDismiss
+                onClick = onDismiss,
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier.padding(horizontal = 4.dp)
             ) {
                 Text(
                     text = "Close",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
