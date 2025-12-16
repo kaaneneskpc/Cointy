@@ -17,6 +17,11 @@ import com.kaaneneskpc.cointy.trade.domain.BuyCoinUseCase
 import com.kaaneneskpc.cointy.trade.domain.SellCoinUseCase
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyViewModel
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellViewModel
+import com.kaaneneskpc.cointy.transaction.data.TransactionRepositoryImpl
+import com.kaaneneskpc.cointy.transaction.data.local.TransactionDao
+import com.kaaneneskpc.cointy.transaction.domain.GetTransactionHistoryUseCase
+import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
+import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -47,6 +52,12 @@ val sharedModule = module {
     single { get<PortfolioDatabase>().portfolioDao() }
     single { get<PortfolioDatabase>().userBalanceDao() }
     viewModel { PortfolioViewModel(get()) }
+    
+    //Transaction
+    single { get<PortfolioDatabase>().transactionDao() }
+    singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
+    singleOf(::GetTransactionHistoryUseCase)
+    viewModel { TransactionHistoryViewModel(get()) }
 
     //CoinList
     viewModel { CoinListViewModel(get(), get()) }

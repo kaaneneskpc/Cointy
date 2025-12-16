@@ -5,10 +5,15 @@ import com.kaaneneskpc.cointy.core.domain.EmptyResult
 import com.kaaneneskpc.cointy.core.domain.coin.Coin
 import com.kaaneneskpc.cointy.core.domain.Result
 import com.kaaneneskpc.cointy.portfolio.domain.PortfolioRepository
+import com.kaaneneskpc.cointy.transaction.domain.TransactionModel
+import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
+import com.kaaneneskpc.cointy.transaction.domain.TransactionType
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
 
 class SellCoinUseCase(
     private val portfolioRepository: PortfolioRepository,
+    private val transactionRepository: TransactionRepository
 ) {
 
     suspend fun sellCoin(
@@ -39,6 +44,19 @@ class SellCoinUseCase(
                     )
                 }
                 portfolioRepository.updateCashBalance(balance + amountInFiat)
+                
+                // Save transaction
+                val transaction = TransactionModel(
+                    id = 0,
+                    type = TransactionType.SELL,
+                    coin = coin,
+                    amountInFiat = amountInFiat,
+                    amountInUnit = sellAmountInUnit,
+                    price = price,
+                    timestamp = Clock.System.now().toEpochMilliseconds()
+                )
+                transactionRepository.saveTransaction(transaction)
+                
                 return Result.Success(Unit)
             }
             is Result.Error -> {

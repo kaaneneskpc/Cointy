@@ -16,7 +16,7 @@ fun getPortfolioDatabase(
 ): PortfolioDatabase {
     return builder
         //.addMigrations(MIGRATIONS)
-        //.fallbackToDestructiveMigrationOnDowngrade()
+        .fallbackToDestructiveMigration()
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()

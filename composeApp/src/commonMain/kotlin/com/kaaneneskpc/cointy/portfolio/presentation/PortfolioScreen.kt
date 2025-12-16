@@ -46,6 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PortfolioScreen(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
+    onTransactionHistoryClicked: () -> Unit,
 ) {
     val portfolioViewModel = koinViewModel<PortfolioViewModel>()
     val state by portfolioViewModel.state.collectAsStateWithLifecycle()
@@ -63,7 +64,8 @@ fun PortfolioScreen(
         PortfolioContent(
             state = state,
             onCoinItemClicked = onCoinItemClicked,
-            onDiscoverCoinsClicked = onDiscoverCoinsClicked
+            onDiscoverCoinsClicked = onDiscoverCoinsClicked,
+            onTransactionHistoryClicked = onTransactionHistoryClicked
         )
     }
 }
@@ -73,6 +75,7 @@ fun PortfolioContent(
     state: PortfolioState,
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
+    onTransactionHistoryClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -85,7 +88,8 @@ fun PortfolioContent(
             portfolioValue = state.portfolioValue,
             cashBalance = state.cashBalance,
             showBuyButton = state.showBuyButton,
-            onBuyButtonClicked = onDiscoverCoinsClicked
+            onBuyButtonClicked = onDiscoverCoinsClicked,
+            onTransactionHistoryClicked = onTransactionHistoryClicked
         )
         PortfolioCoinsList(
             coins = state.coins,
@@ -101,6 +105,7 @@ private fun PortfolioBalanceSection(
     cashBalance: String,
     showBuyButton: Boolean,
     onBuyButtonClicked: () -> Unit,
+    onTransactionHistoryClicked: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -200,29 +205,56 @@ private fun PortfolioBalanceSection(
                 }
             }
             
-            if (showBuyButton) {
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 Button(
-                    onClick = onBuyButtonClicked,
+                    onClick = onTransactionHistoryClicked,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
+                        .weight(1f)
+                        .height(48.dp)
                         .shadow(
-                            elevation = 6.dp,
-                            shape = RoundedCornerShape(16.dp)
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(12.dp)
                         ),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                     ),
-                    shape = RoundedCornerShape(16.dp),
-                    contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "Discover & Buy Coins",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        text = "History",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
                     )
+                }
+                if (showBuyButton) {
+                    Button(
+                        onClick = onBuyButtonClicked,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                            .shadow(
+                                elevation = 6.dp,
+                                shape = RoundedCornerShape(12.dp)
+                            ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Text(
+                            text = "Buy Coins",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

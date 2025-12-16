@@ -13,6 +13,9 @@ object Portfolio
 object Coins
 
 @Serializable
+object TransactionHistory
+
+@Serializable
 data class Buy(val coinId: String)
 
 @Serializable

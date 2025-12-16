@@ -16,10 +16,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.kaaneneskpc.cointy.core.navigation.Coins
 import com.kaaneneskpc.cointy.core.navigation.Portfolio
 import com.kaaneneskpc.cointy.core.navigation.Sell
+import com.kaaneneskpc.cointy.core.navigation.TransactionHistory
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioScreen
 import com.kaaneneskpc.cointy.theme.CointyTheme
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyScreen
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellScreen
+import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryScreen
 
 @Composable
 @Preview
@@ -43,6 +45,17 @@ fun App() {
                     },
                     onDiscoverCoinsClicked = {
                         navController.navigate(Coins)
+                    },
+                    onTransactionHistoryClicked = {
+                        navController.navigate(TransactionHistory)
+                    }
+                )
+            }
+            
+            composable<TransactionHistory> {
+                TransactionHistoryScreen(
+                    onBackClicked = {
+                        navController.popBackStack()
                     }
                 )
             }
