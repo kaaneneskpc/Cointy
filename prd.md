@@ -39,7 +39,7 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
   - `GET /coin/{coinId}/history` - Kripto para fiyat geçmişi
 
 ### 2.3 Veritabanı Şeması
-**PortfolioDatabase (Version 2)**
+**PortfolioDatabase (Version 3)**
 - **PortfolioCoinEntity:** Kullanıcının sahip olduğu kripto paralar
   - coinId (Primary Key)
   - name, symbol, iconUrl
@@ -50,6 +50,15 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
 - **UserBalanceEntity:** Kullanıcının nakit bakiyesi
   - id (Primary Key, default: 1)
   - cashBalance (nakit bakiye)
+
+- **TransactionEntity:** Kullanıcının yaptığı alım-satım işlemleri
+  - id (Primary Key, autoGenerate)
+  - type (String: "BUY" veya "SELL")
+  - coinId, coinName, coinSymbol, coinIconUrl
+  - amountInFiat (fiat cinsinden işlem tutarı)
+  - amountInUnit (coin birimi cinsinden miktar)
+  - price (işlem anındaki coin fiyatı)
+  - timestamp (işlem zamanı)
 
 ---
 
@@ -138,6 +147,7 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
   - Coin portföye ekleme veya mevcut coin miktarını güncelleme
   - Ortalama alış fiyatı hesaplama (DCA - Dollar Cost Averaging)
   - Nakit bakiyeden düşme
+  - İşlemin transaction history'ye kaydedilmesi
   - Başarılı işlem sonrası portföy ekranına yönlendirme
 
 **Teknik Detaylar:**
@@ -164,6 +174,7 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
   - Yetersiz coin kontrolü
   - Coin miktarını güncelleme veya portföyden tamamen çıkarma (threshold: 1 fiat)
   - Nakit bakiyeye ekleme
+  - İşlemin transaction history'ye kaydedilmesi
   - Başarılı işlem sonrası portföy ekranına yönlendirme
 
 **Teknik Detaylar:**
@@ -206,6 +217,41 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
 
 ---
 
+### 3.8 Transaction History (İşlem Geçmişi)
+**Amaç:** Kullanıcıların yaptıkları tüm alım-satım işlemlerini görüntülemesi ve takip etmesi.
+
+**Özellikler:**
+- **İşlem Geçmişi Görünümü:**
+  - Tüm işlemlerin kronolojik listesi (en yeni en üstte)
+  - Toplam işlem sayısı gösterimi
+  - Her işlem için:
+    - Coin bilgileri (isim, sembol, ikon)
+    - İşlem tipi (BUY/SELL) - renk kodlamalı (yeşil/kırmızı)
+    - İşlem tutarı (fiat cinsinden)
+    - Coin miktarı ve birim fiyatı
+    - İşlem tarihi ve saati (formatlanmış)
+  
+- **İşlem Kaydetme:**
+  - Her alış işleminde otomatik kayıt
+  - Her satış işleminde otomatik kayıt
+  - İşlem detaylarının tam olarak saklanması
+
+- **Boş Durum:**
+  - İşlem yoksa kullanıcı dostu boş durum mesajı
+
+**Teknik Detaylar:**
+- `TransactionEntity` - Veritabanı entity
+- `TransactionDao` - Database Access Object
+- `TransactionRepository` - Repository interface ve implementasyonu
+- `GetTransactionHistoryUseCase` - İşlem geçmişi çekme use case
+- `TransactionHistoryViewModel` - StateFlow ile reactive state management
+- `TransactionHistoryScreen` - Compose UI
+- Flow-based reactive data streams
+- Timestamp bazlı sıralama (DESC)
+- Coin bazlı filtreleme desteği (getTransactionsByCoinId)
+
+---
+
 ## 4. Kullanıcı Akışları (User Flows)
 
 ### 4.1 Uygulama Başlangıç Akışı
@@ -221,6 +267,7 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
    - Sahip olunan coinler listelenir
 2. Coin'e tıklanırsa → Satış ekranına gider
 3. "Discover Coins" butonuna tıklanırsa → Coin listesi ekranına gider
+4. "History" butonuna tıklanırsa → İşlem geçmişi ekranına gider
 
 ### 4.3 Coin Keşfetme ve Alma Akışı
 1. Coin listesi ekranında tüm coinler görüntülenir
@@ -240,7 +287,17 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
    - Sahip olunan miktar gösterilir
    - Satış miktarı girilir
    - "Sell" butonuna tıklanır
-3. Başarılı işlem sonrası portföy ekranına dönülür
+3. Başarılı işlem sonrası:
+   - İşlem veritabanına kaydedilir
+   - Portföy ekranına dönülür
+
+### 4.5 İşlem Geçmişi Görüntüleme Akışı
+1. Portföy ekranında "History" butonuna tıklanır
+2. İşlem geçmişi ekranında:
+   - Tüm işlemler kronolojik sırada listelenir
+   - Her işlem için detaylı bilgiler gösterilir
+   - İşlem tipi renk kodlamalı gösterilir (BUY: yeşil, SELL: kırmızı)
+3. Geri butonuna tıklanırsa → Portföy ekranına dönülür
 
 ---
 
@@ -401,9 +458,6 @@ composeApp/src/
 - **Çoklu Para Birimi Desteği:**
   - USD, EUR, TRY gibi farklı para birimleri
   
-- **İşlem Geçmişi:**
-  - Alım-satım geçmişi görüntüleme
-  - İşlem detayları
   
 - **Favoriler:**
   - Coin'leri favorilere ekleme
@@ -412,6 +466,7 @@ composeApp/src/
 - **Arama ve Filtreleme:**
   - Coin arama özelliği
   - Fiyat, değişim gibi kriterlere göre filtreleme
+  - İşlem geçmişinde filtreleme (coin bazlı, tarih bazlı, tip bazlı)
   
 - **Dark Mode:**
   - Karanlık tema desteği
@@ -422,6 +477,7 @@ composeApp/src/
   
 - **Export/Import:**
   - Portföy verilerini export etme
+  - İşlem geçmişini export etme (CSV, PDF)
   - Backup ve restore özellikleri
 
 ---
@@ -452,9 +508,15 @@ composeApp/src/
 │       │   ├── domain/
 │       │   └── presentation/
 │       ├── theme/                     # UI tema ve stiller
-│       └── trade/                      # Alım-satım modülü
+│       ├── trade/                      # Alım-satım modülü
+│       │   ├── domain/
+│       │   ├── mapper/
+│       │   └── presentation/
+│       └── transaction/                # İşlem geçmişi modülü
+│           ├── data/
+│           │   ├── local/
+│           │   └── mapper/
 │           ├── domain/
-│           ├── mapper/
 │           └── presentation/
 ├── androidMain/                       # Android-specific kod
 └── iosMain/                           # iOS-specific kod
@@ -471,7 +533,7 @@ composeApp/src/
 
 - **Version Code:** 1
 - **Version Name:** 1.0
-- **Database Version:** 2
+- **Database Version:** 3
 - **Kotlin Version:** 2.0.21
 - **Compose Multiplatform:** 1.7.0
 
