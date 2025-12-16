@@ -475,6 +475,6 @@ composeApp/src/
 
 ---
 
-**Son Güncelleme:** 2024
+**Son Güncelleme:** 2025
 **Dokümantasyon Versiyonu:** 1.0
 
