@@ -344,6 +344,46 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
 - UI tests (Compose screens)
 - Flow-based testing
 
+### 9.3 Mevcut Unit Testler
+
+#### 9.3.1 PortfolioViewModelTest
+**Konum:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/presentation/PortfolioViewModelTest.kt`
+
+**Test Senaryoları:**
+- `State and portfolio coins are properly combined` - State ve portföy coinlerinin doğru birleştirilmesi
+- `Portfolio value updates when a coin is added` - Coin eklendiğinde portföy değerinin güncellenmesi
+- `Loading state and error message update on failure` - Hata durumunda loading state ve error mesajının güncellenmesi
+
+**Kullanılan Teknikler:**
+- Turbine ile Flow testing
+- UnconfinedTestDispatcher ile coroutine testing
+- FakePortfolioRepository ile dependency mocking
+
+#### 9.3.2 FakePortfolioRepository
+**Konum:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/data/FakePortfolioRepository.kt`
+
+**Özellikler:**
+- `PortfolioRepository` interface'inin fake implementasyonu
+- MutableStateFlow ile reactive test data yönetimi
+- `simulateError()` metodu ile hata senaryolarının test edilmesi
+- Companion object ile test verileri (fakeCoin, portfolioCoin, cashBalance)
+
+### 9.4 Test Yapısı
+```
+composeApp/src/
+├── commonTest/
+│   └── kotlin/com/kaaneneskpc/cointy/
+│       ├── ComposeAppCommonTest.kt
+│       └── portfolio/
+│           ├── data/
+│           │   └── FakePortfolioRepository.kt
+│           └── presentation/
+│               └── PortfolioViewModelTest.kt
+└── androidUnitTest/
+    └── kotlin/com/kaaneneskpc/cointy/
+        └── trade/presentation/
+```
+
 ---
 
 ## 10. Gelecek Geliştirmeler (Future Enhancements)
