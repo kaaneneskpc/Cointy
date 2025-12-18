@@ -396,7 +396,7 @@ Contributions are what make the open-source community such an amazing place to l
 - [ ] Dark mode support
 - [ ] Multi-currency support (USD, EUR, TRY, etc.)
 - [x] Transaction history
-- [ ] Price alerts and notifications
+- [x] Price alerts and notifications
 - [x] Portfolio analytics and charts
 - [ ] Export portfolio data
 - [ ] Cloud sync
