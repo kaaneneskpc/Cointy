@@ -1,319 +1,419 @@
 # Cointy - Product Requirements Document (PRD)
 
-## 1. Genel Bakış
+## 1. Overview
 
-### 1.1 Ürün Tanımı
-**Cointy**, kullanıcıların kripto para portföylerini yönetmelerine, kripto paraları keşfetmelerine ve sanal alım-satım işlemleri yapmalarına olanak tanıyan çok platformlu (Android ve iOS) bir mobil uygulamadır.
+### 1.1 Product Definition
+**Cointy** is a cross-platform (Android and iOS) mobile application that allows users to manage their cryptocurrency portfolios, discover cryptocurrencies, and perform virtual buy/sell transactions.
 
-### 1.2 Ürün Vizyonu
-Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy performanslarını izlemelerini ve kripto para piyasasını keşfetmelerini kolaylaştıran, güvenli ve kullanıcı dostu bir platform sunmak.
+### 1.2 Product Vision
+To provide a secure and user-friendly platform that makes it easy for users to track their cryptocurrency investments, monitor portfolio performance, and explore the cryptocurrency market.
 
-### 1.3 Hedef Kitle
-- Kripto para yatırımcıları
-- Kripto para piyasasını öğrenmek isteyenler
-- Portföy yönetimi yapan kullanıcılar
-- Sanal alım-satım deneyimi arayanlar
+### 1.3 Target Audience
+- Cryptocurrency investors
+- People who want to learn about the cryptocurrency market
+- Users who manage portfolios
+- Those seeking virtual trading experience
 
 ---
 
-## 2. Teknik Mimari
+## 2. Technical Architecture
 
-### 2.1 Platform ve Teknolojiler
+### 2.1 Platform and Technologies
 - **Platform:** Kotlin Multiplatform (KMP)
-- **Hedef Platformlar:** Android (minSdk 24), iOS (iOS 13+)
+- **Target Platforms:** Android (minSdk 24), iOS (iOS 13+)
 - **UI Framework:** Jetpack Compose Multiplatform
-- **Mimari Desen:** Clean Architecture (Domain, Data, Presentation katmanları)
+- **Architectural Pattern:** Clean Architecture (Domain, Data, Presentation layers)
 - **Dependency Injection:** Koin
-- **Veritabanı:** Room Database (SQLite)
+- **Database:** Room Database (SQLite)
 - **Network:** Ktor Client
 - **Image Loading:** Coil 3
 - **Serialization:** Kotlinx Serialization
 - **Date/Time:** Kotlinx DateTime
 - **Biometric Auth:** AndroidX Biometric
 
-### 2.2 API Entegrasyonu
+### 2.2 API Integration
 - **API Provider:** CoinRanking API (https://api.coinranking.com/v2)
-- **Kullanılan Endpointler:**
-  - `GET /coins` - Tüm kripto paraların listesi
-  - `GET /coin/{coinId}` - Belirli bir kripto para detayı
-  - `GET /coin/{coinId}/history` - Kripto para fiyat geçmişi
+- **Used Endpoints:**
+  - `GET /coins` - List of all cryptocurrencies
+  - `GET /coin/{coinId}` - Specific cryptocurrency details
+  - `GET /coin/{coinId}/history` - Cryptocurrency price history
 
-### 2.3 Veritabanı Şeması
+### 2.3 Database Schema
 **PortfolioDatabase (Version 3)**
-- **PortfolioCoinEntity:** Kullanıcının sahip olduğu kripto paralar
+- **PortfolioCoinEntity:** Cryptocurrencies owned by the user
   - coinId (Primary Key)
   - name, symbol, iconUrl
-  - averagePurchasePrice (ortalama alış fiyatı)
-  - amountOwned (sahip olunan miktar)
+  - averagePurchasePrice (average purchase price)
+  - amountOwned (amount owned)
   - timeStamp
   
-- **UserBalanceEntity:** Kullanıcının nakit bakiyesi
+- **UserBalanceEntity:** User's cash balance
   - id (Primary Key, default: 1)
-  - cashBalance (nakit bakiye)
+  - cashBalance (cash balance)
 
-- **TransactionEntity:** Kullanıcının yaptığı alım-satım işlemleri
+- **TransactionEntity:** User's buy/sell transactions
   - id (Primary Key, autoGenerate)
-  - type (String: "BUY" veya "SELL")
+  - type (String: "BUY" or "SELL")
   - coinId, coinName, coinSymbol, coinIconUrl
-  - amountInFiat (fiat cinsinden işlem tutarı)
-  - amountInUnit (coin birimi cinsinden miktar)
-  - price (işlem anındaki coin fiyatı)
-  - timestamp (işlem zamanı)
+  - amountInFiat (transaction amount in fiat)
+  - amountInUnit (amount in coin units)
+  - price (coin price at transaction time)
+  - timestamp (transaction time)
 
 ---
 
-## 3. Özellikler ve Fonksiyonellik
+## 3. Features and Functionality
 
-### 3.1 Biometric Authentication (Biyometrik Kimlik Doğrulama)
-**Amaç:** Uygulama güvenliğini artırmak ve kullanıcı deneyimini iyileştirmek.
+### 3.1 Biometric Authentication
+**Purpose:** To enhance application security and improve user experience.
 
-**Özellikler:**
-- Platform-specific biyometrik kimlik doğrulama (Android: BiometricPrompt, iOS: Face ID/Touch ID)
-- Uygulama başlangıcında kimlik doğrulama ekranı
-- Kimlik doğrulama başarılı olduğunda portföy ekranına yönlendirme
+**Features:**
+- Platform-specific biometric authentication (Android: BiometricPrompt, iOS: Face ID/Touch ID)
+- Authentication screen at application startup
+- Redirect to portfolio screen upon successful authentication
 
-**Teknik Detaylar:**
-- `BiometricAuthenticator` interface ile platform abstraction
-- `BiometricScreen` Compose UI bileşeni
-- Platform-specific implementasyonlar (androidMain, iosMain)
+**Technical Details:**
+- `BiometricAuthenticator` interface for platform abstraction
+- `BiometricScreen` Compose UI component
+- Platform-specific implementations (androidMain, iosMain)
 
 ---
 
-### 3.2 Portfolio Management (Portföy Yönetimi)
-**Amaç:** Kullanıcıların sahip oldukları kripto paraları görüntülemesi ve yönetmesi.
+### 3.2 Portfolio Management
+**Purpose:** For users to view and manage their owned cryptocurrencies.
 
-**Özellikler:**
-- **Portföy Görünümü:**
-  - Toplam portföy değeri gösterimi
-  - Nakit bakiye gösterimi
-  - Sahip olunan kripto paraların listesi
-  - Her kripto para için:
-    - İsim, sembol, ikon
-    - Sahip olunan miktar (birim ve fiat cinsinden)
-    - Performans yüzdesi (pozitif/negatif renk kodlaması)
-    - Ortalama alış fiyatı
+**Features:**
+- **Portfolio View:**
+  - Total portfolio value display
+  - Cash balance display
+  - List of owned cryptocurrencies
+  - For each cryptocurrency:
+    - Name, symbol, icon
+    - Amount owned (in units and fiat)
+    - Performance percentage (positive/negative color coding)
+    - Average purchase price
 
-- **Portföy İşlemleri:**
-  - Kripto para detayına gitme (satış ekranına yönlendirme)
-  - Yeni kripto para keşfetme (coin listesi ekranına yönlendirme)
-  - Portföy değerinin gerçek zamanlı hesaplanması
+- **Portfolio Operations:**
+  - Navigate to cryptocurrency details (redirect to sell screen)
+  - Discover new cryptocurrencies (redirect to coin list screen)
+  - Real-time portfolio value calculation
 
-**Teknik Detaylar:**
-- `PortfolioViewModel` - StateFlow ile reactive state management
-- `PortfolioRepository` - Veritabanı işlemleri ve hesaplamalar
+**Technical Details:**
+- `PortfolioViewModel` - Reactive state management with StateFlow
+- `PortfolioRepository` - Database operations and calculations
 - `PortfolioScreen` - Compose UI
 - Flow-based reactive data streams
 
 ---
 
-### 3.3 Coin Discovery (Kripto Para Keşfi)
-**Amaç:** Kullanıcıların mevcut kripto paraları keşfetmesi ve yeni yatırım fırsatları bulması.
+### 3.3 Coin Discovery
+**Purpose:** For users to discover available cryptocurrencies and find new investment opportunities.
 
-**Özellikler:**
-- **Coin Listesi:**
-  - Tüm kripto paraların listelenmesi
-  - Her coin için:
-    - İsim, sembol, ikon
-    - Güncel fiyat
-    - 24 saatlik değişim yüzdesi (pozitif/negatif renk kodlaması)
+**Features:**
+- **Coin List:**
+  - Listing of all cryptocurrencies
+  - For each coin:
+    - Name, symbol, icon
+    - Current price
+    - 24-hour change percentage (positive/negative color coding)
   
-- **Coin Detayları:**
-  - Uzun basma ile fiyat grafiği görüntüleme (sparkline chart)
-  - Grafik kapatma özelliği
-  - Coin detay sayfasına gitme (alış ekranına yönlendirme)
+- **Coin Details:**
+  - View price chart with long press (sparkline chart)
+  - Chart close feature
+  - Navigate to coin detail page (redirect to buy screen)
 
-**Teknik Detaylar:**
-- `CoinListViewModel` - API çağrıları ve state yönetimi
-- `GetCoinsListUseCase` - Coin listesi çekme use case
-- `GetCoinPriceHistoryUseCase` - Fiyat geçmişi çekme use case
-- `CoinChart` - Compose chart bileşeni
-- Error handling ve loading states
+**Technical Details:**
+- `CoinListViewModel` - API calls and state management
+- `GetCoinsListUseCase` - Coin list fetching use case
+- `GetCoinPriceHistoryUseCase` - Price history fetching use case
+- `CoinChart` - Compose chart component
+- Error handling and loading states
 
 ---
 
-### 3.4 Buy Coin (Kripto Para Alma)
-**Amaç:** Kullanıcıların sanal olarak kripto para satın alması.
+### 3.4 Buy Coin
+**Purpose:** For users to virtually purchase cryptocurrencies.
 
-**Özellikler:**
-- **Alış Ekranı:**
-  - Coin bilgileri (isim, sembol, ikon, güncel fiyat)
-  - Mevcut nakit bakiye gösterimi
-  - Alış miktarı girişi (fiat cinsinden)
-  - Currency formatting ve visual transformation
-  - Alış butonu
+**Features:**
+- **Buy Screen:**
+  - Coin information (name, symbol, icon, current price)
+  - Available cash balance display
+  - Purchase amount input (in fiat)
+  - Currency formatting and visual transformation
+  - Buy button
 
-- **Alış İşlemi:**
-  - Yetersiz bakiye kontrolü
-  - Coin portföye ekleme veya mevcut coin miktarını güncelleme
-  - Ortalama alış fiyatı hesaplama (DCA - Dollar Cost Averaging)
-  - Nakit bakiyeden düşme
-  - İşlemin transaction history'ye kaydedilmesi
-  - Başarılı işlem sonrası portföy ekranına yönlendirme
+- **Buy Transaction:**
+  - Insufficient balance check
+  - Add coin to portfolio or update existing coin amount
+  - Average purchase price calculation (DCA - Dollar Cost Averaging)
+  - Deduct from cash balance
+  - Record transaction in transaction history
+  - Redirect to portfolio screen after successful transaction
 
-**Teknik Detaylar:**
-- `BuyViewModel` - Alış işlemi state yönetimi
-- `BuyCoinUseCase` - İş mantığı ve validasyonlar
+**Technical Details:**
+- `BuyViewModel` - Buy transaction state management
+- `BuyCoinUseCase` - Business logic and validations
 - `BuyScreen` - Compose UI
-- `CurrencyVisualTransformation` - Para birimi formatlaması
-- Event-based navigation (Channel kullanımı)
+- `CurrencyVisualTransformation` - Currency formatting
+- Event-based navigation (Channel usage)
 
 ---
 
-### 3.5 Sell Coin (Kripto Para Satma)
-**Amaç:** Kullanıcıların portföylerindeki kripto paraları satması.
+### 3.5 Sell Coin
+**Purpose:** For users to sell cryptocurrencies from their portfolio.
 
-**Özellikler:**
-- **Satış Ekranı:**
-  - Coin bilgileri (isim, sembol, ikon, güncel fiyat)
-  - Sahip olunan miktar gösterimi
-  - Satış miktarı girişi (fiat cinsinden)
+**Features:**
+- **Sell Screen:**
+  - Coin information (name, symbol, icon, current price)
+  - Amount owned display
+  - Sell amount input (in fiat)
   - Currency formatting
-  - Satış butonu
+  - Sell button
 
-- **Satış İşlemi:**
-  - Yetersiz coin kontrolü
-  - Coin miktarını güncelleme veya portföyden tamamen çıkarma (threshold: 1 fiat)
-  - Nakit bakiyeye ekleme
-  - İşlemin transaction history'ye kaydedilmesi
-  - Başarılı işlem sonrası portföy ekranına yönlendirme
+- **Sell Transaction:**
+  - Insufficient coin check
+  - Update coin amount or completely remove from portfolio (threshold: 1 fiat)
+  - Add to cash balance
+  - Record transaction in transaction history
+  - Redirect to portfolio screen after successful transaction
 
-**Teknik Detaylar:**
-- `SellViewModel` - Satış işlemi state yönetimi
-- `SellCoinUseCase` - İş mantığı ve validasyonlar
+**Technical Details:**
+- `SellViewModel` - Sell transaction state management
+- `SellCoinUseCase` - Business logic and validations
 - `SellScreen` - Compose UI
-- Otomatik coin temizleme mantığı
+- Automatic coin cleanup logic
 
 ---
 
-### 3.6 Price Charts (Fiyat Grafikleri)
-**Amaç:** Kullanıcıların kripto para fiyat trendlerini görselleştirmesi.
+### 3.6 Price Charts
+**Purpose:** For users to visualize cryptocurrency price trends.
 
-**Özellikler:**
-- Sparkline chart gösterimi
-- Coin listesinde uzun basma ile grafik açma
-- Zaman bazlı fiyat verileri
-- Loading ve error states
+**Features:**
+- Sparkline chart display
+- Open chart with long press in coin list
+- Time-based price data
+- Loading and error states
 
-**Teknik Detaylar:**
-- `CoinChart` - Compose chart bileşeni
-- `GetCoinPriceHistoryUseCase` - API'den fiyat geçmişi çekme
-- Timestamp bazlı veri sıralama
+**Technical Details:**
+- `CoinChart` - Compose chart component
+- `GetCoinPriceHistoryUseCase` - Fetch price history from API
+- Timestamp-based data sorting
 
 ---
 
-### 3.7 Cash Balance Management (Nakit Bakiye Yönetimi)
-**Amaç:** Kullanıcının sanal nakit bakiyesini yönetmesi.
+### 3.7 Cash Balance Management
+**Purpose:** To manage the user's virtual cash balance.
 
-**Özellikler:**
-- İlk açılışta bakiye başlatma
-- Alış işlemlerinde bakiyeden düşme
-- Satış işlemlerinde bakiyeye ekleme
-- Gerçek zamanlı bakiye gösterimi
+**Features:**
+- Initialize balance on first launch
+- Deduct from balance on buy transactions
+- Add to balance on sell transactions
+- Real-time balance display
 
-**Teknik Detaylar:**
-- `UserBalanceEntity` - Veritabanı entity
+**Technical Details:**
+- `UserBalanceEntity` - Database entity
 - `UserBalanceDao` - Database Access Object
 - Flow-based reactive updates
 
 ---
 
-### 3.8 Transaction History (İşlem Geçmişi)
-**Amaç:** Kullanıcıların yaptıkları tüm alım-satım işlemlerini görüntülemesi ve takip etmesi.
+### 3.8 Transaction History
+**Purpose:** For users to view and track all their buy/sell transactions.
 
-**Özellikler:**
-- **İşlem Geçmişi Görünümü:**
-  - Tüm işlemlerin kronolojik listesi (en yeni en üstte)
-  - Toplam işlem sayısı gösterimi
-  - Her işlem için:
-    - Coin bilgileri (isim, sembol, ikon)
-    - İşlem tipi (BUY/SELL) - renk kodlamalı (yeşil/kırmızı)
-    - İşlem tutarı (fiat cinsinden)
-    - Coin miktarı ve birim fiyatı
-    - İşlem tarihi ve saati (formatlanmış)
+**Features:**
+- **Transaction History View:**
+  - Chronological list of all transactions (newest first)
+  - Total transaction count display
+  - For each transaction:
+    - Coin information (name, symbol, icon)
+    - Transaction type (BUY/SELL) - color coded (green/red)
+    - Transaction amount (in fiat)
+    - Coin amount and unit price
+    - Formatted transaction date and time
   
-- **İşlem Kaydetme:**
-  - Her alış işleminde otomatik kayıt
-  - Her satış işleminde otomatik kayıt
-  - İşlem detaylarının tam olarak saklanması
+- **Transaction Recording:**
+  - Automatic recording on each buy transaction
+  - Automatic recording on each sell transaction
+  - Complete storage of transaction details
 
-- **Boş Durum:**
-  - İşlem yoksa kullanıcı dostu boş durum mesajı
+- **Empty State:**
+  - User-friendly empty state message when no transactions exist
 
-**Teknik Detaylar:**
-- `TransactionEntity` - Veritabanı entity
+**Technical Details:**
+- `TransactionEntity` - Database entity
 - `TransactionDao` - Database Access Object
-- `TransactionRepository` - Repository interface ve implementasyonu
-- `GetTransactionHistoryUseCase` - İşlem geçmişi çekme use case
-- `TransactionHistoryViewModel` - StateFlow ile reactive state management
+- `TransactionRepository` - Repository interface and implementation
+- `GetTransactionHistoryUseCase` - Transaction history fetching use case
+- `TransactionHistoryViewModel` - Reactive state management with StateFlow
 - `TransactionHistoryScreen` - Compose UI
 - Flow-based reactive data streams
-- Timestamp bazlı sıralama (DESC)
-- Coin bazlı filtreleme desteği (getTransactionsByCoinId)
+- Timestamp-based sorting (DESC)
+- Coin-based filtering support (getTransactionsByCoinId)
 
 ---
 
-## 4. Kullanıcı Akışları (User Flows)
+### 3.9 Portfolio Analytics
+**Purpose:** To provide users with detailed analysis and visualization of their portfolio performance.
 
-### 4.1 Uygulama Başlangıç Akışı
-1. Uygulama açılır
-2. Biyometrik kimlik doğrulama ekranı gösterilir
-3. Kullanıcı kimlik doğrulamasını tamamlar
-4. Portföy ekranına yönlendirilir
+**Features:**
+- **Analytics Summary:**
+  - Total portfolio value display
+  - Total invested amount display
+  - Total profit/loss with color coding (green for profit, red for loss)
+  - Profit/loss percentage badge
 
-### 4.2 Portföy Görüntüleme Akışı
-1. Portföy ekranında:
-   - Toplam portföy değeri görüntülenir
-   - Nakit bakiye görüntülenir
-   - Sahip olunan coinler listelenir
-2. Coin'e tıklanırsa → Satış ekranına gider
-3. "Discover Coins" butonuna tıklanırsa → Coin listesi ekranına gider
-4. "History" butonuna tıklanırsa → İşlem geçmişi ekranına gider
+- **Portfolio Distribution:**
+  - Interactive pie chart showing coin allocation
+  - Animated chart rendering with smooth transitions
+  - Color-coded segments for each cryptocurrency
+  - Legend with coin symbols and percentage breakdown
+  - Total value display in chart center
 
-### 4.3 Coin Keşfetme ve Alma Akışı
-1. Coin listesi ekranında tüm coinler görüntülenir
-2. Coin'e uzun basılırsa → Fiyat grafiği gösterilir
-3. Coin'e tıklanırsa → Alış ekranına gider
-4. Alış ekranında:
-   - Coin bilgileri gösterilir
-   - Mevcut bakiye gösterilir
-   - Alış miktarı girilir
-   - "Buy" butonuna tıklanır
-5. Başarılı işlem sonrası portföy ekranına dönülür
+- **Portfolio History Chart:**
+  - Line chart showing portfolio value over time
+  - Animated chart drawing effect
+  - Color-coded trend line (green for upward, red for downward)
+  - Grid lines for value reference
+  - Gradient fill under the line
+  - Bezier curve smoothing for data points
 
-### 4.4 Coin Satma Akışı
-1. Portföy ekranında coin'e tıklanır
-2. Satış ekranında:
-   - Coin bilgileri gösterilir
-   - Sahip olunan miktar gösterilir
-   - Satış miktarı girilir
-   - "Sell" butonuna tıklanır
-3. Başarılı işlem sonrası:
-   - İşlem veritabanına kaydedilir
-   - Portföy ekranına dönülür
+- **Transaction Statistics:**
+  - Total transaction count
+  - Buy transaction count (green)
+  - Sell transaction count (red)
+  - Visual statistics card
 
-### 4.5 İşlem Geçmişi Görüntüleme Akışı
-1. Portföy ekranında "History" butonuna tıklanır
-2. İşlem geçmişi ekranında:
-   - Tüm işlemler kronolojik sırada listelenir
-   - Her işlem için detaylı bilgiler gösterilir
-   - İşlem tipi renk kodlamalı gösterilir (BUY: yeşil, SELL: kırmızı)
-3. Geri butonuna tıklanırsa → Portföy ekranına dönülür
+- **Coin Performance:**
+  - Individual performance tracking for each owned coin
+  - Current value display
+  - Profit/loss amount and percentage per coin
+  - Sorted by absolute performance percentage
+  - Coin icon and details display
+
+- **Empty State:**
+  - User-friendly message when no portfolio data exists
+  - Guidance to start investing
+
+**Technical Details:**
+- `AnalyticsRepository` - Repository interface for analytics data
+- `AnalyticsRepositoryImpl` - Implementation with portfolio and transaction data aggregation
+- `GetPortfolioAnalyticsUseCase` - Use case for fetching comprehensive analytics
+- `AnalyticsViewModel` - State management with StateFlow
+- `AnalyticsScreen` - Main analytics Compose UI
+- `AnalyticsState` - UI state data class
+
+**Analytics Models:**
+- `PortfolioAnalytics` - Comprehensive analytics data model containing:
+  - totalPortfolioValue: Current total value of all holdings
+  - totalInvestedAmount: Sum of all investment costs
+  - totalProfitLoss: Difference between current and invested value
+  - profitLossPercentage: Percentage return on investment
+  - coinDistributions: List of allocation data per coin
+  - portfolioHistory: Time-series data for history chart
+  - coinPerformances: Individual coin performance metrics
+  - Transaction counts (total, buy, sell)
+
+- `CoinDistribution` - Distribution data for pie chart:
+  - coinId, coinName, coinSymbol, coinIconUrl
+  - valueInFiat: Current value in fiat currency
+  - percentage: Portfolio allocation percentage
+  - color: Chart segment color
+
+- `CoinPerformance` - Individual coin performance:
+  - coinId, coinName, coinSymbol, coinIconUrl
+  - currentValue: Current market value
+  - investedAmount: Total invested in this coin
+  - profitLoss: Absolute profit/loss
+  - profitLossPercentage: Percentage return
+  - isPositive: Boolean for color coding
+
+- `PortfolioHistoryPoint` - History chart data point:
+  - timestamp: Transaction timestamp
+  - totalValue: Portfolio value at that point
+
+**UI Components:**
+- `PortfolioPieChart` - Animated donut chart with center text
+- `PieChartLegend` - Legend component for pie chart
+- `PortfolioHistoryChart` - Animated line chart with gradient fill
+- `AnalyticsSummaryCard` - Reusable summary card component
+- `TransactionStatsCard` - Transaction statistics display
+- `CoinPerformanceItem` - Individual coin performance row
 
 ---
 
-## 5. Teknik Gereksinimler
+## 4. User Flows
 
-### 5.1 Minimum Sistem Gereksinimleri
+### 4.1 Application Startup Flow
+1. Application opens
+2. Biometric authentication screen is displayed
+3. User completes authentication
+4. Redirected to portfolio screen
+
+### 4.2 Portfolio Viewing Flow
+1. On portfolio screen:
+   - Total portfolio value is displayed
+   - Cash balance is displayed
+   - Owned coins are listed
+2. If coin is tapped → Goes to sell screen
+3. If "Discover Coins" button is tapped → Goes to coin list screen
+4. If "History" button is tapped → Goes to transaction history screen
+5. If "Analytics" button is tapped → Goes to portfolio analytics screen
+
+### 4.3 Coin Discovery and Purchase Flow
+1. All coins are displayed on coin list screen
+2. If coin is long pressed → Price chart is displayed
+3. If coin is tapped → Goes to buy screen
+4. On buy screen:
+   - Coin information is displayed
+   - Available balance is displayed
+   - Purchase amount is entered
+   - "Buy" button is tapped
+5. After successful transaction, returns to portfolio screen
+
+### 4.4 Coin Selling Flow
+1. Coin is tapped on portfolio screen
+2. On sell screen:
+   - Coin information is displayed
+   - Amount owned is displayed
+   - Sell amount is entered
+   - "Sell" button is tapped
+3. After successful transaction:
+   - Transaction is saved to database
+   - Returns to portfolio screen
+
+### 4.5 Transaction History Viewing Flow
+1. "History" button is tapped on portfolio screen
+2. On transaction history screen:
+   - All transactions are listed in chronological order
+   - Detailed information is displayed for each transaction
+   - Transaction type is color-coded (BUY: green, SELL: red)
+3. If back button is tapped → Returns to portfolio screen
+
+### 4.6 Portfolio Analytics Viewing Flow
+1. "Analytics" button is tapped on portfolio screen
+2. On analytics screen:
+   - Profit/loss summary section is displayed at top
+   - Portfolio distribution pie chart is displayed
+   - Portfolio history line chart is displayed (if sufficient data)
+   - Transaction statistics are displayed
+   - Individual coin performances are listed
+3. If back button is tapped → Returns to portfolio screen
+
+---
+
+## 5. Technical Requirements
+
+### 5.1 Minimum System Requirements
 - **Android:**
   - Minimum SDK: 24 (Android 7.0 Nougat)
   - Target SDK: 35 (Android 15)
-  - Biometric hardware desteği (opsiyonel)
+  - Biometric hardware support (optional)
   
 - **iOS:**
   - iOS 13.0+
-  - Face ID / Touch ID desteği (opsiyonel)
+  - Face ID / Touch ID support (optional)
 
-### 5.2 Bağımlılıklar
+### 5.2 Dependencies
 - Kotlin 2.0.21
 - Compose Multiplatform 1.7.0
 - Room 2.7.0-alpha11
@@ -323,109 +423,110 @@ Kullanıcıların kripto para yatırımlarını takip etmelerini, portföy perfo
 - Kotlinx Serialization 1.7.3
 - Kotlinx DateTime 0.6.1
 
-### 5.3 Performans Gereksinimleri
-- API çağrıları için timeout yönetimi
-- Offline-first yaklaşım (yerel veritabanı)
+### 5.3 Performance Requirements
+- Timeout management for API calls
+- Offline-first approach (local database)
 - Reactive state management (Flow/StateFlow)
 - Image caching (Coil)
 - Efficient database queries
 
 ---
 
-## 6. Hata Yönetimi ve Edge Cases
+## 6. Error Handling and Edge Cases
 
-### 6.1 Network Hataları
-- **REQUEST_TIMEOUT:** İstek zaman aşımına uğradığında
-- **NO_INTERNET:** İnternet bağlantısı yoksa
-- **SERVER_ERROR:** Sunucu hatası (500-599)
+### 6.1 Network Errors
+- **REQUEST_TIMEOUT:** When request times out
+- **NO_INTERNET:** When no internet connection
+- **SERVER_ERROR:** Server error (500-599)
 - **TOO_MANY_REQUESTS:** Rate limiting (429)
-- **SERIALIZATION:** JSON parse hatası
-- **UNKNOWN:** Bilinmeyen hatalar
+- **SERIALIZATION:** JSON parse error
+- **UNKNOWN:** Unknown errors
 
-### 6.2 Local Hatalar
-- **INSUFFICIENT_FUNDS:** Yetersiz bakiye veya coin miktarı
-- Database hataları
+### 6.2 Local Errors
+- **INSUFFICIENT_FUNDS:** Insufficient balance or coin amount
+- Database errors
 
-### 6.3 Error Handling Stratejisi
-- User-friendly error mesajları (`DataErrorToString`)
-- Error state'lerin UI'da gösterilimi
-- Retry mekanizmaları (gelecekte eklenebilir)
+### 6.3 Error Handling Strategy
+- User-friendly error messages (`DataErrorToString`)
+- Error state display in UI
+- Retry mechanisms (can be added in future)
 - Graceful degradation
 
 ---
 
-## 7. Güvenlik Özellikleri
+## 7. Security Features
 
 ### 7.1 Biometric Authentication
-- Platform-native biyometrik kimlik doğrulama
-- Uygulama başlangıcında zorunlu kimlik doğrulama
-- Platform-specific implementasyonlar
+- Platform-native biometric authentication
+- Mandatory authentication at application startup
+- Platform-specific implementations
 
-### 7.2 Veri Güvenliği
-- Yerel veritabanı (Room) ile veri saklama
-- Network isteklerinde HTTPS kullanımı
-- Sensitive data'nın güvenli saklanması
+### 7.2 Data Security
+- Local data storage with Room database
+- HTTPS usage for network requests
+- Secure storage of sensitive data
 
 ---
 
-## 8. UI/UX Özellikleri
+## 8. UI/UX Features
 
-### 8.1 Tasarım Sistemi
-- Material Design 3 kullanımı
+### 8.1 Design System
+- Material Design 3 usage
 - Custom theme (`CointyTheme`)
 - Custom color palette (`CointyColors`)
 - Typography system (`Font`)
 
-### 8.2 Kullanıcı Deneyimi
-- Loading states (skeleton screens veya progress indicators)
-- Error states (user-friendly mesajlar)
+### 8.2 User Experience
+- Loading states (skeleton screens or progress indicators)
+- Error states (user-friendly messages)
 - Empty states
 - Smooth navigation transitions
-- Currency formatting ve visual transformations
-- Color-coded performance indicators (yeşil/kırmızı)
+- Currency formatting and visual transformations
+- Color-coded performance indicators (green/red)
+- Animated charts with smooth transitions
 
 ---
 
-## 9. Test Stratejisi
+## 9. Test Strategy
 
-### 9.1 Test Kütüphaneleri
+### 9.1 Test Libraries
 - Kotlin Test
 - AssertK (assertion library)
 - Turbine (Flow testing)
 - Coroutines Test
 - Compose UI Test
 
-### 9.2 Test Kapsamı
+### 9.2 Test Coverage
 - Unit tests (Use cases, ViewModels)
 - Integration tests (Repository)
 - UI tests (Compose screens)
 - Flow-based testing
 
-### 9.3 Mevcut Unit Testler
+### 9.3 Existing Unit Tests
 
 #### 9.3.1 PortfolioViewModelTest
-**Konum:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/presentation/PortfolioViewModelTest.kt`
+**Location:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/presentation/PortfolioViewModelTest.kt`
 
-**Test Senaryoları:**
-- `State and portfolio coins are properly combined` - State ve portföy coinlerinin doğru birleştirilmesi
-- `Portfolio value updates when a coin is added` - Coin eklendiğinde portföy değerinin güncellenmesi
-- `Loading state and error message update on failure` - Hata durumunda loading state ve error mesajının güncellenmesi
+**Test Scenarios:**
+- `State and portfolio coins are properly combined` - Proper combination of state and portfolio coins
+- `Portfolio value updates when a coin is added` - Portfolio value update when coin is added
+- `Loading state and error message update on failure` - Loading state and error message update on failure
 
-**Kullanılan Teknikler:**
-- Turbine ile Flow testing
-- UnconfinedTestDispatcher ile coroutine testing
-- FakePortfolioRepository ile dependency mocking
+**Techniques Used:**
+- Flow testing with Turbine
+- Coroutine testing with UnconfinedTestDispatcher
+- Dependency mocking with FakePortfolioRepository
 
 #### 9.3.2 FakePortfolioRepository
-**Konum:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/data/FakePortfolioRepository.kt`
+**Location:** `commonTest/kotlin/com/kaaneneskpc/cointy/portfolio/data/FakePortfolioRepository.kt`
 
-**Özellikler:**
-- `PortfolioRepository` interface'inin fake implementasyonu
-- MutableStateFlow ile reactive test data yönetimi
-- `simulateError()` metodu ile hata senaryolarının test edilmesi
-- Companion object ile test verileri (fakeCoin, portfolioCoin, cashBalance)
+**Features:**
+- Fake implementation of `PortfolioRepository` interface
+- Reactive test data management with MutableStateFlow
+- `simulateError()` method for testing error scenarios
+- Companion object with test data (fakeCoin, portfolioCoin, cashBalance)
 
-### 9.4 Test Yapısı
+### 9.4 Test Structure
 ```
 composeApp/src/
 ├── commonTest/
@@ -443,93 +544,109 @@ composeApp/src/
 
 ---
 
-## 10. Gelecek Geliştirmeler (Future Enhancements)
+## 10. Future Enhancements
 
-### 10.1 Önerilen Özellikler
-- **Portföy Analitiği:**
-  - Detaylı performans grafikleri
-  - Kar/zarar analizi
-  - Yatırım dağılımı grafikleri
+### 10.1 Suggested Features
+- **Notifications:**
+  - Price alerts
+  - Portfolio value change notifications
   
-- **Bildirimler:**
-  - Fiyat alarmları
-  - Portföy değeri değişim bildirimleri
+- **Multiple Currency Support:**
+  - Different currencies like USD, EUR, TRY
   
-- **Çoklu Para Birimi Desteği:**
-  - USD, EUR, TRY gibi farklı para birimleri
+- **Favorites:**
+  - Add coins to favorites
+  - Favorite coin list
   
-  
-- **Favoriler:**
-  - Coin'leri favorilere ekleme
-  - Favori coin listesi
-  
-- **Arama ve Filtreleme:**
-  - Coin arama özelliği
-  - Fiyat, değişim gibi kriterlere göre filtreleme
-  - İşlem geçmişinde filtreleme (coin bazlı, tarih bazlı, tip bazlı)
+- **Search and Filtering:**
+  - Coin search feature
+  - Filtering by price, change, and other criteria
+  - Transaction history filtering (by coin, date, type)
   
 - **Dark Mode:**
-  - Karanlık tema desteği
+  - Dark theme support
   
 - **Offline Mode:**
-  - İnternet olmadan çalışma
-  - Cache'lenmiş verilerle çalışma
+  - Work without internet
+  - Work with cached data
   
 - **Export/Import:**
-  - Portföy verilerini export etme
-  - İşlem geçmişini export etme (CSV, PDF)
-  - Backup ve restore özellikleri
+  - Export portfolio data
+  - Export transaction history (CSV, PDF)
+  - Backup and restore features
+
+- **Advanced Analytics:**
+  - Time period selection (24h, 7d, 30d, 1y)
+  - Comparison with market benchmarks
+  - Risk analysis metrics
+  - Investment recommendations
 
 ---
 
-## 11. Proje Yapısı
+## 11. Project Structure
 
-### 11.1 Modül Organizasyonu
+### 11.1 Module Organization
 ```
 composeApp/src/
 ├── commonMain/
 │   └── kotlin/com/kaaneneskpc/cointy/
-│       ├── App.kt                    # Ana uygulama entry point
-│       ├── biometric/                 # Biyometrik kimlik doğrulama
-│       ├── coins/                     # Coin keşfetme modülü
-│       │   ├── data/                  # Data layer
-│       │   ├── domain/                # Domain layer
+│       ├── App.kt                    # Main application entry point
+│       ├── analytics/                # Portfolio analytics module
+│       │   ├── data/                 # Data layer
+│       │   │   └── AnalyticsRepositoryImpl.kt
+│       │   ├── domain/               # Domain layer
+│       │   │   ├── AnalyticsRepository.kt
+│       │   │   ├── GetPortfolioAnalyticsUseCase.kt
+│       │   │   └── model/
+│       │   │       └── PortfolioAnalytics.kt
 │       │   └── presentation/         # Presentation layer
-│       ├── core/                      # Core utilities ve abstractions
+│       │       ├── AnalyticsScreen.kt
+│       │       ├── AnalyticsState.kt
+│       │       ├── AnalyticsViewModel.kt
+│       │       └── component/
+│       │           ├── AnalyticsCard.kt
+│       │           ├── PieChart.kt
+│       │           └── PortfolioHistoryChart.kt
+│       ├── biometric/                # Biometric authentication
+│       ├── coins/                    # Coin discovery module
+│       │   ├── data/                 # Data layer
+│       │   ├── domain/               # Domain layer
+│       │   └── presentation/         # Presentation layer
+│       ├── core/                     # Core utilities and abstractions
 │       │   ├── biometric/
 │       │   ├── database/
 │       │   ├── domain/
 │       │   ├── navigation/
 │       │   ├── network/
 │       │   └── util/
-│       ├── di/                        # Dependency Injection (Koin)
-│       ├── portfolio/                 # Portföy yönetimi modülü
+│       ├── di/                       # Dependency Injection (Koin)
+│       ├── portfolio/                # Portfolio management module
 │       │   ├── data/
 │       │   ├── domain/
 │       │   └── presentation/
-│       ├── theme/                     # UI tema ve stiller
-│       ├── trade/                      # Alım-satım modülü
+│       ├── theme/                    # UI theme and styles
+│       ├── trade/                    # Buy/sell module
 │       │   ├── domain/
 │       │   ├── mapper/
 │       │   └── presentation/
-│       └── transaction/                # İşlem geçmişi modülü
+│       └── transaction/              # Transaction history module
 │           ├── data/
 │           │   ├── local/
 │           │   └── mapper/
 │           ├── domain/
 │           └── presentation/
-├── androidMain/                       # Android-specific kod
-└── iosMain/                           # iOS-specific kod
+├── androidMain/                      # Android-specific code
+└── iosMain/                          # iOS-specific code
 ```
 
-### 11.2 Mimari Katmanları
+### 11.2 Architectural Layers
 - **Presentation Layer:** ViewModels, UI Components (Compose)
 - **Domain Layer:** Use Cases, Models, Repository Interfaces
 - **Data Layer:** Repository Implementations, Data Sources (Remote/Local), Mappers, DTOs
 
 ---
 
-## 12. Versiyon Bilgisi
+## 12. Version Information
 
 - **Version Code:** 1
 - **Version Name:** 1.0
@@ -539,44 +656,43 @@ composeApp/src/
 
 ---
 
-## 13. Notlar ve Önemli Kararlar
+## 13. Notes and Important Decisions
 
-### 13.1 Mimari Kararlar
-- Clean Architecture prensiplerine uyum
-- MVVM pattern kullanımı
-- Repository pattern ile data abstraction
-- Use Case pattern ile business logic separation
+### 13.1 Architectural Decisions
+- Compliance with Clean Architecture principles
+- MVVM pattern usage
+- Data abstraction with Repository pattern
+- Business logic separation with Use Case pattern
 
-### 13.2 Teknoloji Seçimleri
-- **Kotlin Multiplatform:** Kod paylaşımı için
+### 13.2 Technology Choices
+- **Kotlin Multiplatform:** For code sharing
 - **Compose Multiplatform:** Modern, declarative UI
-- **Room Database:** Güvenilir, performanslı yerel veri saklama
+- **Room Database:** Reliable, performant local data storage
 - **Ktor:** Modern, coroutine-based network library
-- **Koin:** Hafif, kolay kullanımlı DI framework
+- **Koin:** Lightweight, easy-to-use DI framework
 
-### 13.3 API Entegrasyonu
-- CoinRanking API kullanımı
+### 13.3 API Integration
+- CoinRanking API usage
 - RESTful API pattern
 - JSON serialization (Kotlinx Serialization)
-- Error handling ve retry mekanizmaları
+- Error handling and retry mechanisms
 
 ---
 
-## 14. Dokümantasyon ve Kaynaklar
+## 14. Documentation and Resources
 
-### 14.1 İlgili Dokümantasyonlar
+### 14.1 Related Documentation
 - Kotlin Multiplatform: https://kotlinlang.org/docs/multiplatform.html
 - Compose Multiplatform: https://www.jetbrains.com/lp/compose-multiplatform/
 - Room Database: https://developer.android.com/training/data-storage/room
 - Ktor: https://ktor.io/
 - CoinRanking API: https://developers.coinranking.com/
 
-### 14.2 Proje İçi Dokümantasyon
-- README.md - Proje kurulum ve build talimatları
-- Bu PRD dokümantasyonu
+### 14.2 In-Project Documentation
+- README.md - Project setup and build instructions
+- This PRD documentation
 
 ---
 
-**Son Güncelleme:** 2025
-**Dokümantasyon Versiyonu:** 1.0
-
+**Last Updated:** 2025
+**Documentation Version:** 1.1
