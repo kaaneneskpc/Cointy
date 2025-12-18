@@ -1,5 +1,6 @@
 package com.kaaneneskpc.cointy.core.network
 
+import com.kaaneneskpc.cointy.BuildKonfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -28,7 +29,7 @@ object HttpClientFactory {
             }
             install(HttpCache)
             defaultRequest {
-                headers { append("x-access-token", "coinranking82a5b5b503d18e29172980fe8b21d0e732e2c4b934d9476a") }
+                headers { append("x-access-token", BuildKonfig.COINRANKING_API_KEY) }
                 contentType(ContentType.Application.Json)
             }
         }

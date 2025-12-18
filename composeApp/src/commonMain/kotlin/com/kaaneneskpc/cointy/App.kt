@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.kaaneneskpc.cointy.analytics.presentation.AnalyticsScreen
 import com.kaaneneskpc.cointy.biometric.BiometricScreen
 import com.kaaneneskpc.cointy.coins.presentation.CoinListScreen
+import com.kaaneneskpc.cointy.core.navigation.Analytics
 import com.kaaneneskpc.cointy.core.navigation.Biometric
 import com.kaaneneskpc.cointy.core.navigation.Buy
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -48,12 +50,23 @@ fun App() {
                     },
                     onTransactionHistoryClicked = {
                         navController.navigate(TransactionHistory)
+                    },
+                    onAnalyticsClicked = {
+                        navController.navigate(Analytics)
                     }
                 )
             }
             
             composable<TransactionHistory> {
                 TransactionHistoryScreen(
+                    onBackClicked = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<Analytics> {
+                AnalyticsScreen(
                     onBackClicked = {
                         navController.popBackStack()
                     }
@@ -88,7 +101,6 @@ fun App() {
                     }
                 )
             }
-
         }
     }
 }

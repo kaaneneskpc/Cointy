@@ -1,7 +1,9 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +13,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -113,6 +116,25 @@ android {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+buildkonfig {
+    packageName = "com.kaaneneskpc.cointy"
+
+    val localProperties = Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            load(localPropertiesFile.inputStream())
+        }
+    }
+
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "COINRANKING_API_KEY",
+            localProperties.getProperty("COINRANKING_API_KEY", "")
+        )
+    }
 }
 
 dependencies {

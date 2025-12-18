@@ -5,6 +5,7 @@ android-minSdk = "24"
 android-targetSdk = "35"
 kotlin = "2.0.21"
 compose-multiplatform = "1.7.0"
+buildkonfig = "0.15.2"
 compose-test = "1.7.6"
 coil-compose = "3.0.0"
 junit = "4.13.2"
@@ -80,6 +81,7 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 
 
 [bundles]

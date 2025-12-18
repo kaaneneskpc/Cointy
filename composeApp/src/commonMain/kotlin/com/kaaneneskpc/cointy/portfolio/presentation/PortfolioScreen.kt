@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +46,7 @@ fun PortfolioScreen(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
+    onAnalyticsClicked: () -> Unit
 ) {
     val portfolioViewModel = koinViewModel<PortfolioViewModel>()
     val state by portfolioViewModel.state.collectAsStateWithLifecycle()
@@ -65,7 +65,8 @@ fun PortfolioScreen(
             state = state,
             onCoinItemClicked = onCoinItemClicked,
             onDiscoverCoinsClicked = onDiscoverCoinsClicked,
-            onTransactionHistoryClicked = onTransactionHistoryClicked
+            onTransactionHistoryClicked = onTransactionHistoryClicked,
+            onAnalyticsClicked = onAnalyticsClicked
         )
     }
 }
@@ -76,20 +77,21 @@ fun PortfolioContent(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
+    onAnalyticsClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(bottom = 24.dp)
-
     ) {
         PortfolioBalanceSection(
             portfolioValue = state.portfolioValue,
             cashBalance = state.cashBalance,
             showBuyButton = state.showBuyButton,
             onBuyButtonClicked = onDiscoverCoinsClicked,
-            onTransactionHistoryClicked = onTransactionHistoryClicked
+            onTransactionHistoryClicked = onTransactionHistoryClicked,
+            onAnalyticsClicked = onAnalyticsClicked
         )
         PortfolioCoinsList(
             coins = state.coins,
@@ -106,6 +108,7 @@ private fun PortfolioBalanceSection(
     showBuyButton: Boolean,
     onBuyButtonClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
+    onAnalyticsClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -131,7 +134,6 @@ private fun PortfolioBalanceSection(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            
             Spacer(modifier = Modifier.height(16.dp))
             Card(
                 modifier = Modifier
@@ -168,9 +170,7 @@ private fun PortfolioBalanceSection(
                     )
                 }
             }
-            
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -204,11 +204,10 @@ private fun PortfolioBalanceSection(
                     )
                 }
             }
-            
             Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = onTransactionHistoryClicked,
@@ -223,12 +222,34 @@ private fun PortfolioBalanceSection(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                     ),
                     shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
                         text = "History",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Button(
+                    onClick = onAnalyticsClicked,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "Analytics",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -246,10 +267,10 @@ private fun PortfolioBalanceSection(
                             containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
                         ),
                         shape = RoundedCornerShape(12.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     ) {
                         Text(
-                            text = "Buy Coins",
+                            text = "Buy",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold

@@ -14,10 +14,12 @@ interface PortfolioDao {
     @Query("SELECT * FROM PortfolioCoinEntity ORDER BY timeStamp DESC")
     fun getAllOwnedCoins(): Flow<List<PortfolioCoinEntity>>
 
+    @Query("SELECT * FROM PortfolioCoinEntity ORDER BY timeStamp DESC")
+    suspend fun getAllOwnedCoinsList(): List<PortfolioCoinEntity>
+
     @Query("SELECT * FROM PortfolioCoinEntity WHERE coinId = :coinId")
     suspend fun getCoinById(coinId: String): PortfolioCoinEntity?
 
     @Query("DELETE FROM PortfolioCoinEntity WHERE coinId = :coinId")
     suspend fun deletePortfolioItem(coinId: String)
-
 }

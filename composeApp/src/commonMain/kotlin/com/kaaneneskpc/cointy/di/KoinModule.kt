@@ -1,6 +1,10 @@
 package com.kaaneneskpc.cointy.di
 
 import androidx.room.RoomDatabase
+import com.kaaneneskpc.cointy.analytics.data.AnalyticsRepositoryImpl
+import com.kaaneneskpc.cointy.analytics.domain.AnalyticsRepository
+import com.kaaneneskpc.cointy.analytics.domain.GetPortfolioAnalyticsUseCase
+import com.kaaneneskpc.cointy.analytics.presentation.AnalyticsViewModel
 import com.kaaneneskpc.cointy.coins.data.remote.impl.CoinRemoteDataSourceImpl
 import com.kaaneneskpc.cointy.coins.domain.GetCoinDetailsUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinPriceHistoryUseCase
@@ -18,7 +22,6 @@ import com.kaaneneskpc.cointy.trade.domain.SellCoinUseCase
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyViewModel
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellViewModel
 import com.kaaneneskpc.cointy.transaction.data.TransactionRepositoryImpl
-import com.kaaneneskpc.cointy.transaction.data.local.TransactionDao
 import com.kaaneneskpc.cointy.transaction.domain.GetTransactionHistoryUseCase
 import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
 import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryViewModel
@@ -58,6 +61,11 @@ val sharedModule = module {
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
     singleOf(::GetTransactionHistoryUseCase)
     viewModel { TransactionHistoryViewModel(get()) }
+
+    //Analytics
+    singleOf(::AnalyticsRepositoryImpl).bind<AnalyticsRepository>()
+    singleOf(::GetPortfolioAnalyticsUseCase)
+    viewModel { AnalyticsViewModel(get()) }
 
     //CoinList
     viewModel { CoinListViewModel(get(), get()) }

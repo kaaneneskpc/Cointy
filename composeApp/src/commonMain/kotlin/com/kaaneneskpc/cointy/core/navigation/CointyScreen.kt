@@ -2,7 +2,6 @@ package com.kaaneneskpc.cointy.core.navigation
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 object Biometric
 
@@ -14,6 +13,9 @@ object Coins
 
 @Serializable
 object TransactionHistory
+
+@Serializable
+object Analytics
 
 @Serializable
 data class Buy(val coinId: String)

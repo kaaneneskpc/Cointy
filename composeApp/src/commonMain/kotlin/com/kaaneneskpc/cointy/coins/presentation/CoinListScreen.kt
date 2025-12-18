@@ -45,9 +45,9 @@ import com.kaaneneskpc.cointy.coins.presentation.component.CoinChart
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
 import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.abs
 
 @Composable
 fun CoinListScreen(
@@ -283,7 +283,7 @@ private fun CoinListItem(
 }
 
 @Composable
-private fun ErrorContent(error: org.jetbrains.compose.resources.StringResource) {
+private fun ErrorContent(error: StringResource) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
