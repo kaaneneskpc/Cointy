@@ -248,19 +248,17 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
 
 <div align="center">
 
-| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History |
-|:-:|:-:|:-:|:-:|:-:|:-:|
-| <img src="https://github.com/user-attachments/assets/4e98becf-ac71-4680-abcf-bf190efedea2" width="200"/> | <img src="https://github.com/user-attachments/assets/738334a6-728c-4f04-86c5-5e364f5c98e2" width="200"/> | <img src="https://github.com/user-attachments/assets/cdf6ae97-eeb9-41f3-91f5-b953c3f02cd3" width="200"/> | <img src="https://github.com/user-attachments/assets/c9b46e5c-3712-4b16-92e6-549b8ec4a617" width="200"/> | <img src="https://github.com/user-attachments/assets/ca9d53c1-48c5-44cf-b752-4cc6ec6e5a52" width="200"/> | <img src="https://github.com/user-attachments/assets/e8b7271f-1c9d-4d29-9531-8421b11eb8d6" width="200"/> |
-
-</div>
+| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History | Portfolio History |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/4e98becf-ac71-4680-abcf-bf190efedea2" width="200"/> | <img src="https://github.com/user-attachments/assets/738334a6-728c-4f04-86c5-5e364f5c98e2" width="200"/> | <img src="https://github.com/user-attachments/assets/cdf6ae97-eeb9-41f3-91f5-b953c3f02cd3" width="200"/> | <img src="https://github.com/user-attachments/assets/c9b46e5c-3712-4b16-92e6-549b8ec4a617" width="200"/> | <img src="https://github.com/user-attachments/assets/ca9d53c1-48c5-44cf-b752-4cc6ec6e5a52" width="200"/> | <img src="https://github.com/user-attachments/assets/e8b7271f-1c9d-4d29-9531-8421b11eb8d6" width="200"/> | <img src="https://github.com/user-attachments/assets/8735d96c-f089-4480-a386-091081b25929" width="200"/> |
 
 ### IOS
 
 <div align="center">
 
-| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History |
-|:-:|:-:|:-:|:-:|:-:|:-:|
-| <img src="https://github.com/user-attachments/assets/7ae637d6-b276-4a52-b849-e271eebe5269" width="200"/> | <img src="https://github.com/user-attachments/assets/4855272f-6f1a-47f7-9155-3ff72bd4dee2" width="200"/> | <img src="https://github.com/user-attachments/assets/ec6b0de0-1ed1-4a0d-9aa5-18576dada854" width="200"/> | <img src= "https://github.com/user-attachments/assets/5c57520c-fa0d-4ca2-b1e4-605a205c3fff" width="200"/> | <img src="https://github.com/user-attachments/assets/e866369d-9d6b-4748-9c63-a5e79fb12970" width="200"/> | <img src="https://github.com/user-attachments/assets/d646edb7-f00d-4222-945d-da068a23e0dd" width="200"/> |
+| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History | Portfolio History |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/7ae637d6-b276-4a52-b849-e271eebe5269" width="200"/> | <img src="https://github.com/user-attachments/assets/4855272f-6f1a-47f7-9155-3ff72bd4dee2" width="200"/> | <img src="https://github.com/user-attachments/assets/ec6b0de0-1ed1-4a0d-9aa5-18576dada854" width="200"/> | <img src= "https://github.com/user-attachments/assets/5c57520c-fa0d-4ca2-b1e4-605a205c3fff" width="200"/> | <img src="https://github.com/user-attachments/assets/e866369d-9d6b-4748-9c63-a5e79fb12970" width="200"/> | <img src="https://github.com/user-attachments/assets/d646edb7-f00d-4222-945d-da068a23e0dd" width="200"/> | <img src="https://github.com/user-attachments/assets/1fd7deea-b2f8-4afe-ba74-a92ef4f801a3" width="200"/> |
 
 </div>
 
@@ -397,7 +395,7 @@ Contributions are what make the open-source community such an amazing place to l
 - [ ] Multi-currency support (USD, EUR, TRY, etc.)
 - [x] Transaction history
 - [ ] Price alerts and notifications
-- [ ] Portfolio analytics and charts
+- [x] Portfolio analytics and charts
 - [ ] Export portfolio data
 - [ ] Cloud sync
 - [ ] Favorites/watchlist
