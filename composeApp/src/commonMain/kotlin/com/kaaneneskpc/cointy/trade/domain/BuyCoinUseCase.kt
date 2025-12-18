@@ -56,7 +56,6 @@ class BuyCoinUseCase(
 
         portfolioRepository.updateCashBalance(balance - amountInPrice)
         
-        // Save transaction
         val transaction = TransactionModel(
             id = 0,
             type = TransactionType.BUY,

@@ -45,7 +45,6 @@ class SellCoinUseCase(
                 }
                 portfolioRepository.updateCashBalance(balance + amountInFiat)
                 
-                // Save transaction
                 val transaction = TransactionModel(
                     id = 0,
                     type = TransactionType.SELL,
