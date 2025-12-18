@@ -252,6 +252,8 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | <img src="https://github.com/user-attachments/assets/4e98becf-ac71-4680-abcf-bf190efedea2" width="200"/> | <img src="https://github.com/user-attachments/assets/738334a6-728c-4f04-86c5-5e364f5c98e2" width="200"/> | <img src="https://github.com/user-attachments/assets/cdf6ae97-eeb9-41f3-91f5-b953c3f02cd3" width="200"/> | <img src="https://github.com/user-attachments/assets/c9b46e5c-3712-4b16-92e6-549b8ec4a617" width="200"/> | <img src="https://github.com/user-attachments/assets/ca9d53c1-48c5-44cf-b752-4cc6ec6e5a52" width="200"/> | <img src="https://github.com/user-attachments/assets/e8b7271f-1c9d-4d29-9531-8421b11eb8d6" width="200"/> | <img src="https://github.com/user-attachments/assets/8735d96c-f089-4480-a386-091081b25929" width="200"/> |
 
+</div>
+
 ### IOS
 
 <div align="center">
