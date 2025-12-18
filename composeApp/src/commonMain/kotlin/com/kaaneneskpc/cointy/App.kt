@@ -8,12 +8,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.kaaneneskpc.cointy.alert.presentation.CreateAlertScreen
+import com.kaaneneskpc.cointy.alert.presentation.PriceAlertScreen
 import com.kaaneneskpc.cointy.analytics.presentation.AnalyticsScreen
 import com.kaaneneskpc.cointy.biometric.BiometricScreen
 import com.kaaneneskpc.cointy.coins.presentation.CoinListScreen
 import com.kaaneneskpc.cointy.core.navigation.Analytics
 import com.kaaneneskpc.cointy.core.navigation.Biometric
 import com.kaaneneskpc.cointy.core.navigation.Buy
+import com.kaaneneskpc.cointy.core.navigation.CreateAlert
+import com.kaaneneskpc.cointy.core.navigation.PriceAlerts
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.kaaneneskpc.cointy.core.navigation.Coins
 import com.kaaneneskpc.cointy.core.navigation.Portfolio
@@ -53,6 +57,9 @@ fun App() {
                     },
                     onAnalyticsClicked = {
                         navController.navigate(Analytics)
+                    },
+                    onPriceAlertsClicked = {
+                        navController.navigate(PriceAlerts)
                     }
                 )
             }
@@ -73,10 +80,41 @@ fun App() {
                 )
             }
 
+            composable<PriceAlerts> {
+                PriceAlertScreen(
+                    onBackClicked = {
+                        navController.popBackStack()
+                    },
+                    onAddAlertClicked = {
+                        navController.navigate(Coins)
+                    }
+                )
+            }
+
+            composable<CreateAlert> { navBackStackEntry ->
+                val coinId: String = navBackStackEntry.toRoute<CreateAlert>().coinId
+                CreateAlertScreen(
+                    coinId = coinId,
+                    onBackClicked = {
+                        navController.popBackStack()
+                    },
+                    onAlertCreated = {
+                        navController.navigate(PriceAlerts) {
+                            popUpTo(PriceAlerts) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
             composable<Coins> {
-                CoinListScreen { coinId ->
-                    navController.navigate(Buy(coinId))
-                }
+                CoinListScreen(
+                    onCoinClicked = { coinId ->
+                        navController.navigate(Buy(coinId))
+                    },
+                    onCreateAlertClicked = { coinId ->
+                        navController.navigate(CreateAlert(coinId))
+                    }
+                )
             }
 
             composable<Buy> { navBackStackEntry ->

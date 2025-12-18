@@ -18,6 +18,12 @@ object TransactionHistory
 object Analytics
 
 @Serializable
+object PriceAlerts
+
+@Serializable
+data class CreateAlert(val coinId: String)
+
+@Serializable
 data class Buy(val coinId: String)
 
 @Serializable

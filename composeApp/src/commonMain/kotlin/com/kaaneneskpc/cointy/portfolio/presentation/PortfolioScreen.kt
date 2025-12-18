@@ -46,7 +46,8 @@ fun PortfolioScreen(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
-    onAnalyticsClicked: () -> Unit
+    onAnalyticsClicked: () -> Unit,
+    onPriceAlertsClicked: () -> Unit
 ) {
     val portfolioViewModel = koinViewModel<PortfolioViewModel>()
     val state by portfolioViewModel.state.collectAsStateWithLifecycle()
@@ -66,7 +67,8 @@ fun PortfolioScreen(
             onCoinItemClicked = onCoinItemClicked,
             onDiscoverCoinsClicked = onDiscoverCoinsClicked,
             onTransactionHistoryClicked = onTransactionHistoryClicked,
-            onAnalyticsClicked = onAnalyticsClicked
+            onAnalyticsClicked = onAnalyticsClicked,
+            onPriceAlertsClicked = onPriceAlertsClicked
         )
     }
 }
@@ -77,7 +79,8 @@ fun PortfolioContent(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
-    onAnalyticsClicked: () -> Unit
+    onAnalyticsClicked: () -> Unit,
+    onPriceAlertsClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -91,7 +94,8 @@ fun PortfolioContent(
             showBuyButton = state.showBuyButton,
             onBuyButtonClicked = onDiscoverCoinsClicked,
             onTransactionHistoryClicked = onTransactionHistoryClicked,
-            onAnalyticsClicked = onAnalyticsClicked
+            onAnalyticsClicked = onAnalyticsClicked,
+            onPriceAlertsClicked = onPriceAlertsClicked
         )
         PortfolioCoinsList(
             coins = state.coins,
@@ -108,7 +112,8 @@ private fun PortfolioBalanceSection(
     showBuyButton: Boolean,
     onBuyButtonClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
-    onAnalyticsClicked: () -> Unit
+    onAnalyticsClicked: () -> Unit,
+    onPriceAlertsClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -250,6 +255,34 @@ private fun PortfolioBalanceSection(
                         text = "Analytics",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onPriceAlertsClicked,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "Alerts",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

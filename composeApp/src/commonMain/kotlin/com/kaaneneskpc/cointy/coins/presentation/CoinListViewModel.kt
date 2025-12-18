@@ -2,6 +2,7 @@ package com.kaaneneskpc.cointy.coins.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaaneneskpc.cointy.alert.domain.CheckPriceAlertsUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinPriceHistoryUseCase
 import com.kaaneneskpc.cointy.coins.domain.GetCoinsListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class CoinListViewModel(
     private val getCoinsListUseCase: GetCoinsListUseCase,
-    private val getCoinPriceHistoryUseCase: GetCoinPriceHistoryUseCase
+    private val getCoinPriceHistoryUseCase: GetCoinPriceHistoryUseCase,
+    private val checkPriceAlertsUseCase: CheckPriceAlertsUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(CoinState())
     val state = _state
@@ -32,6 +34,8 @@ class CoinListViewModel(
     private suspend fun getAllCoins() {
         when (val coinResponse = getCoinsListUseCase.execute()) {
             is Result.Success -> {
+                val coinPrices = coinResponse.data.associate { it.coin.id to it.price }
+                checkPriceAlerts(coinPrices)
                 _state.update {
                     CoinState(
                         coins = coinResponse.data.map { coinItem ->
@@ -48,7 +52,6 @@ class CoinListViewModel(
                     )
                 }
             }
-
             is Result.Error -> {
                 _state.update {
                     it.copy(
@@ -57,6 +60,13 @@ class CoinListViewModel(
                     )
                 }
             }
+        }
+    }
+    private suspend fun checkPriceAlerts(coinPrices: Map<String, Double>) {
+        try {
+            checkPriceAlertsUseCase.execute(coinPrices)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

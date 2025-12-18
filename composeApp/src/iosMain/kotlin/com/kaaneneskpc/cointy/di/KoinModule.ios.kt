@@ -3,6 +3,9 @@ package com.kaaneneskpc.cointy.di
 import androidx.room.RoomDatabase
 import com.kaaneneskpc.cointy.core.database.getPortfolioDatabaseBuilder
 import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
+import com.kaaneneskpc.cointy.core.notification.IosNotificationService
+import com.kaaneneskpc.cointy.core.notification.NotificationManager
+import com.kaaneneskpc.cointy.core.notification.NotificationService
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.darwin.Darwin
 import org.koin.core.module.dsl.singleOf
@@ -16,5 +19,9 @@ actual val platformModule = module {
 
     //Portfolio
     singleOf(::getPortfolioDatabaseBuilder).bind<RoomDatabase.Builder<PortfolioDatabase>>()
+
+    //Notification
+    singleOf(::NotificationManager)
+    singleOf(::IosNotificationService).bind<NotificationService>()
 
 }

@@ -22,12 +22,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,17 +56,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun CoinListScreen(
     onCoinClicked: (String) -> Unit,
+    onCreateAlertClicked: (String) -> Unit = {}
 ) {
     val coinListViewModel = koinViewModel<CoinListViewModel>()
     val state by coinListViewModel.state.collectAsStateWithLifecycle()
-
     CoinListContent(
         state = state,
         onDismissChart = { coinListViewModel.onDismissChart() },
         onCoinLongPressed = { coinId -> coinListViewModel.onCoinLongPressed(coinId) },
-        onCoinClicked = onCoinClicked
+        onCoinClicked = onCoinClicked,
+        onCreateAlertClicked = onCreateAlertClicked
     )
-
 }
 
 @Composable
@@ -71,6 +75,7 @@ fun CoinListContent(
     onDismissChart: () -> Unit,
     onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit,
+    onCreateAlertClicked: (String) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
@@ -81,7 +86,6 @@ fun CoinListContent(
                 onDismiss = onDismissChart,
             )
         }
-        
         when {
             state.coins.isEmpty() && state.error == null -> {
                 Box(
@@ -101,7 +105,8 @@ fun CoinListContent(
                 CoinList(
                     coins = state.coins,
                     onCoinLongPressed = onCoinLongPressed,
-                    onCoinClicked = onCoinClicked
+                    onCoinClicked = onCoinClicked,
+                    onCreateAlertClicked = onCreateAlertClicked
                 )
             }
         }
@@ -113,6 +118,7 @@ fun CoinList(
     coins: List<UiCoinListItem>,
     onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit,
+    onCreateAlertClicked: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -156,12 +162,12 @@ fun CoinList(
                 }
             }
         }
-        
         items(coins) { coin ->
             CoinListItem(
                 coin = coin,
                 onCoinLongPressed = onCoinLongPressed,
-                onCoinClicked = onCoinClicked
+                onCoinClicked = onCoinClicked,
+                onCreateAlertClicked = onCreateAlertClicked
             )
         }
     }
@@ -173,6 +179,7 @@ private fun CoinListItem(
     coin: UiCoinListItem,
     onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit,
+    onCreateAlertClicked: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -217,9 +224,7 @@ private fun CoinListItem(
                     modifier = Modifier.size(40.dp)
                 )
             }
-            
             Spacer(modifier = Modifier.width(16.dp))
-
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -241,9 +246,19 @@ private fun CoinListItem(
                     )
                 }
             }
-            
-            Spacer(modifier = Modifier.width(12.dp))
-
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(
+                onClick = { onCreateAlertClicked(coin.id) },
+                modifier = Modifier.size(36.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Set Alert",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(4.dp))
             Column(
                 horizontalAlignment = Alignment.End,
             ) {

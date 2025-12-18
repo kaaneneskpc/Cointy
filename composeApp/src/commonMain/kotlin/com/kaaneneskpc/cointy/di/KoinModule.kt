@@ -1,6 +1,14 @@
 package com.kaaneneskpc.cointy.di
 
 import androidx.room.RoomDatabase
+import com.kaaneneskpc.cointy.alert.data.PriceAlertRepositoryImpl
+import com.kaaneneskpc.cointy.alert.domain.CheckPriceAlertsUseCase
+import com.kaaneneskpc.cointy.alert.domain.CreatePriceAlertUseCase
+import com.kaaneneskpc.cointy.alert.domain.DeletePriceAlertUseCase
+import com.kaaneneskpc.cointy.alert.domain.GetPriceAlertsUseCase
+import com.kaaneneskpc.cointy.alert.domain.PriceAlertRepository
+import com.kaaneneskpc.cointy.alert.domain.TogglePriceAlertUseCase
+import com.kaaneneskpc.cointy.alert.presentation.PriceAlertViewModel
 import com.kaaneneskpc.cointy.analytics.data.AnalyticsRepositoryImpl
 import com.kaaneneskpc.cointy.analytics.domain.AnalyticsRepository
 import com.kaaneneskpc.cointy.analytics.domain.GetPortfolioAnalyticsUseCase
@@ -68,7 +76,7 @@ val sharedModule = module {
     viewModel { AnalyticsViewModel(get()) }
 
     //CoinList
-    viewModel { CoinListViewModel(get(), get()) }
+    viewModel { CoinListViewModel(get(), get(), get()) }
     singleOf(::GetCoinsListUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
     singleOf(::GetCoinDetailsUseCase)
@@ -79,4 +87,14 @@ val sharedModule = module {
     singleOf(::SellCoinUseCase)
     viewModel { (coinId: String) -> BuyViewModel(get(), get(), get(), coinId) }
     viewModel { (coinId: String) -> SellViewModel(get(), get(), get(), coinId) }
+
+    //PriceAlert
+    single { get<PortfolioDatabase>().priceAlertDao() }
+    singleOf(::PriceAlertRepositoryImpl).bind<PriceAlertRepository>()
+    singleOf(::GetPriceAlertsUseCase)
+    singleOf(::CreatePriceAlertUseCase)
+    singleOf(::DeletePriceAlertUseCase)
+    singleOf(::TogglePriceAlertUseCase)
+    singleOf(::CheckPriceAlertsUseCase)
+    viewModel { PriceAlertViewModel(get(), get(), get(), get()) }
 }
