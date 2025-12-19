@@ -17,3 +17,4 @@ data class TransactionEntity(
     val timestamp: Long
 )
 
+

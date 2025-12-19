@@ -36,19 +36,23 @@ class CoinListViewModel(
             is Result.Success -> {
                 val coinPrices = coinResponse.data.associate { it.coin.id to it.price }
                 checkPriceAlerts(coinPrices)
+                val coinList = coinResponse.data.map { coinItem ->
+                    UiCoinListItem(
+                        id = coinItem.coin.id,
+                        symbol = coinItem.coin.symbol,
+                        name = coinItem.coin.name,
+                        iconUrl = coinItem.coin.iconUrl,
+                        formattedPrice = formatCoinPrice(coinItem.price),
+                        formattedChange = formatCoinPricePercentage(coinItem.change),
+                        isPositive = coinItem.change >= 0,
+                        price = coinItem.price,
+                        change = coinItem.change
+                    )
+                }
                 _state.update {
-                    CoinState(
-                        coins = coinResponse.data.map { coinItem ->
-                            UiCoinListItem(
-                                id = coinItem.coin.id,
-                                symbol = coinItem.coin.symbol,
-                                name = coinItem.coin.name,
-                                iconUrl = coinItem.coin.iconUrl,
-                                formattedPrice = formatCoinPrice(coinItem.price),
-                                formattedChange = formatCoinPricePercentage(coinItem.change),
-                                isPositive = coinItem.change >= 0
-                            )
-                        }
+                    it.copy(
+                        coins = coinList,
+                        filteredCoins = applyFiltersAndSort(coinList, it.searchQuery, it.filterOption, it.sortOption)
                     )
                 }
             }
@@ -56,12 +60,101 @@ class CoinListViewModel(
                 _state.update {
                     it.copy(
                         coins = emptyList(),
+                        filteredCoins = emptyList(),
                         error = coinResponse.error.toUiText()
                     )
                 }
             }
         }
     }
+
+    fun onSearchQueryChanged(query: String) {
+        _state.update { currentState ->
+            currentState.copy(
+                searchQuery = query,
+                filteredCoins = applyFiltersAndSort(
+                    currentState.coins,
+                    query,
+                    currentState.filterOption,
+                    currentState.sortOption
+                )
+            )
+        }
+    }
+
+    fun onSearchActiveChanged(isActive: Boolean) {
+        _state.update { it.copy(isSearchActive = isActive) }
+        if (!isActive) {
+            onSearchQueryChanged("")
+        }
+    }
+
+    fun onSortOptionChanged(sortOption: CoinSortOption) {
+        _state.update { currentState ->
+            currentState.copy(
+                sortOption = sortOption,
+                filteredCoins = applyFiltersAndSort(
+                    currentState.coins,
+                    currentState.searchQuery,
+                    currentState.filterOption,
+                    sortOption
+                )
+            )
+        }
+    }
+
+    fun onFilterOptionChanged(filterOption: CoinFilterOption) {
+        _state.update { currentState ->
+            currentState.copy(
+                filterOption = filterOption,
+                filteredCoins = applyFiltersAndSort(
+                    currentState.coins,
+                    currentState.searchQuery,
+                    filterOption,
+                    currentState.sortOption
+                )
+            )
+        }
+    }
+
+    private fun applyFiltersAndSort(
+        coins: List<UiCoinListItem>,
+        searchQuery: String,
+        filterOption: CoinFilterOption,
+        sortOption: CoinSortOption
+    ): List<UiCoinListItem> {
+        return coins
+            .filter { coin -> matchesSearchQuery(coin, searchQuery) }
+            .filter { coin -> matchesFilterOption(coin, filterOption) }
+            .let { filteredList -> applySortOption(filteredList, sortOption) }
+    }
+
+    private fun matchesSearchQuery(coin: UiCoinListItem, query: String): Boolean {
+        if (query.isBlank()) return true
+        val lowerQuery = query.lowercase()
+        return coin.name.lowercase().contains(lowerQuery) ||
+                coin.symbol.lowercase().contains(lowerQuery)
+    }
+
+    private fun matchesFilterOption(coin: UiCoinListItem, filterOption: CoinFilterOption): Boolean {
+        return when (filterOption) {
+            CoinFilterOption.ALL -> true
+            CoinFilterOption.GAINERS -> coin.isPositive
+            CoinFilterOption.LOSERS -> !coin.isPositive
+        }
+    }
+
+    private fun applySortOption(coins: List<UiCoinListItem>, sortOption: CoinSortOption): List<UiCoinListItem> {
+        return when (sortOption) {
+            CoinSortOption.NAME_ASC -> coins.sortedBy { it.name.lowercase() }
+            CoinSortOption.NAME_DESC -> coins.sortedByDescending { it.name.lowercase() }
+            CoinSortOption.PRICE_ASC -> coins.sortedBy { it.price }
+            CoinSortOption.PRICE_DESC -> coins.sortedByDescending { it.price }
+            CoinSortOption.CHANGE_ASC -> coins.sortedBy { it.change }
+            CoinSortOption.CHANGE_DESC -> coins.sortedByDescending { it.change }
+        }
+    }
+
     private suspend fun checkPriceAlerts(coinPrices: Map<String, Double>) {
         try {
             checkPriceAlertsUseCase.execute(coinPrices)
@@ -79,7 +172,6 @@ class CoinListViewModel(
                 )
             )
         }
-
         viewModelScope.launch {
             when (val priceHistory = getCoinPriceHistoryUseCase.execute(coinId)) {
                 is Result.Success -> {
@@ -94,7 +186,6 @@ class CoinListViewModel(
                         )
                     }
                 }
-
                 is Result.Error -> {
                     _state.update { state ->
                         state.copy(

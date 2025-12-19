@@ -39,7 +39,7 @@ To provide a secure and user-friendly platform that makes it easy for users to t
   - `GET /coin/{coinId}/history` - Cryptocurrency price history
 
 ### 2.3 Database Schema
-**PortfolioDatabase (Version 3)**
+**PortfolioDatabase (Version 4)**
 - **PortfolioCoinEntity:** Cryptocurrencies owned by the user
   - coinId (Primary Key)
   - name, symbol, iconUrl
@@ -59,6 +59,16 @@ To provide a secure and user-friendly platform that makes it easy for users to t
   - amountInUnit (amount in coin units)
   - price (coin price at transaction time)
   - timestamp (transaction time)
+
+- **PriceAlertEntity:** User's price alerts
+  - id (Primary Key, autoGenerate)
+  - coinId, coinName, coinSymbol, coinIconUrl
+  - targetPrice (target price for alert)
+  - condition (String: "ABOVE" or "BELOW")
+  - isEnabled (alert active status)
+  - isTriggered (whether alert has been triggered)
+  - createdAt (creation timestamp)
+  - triggeredAt (trigger timestamp, nullable)
 
 ---
 
@@ -358,6 +368,7 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 3. If "Discover Coins" button is tapped → Goes to coin list screen
 4. If "History" button is tapped → Goes to transaction history screen
 5. If "Analytics" button is tapped → Goes to portfolio analytics screen
+6. If "Alerts" button is tapped → Goes to price alerts screen
 
 ### 4.3 Coin Discovery and Purchase Flow
 1. All coins are displayed on coin list screen
@@ -398,6 +409,21 @@ To provide a secure and user-friendly platform that makes it easy for users to t
    - Transaction statistics are displayed
    - Individual coin performances are listed
 3. If back button is tapped → Returns to portfolio screen
+
+### 4.7 Price Alert Creation Flow
+1. "Alerts" button is tapped on portfolio screen
+2. On price alerts screen:
+   - All alerts are listed
+   - Alerts can be enabled/disabled via toggle
+   - Alerts can be deleted
+3. If "+" FAB is tapped → Goes to coin list screen
+4. On coin list screen, if bell icon is tapped → Goes to create alert screen
+5. On create alert screen:
+   - Coin information and current price is displayed
+   - Alert condition is selected (Above/Below)
+   - Target price is entered
+   - "Create Alert" button is tapped
+6. After successful creation → Returns to price alerts screen
 
 ---
 
@@ -544,11 +570,63 @@ composeApp/src/
 
 ---
 
+### 3.10 Price Alerts and Notifications
+**Purpose:** For users to set price alerts on cryptocurrencies and receive notifications when target prices are reached.
+
+**Features:**
+- **Price Alert Management:**
+  - Create price alerts for any cryptocurrency
+  - Set target price with condition (Above/Below)
+  - View all created alerts
+  - Enable/disable alerts
+  - Delete alerts
+  - Track triggered alerts
+
+- **Alert Creation:**
+  - Select coin from coin list
+  - Set target price
+  - Choose condition (price goes above or below)
+  - View current price while creating
+
+- **Notifications:**
+  - Platform-specific notifications (Android: NotificationCompat, iOS: UNUserNotificationCenter)
+  - Notification permission handling
+  - Alert triggered notifications with coin details
+
+**Technical Details:**
+- `PriceAlertEntity` - Database entity for alerts
+- `PriceAlertDao` - Database Access Object
+- `PriceAlertRepository` - Repository interface and implementation
+- `CreatePriceAlertUseCase` - Create new alert
+- `GetPriceAlertsUseCase` - Get all/active/by coin alerts
+- `DeletePriceAlertUseCase` - Delete alert
+- `TogglePriceAlertUseCase` - Enable/disable alert
+- `CheckPriceAlertsUseCase` - Check and trigger alerts
+- `PriceAlertViewModel` - State management with StateFlow
+- `PriceAlertScreen` - Alert list Compose UI
+- `CreateAlertScreen` - Alert creation Compose UI
+- `NotificationService` - Platform abstraction for notifications
+- `NotificationManager` - Permission and channel management
+
+**Alert Models:**
+- `PriceAlertModel` - Domain model containing:
+  - id, coinId, coinName, coinSymbol, coinIconUrl
+  - targetPrice: Target price for alert
+  - condition: ABOVE or BELOW
+  - isEnabled: Alert active status
+  - isTriggered: Whether alert has been triggered
+  - createdAt, triggeredAt: Timestamps
+
+- `AlertCondition` - Enum for alert conditions:
+  - ABOVE: Trigger when price goes above target
+  - BELOW: Trigger when price goes below target
+
+---
+
 ## 10. Future Enhancements
 
 ### 10.1 Suggested Features
 - **Notifications:**
-  - Price alerts
   - Portfolio value change notifications
   
 - **Multiple Currency Support:**
@@ -591,6 +669,31 @@ composeApp/src/
 ├── commonMain/
 │   └── kotlin/com/kaaneneskpc/cointy/
 │       ├── App.kt                    # Main application entry point
+│       ├── alert/                    # Price alerts module
+│       │   ├── data/                 # Data layer
+│       │   │   ├── local/
+│       │   │   │   ├── PriceAlertDao.kt
+│       │   │   │   └── PriceAlertEntity.kt
+│       │   │   ├── mapper/
+│       │   │   │   └── PriceAlertMapper.kt
+│       │   │   └── PriceAlertRepositoryImpl.kt
+│       │   ├── domain/               # Domain layer
+│       │   │   ├── model/
+│       │   │   │   ├── AlertCondition.kt
+│       │   │   │   └── PriceAlertModel.kt
+│       │   │   ├── CheckPriceAlertsUseCase.kt
+│       │   │   ├── CreatePriceAlertUseCase.kt
+│       │   │   ├── DeletePriceAlertUseCase.kt
+│       │   │   ├── GetPriceAlertsUseCase.kt
+│       │   │   ├── PriceAlertRepository.kt
+│       │   │   └── TogglePriceAlertUseCase.kt
+│       │   └── presentation/         # Presentation layer
+│       │       ├── component/
+│       │       │   └── CreateAlertDialog.kt
+│       │       ├── CreateAlertScreen.kt
+│       │       ├── PriceAlertScreen.kt
+│       │       ├── PriceAlertState.kt
+│       │       └── PriceAlertViewModel.kt
 │       ├── analytics/                # Portfolio analytics module
 │       │   ├── data/                 # Data layer
 │       │   │   └── AnalyticsRepositoryImpl.kt
@@ -618,6 +721,9 @@ composeApp/src/
 │       │   ├── domain/
 │       │   ├── navigation/
 │       │   ├── network/
+│       │   ├── notification/
+│       │   │   ├── NotificationManager.kt
+│       │   │   └── NotificationService.kt
 │       │   └── util/
 │       ├── di/                       # Dependency Injection (Koin)
 │       ├── portfolio/                # Portfolio management module
@@ -650,7 +756,7 @@ composeApp/src/
 
 - **Version Code:** 1
 - **Version Name:** 1.0
-- **Database Version:** 3
+- **Database Version:** 4
 - **Kotlin Version:** 2.0.21
 - **Compose Multiplatform:** 1.7.0
 

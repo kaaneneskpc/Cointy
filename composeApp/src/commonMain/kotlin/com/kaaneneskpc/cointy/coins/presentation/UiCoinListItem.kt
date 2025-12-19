@@ -8,4 +8,6 @@ data class UiCoinListItem(
     val formattedPrice: String,
     val formattedChange: String,
     val isPositive: Boolean,
-    )
+    val price: Double = 0.0,
+    val change: Double = 0.0
+)

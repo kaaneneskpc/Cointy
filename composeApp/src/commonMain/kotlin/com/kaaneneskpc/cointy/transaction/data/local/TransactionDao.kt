@@ -18,3 +18,4 @@ interface TransactionDao {
     fun getTransactionsByCoinId(coinId: String): Flow<List<TransactionEntity>>
 }
 
+

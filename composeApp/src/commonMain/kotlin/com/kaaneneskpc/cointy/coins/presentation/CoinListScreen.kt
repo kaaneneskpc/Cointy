@@ -1,8 +1,14 @@
 package com.kaaneneskpc.cointy.coins.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,28 +26,44 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -65,7 +87,11 @@ fun CoinListScreen(
         onDismissChart = { coinListViewModel.onDismissChart() },
         onCoinLongPressed = { coinId -> coinListViewModel.onCoinLongPressed(coinId) },
         onCoinClicked = onCoinClicked,
-        onCreateAlertClicked = onCreateAlertClicked
+        onCreateAlertClicked = onCreateAlertClicked,
+        onSearchQueryChanged = { coinListViewModel.onSearchQueryChanged(it) },
+        onSearchActiveChanged = { coinListViewModel.onSearchActiveChanged(it) },
+        onSortOptionChanged = { coinListViewModel.onSortOptionChanged(it) },
+        onFilterOptionChanged = { coinListViewModel.onFilterOptionChanged(it) }
     )
 }
 
@@ -75,7 +101,11 @@ fun CoinListContent(
     onDismissChart: () -> Unit,
     onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit,
-    onCreateAlertClicked: (String) -> Unit
+    onCreateAlertClicked: (String) -> Unit,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearchActiveChanged: (Boolean) -> Unit,
+    onSortOptionChanged: (CoinSortOption) -> Unit,
+    onFilterOptionChanged: (CoinFilterOption) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
@@ -102,14 +132,222 @@ fun CoinListContent(
                 ErrorContent(error = state.error)
             }
             else -> {
-                CoinList(
-                    coins = state.coins,
+                CoinListWithSearch(
+                    state = state,
                     onCoinLongPressed = onCoinLongPressed,
                     onCoinClicked = onCoinClicked,
-                    onCreateAlertClicked = onCreateAlertClicked
+                    onCreateAlertClicked = onCreateAlertClicked,
+                    onSearchQueryChanged = onSearchQueryChanged,
+                    onSearchActiveChanged = onSearchActiveChanged,
+                    onSortOptionChanged = onSortOptionChanged,
+                    onFilterOptionChanged = onFilterOptionChanged
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CoinListWithSearch(
+    state: CoinState,
+    onCoinLongPressed: (String) -> Unit,
+    onCoinClicked: (String) -> Unit,
+    onCreateAlertClicked: (String) -> Unit,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearchActiveChanged: (Boolean) -> Unit,
+    onSortOptionChanged: (CoinSortOption) -> Unit,
+    onFilterOptionChanged: (CoinFilterOption) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CoinSearchBar(
+            searchQuery = state.searchQuery,
+            isSearchActive = state.isSearchActive,
+            onSearchQueryChanged = onSearchQueryChanged,
+            onSearchActiveChanged = onSearchActiveChanged
+        )
+        CoinFilterSection(
+            selectedFilter = state.filterOption,
+            selectedSort = state.sortOption,
+            onFilterOptionChanged = onFilterOptionChanged,
+            onSortOptionChanged = onSortOptionChanged
+        )
+        CoinList(
+            coins = state.filteredCoins,
+            onCoinLongPressed = onCoinLongPressed,
+            onCoinClicked = onCoinClicked,
+            onCreateAlertClicked = onCreateAlertClicked
+        )
+    }
+}
+
+@Composable
+private fun CoinSearchBar(
+    searchQuery: String,
+    isSearchActive: Boolean,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearchActiveChanged: (Boolean) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding() + 16.dp,
+                start = 20.dp,
+                end = 20.dp,
+                bottom = 8.dp
+            )
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = {
+                onSearchQueryChanged(it)
+                if (!isSearchActive && it.isNotEmpty()) {
+                    onSearchActiveChanged(true)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(
+                    text = "Search coins...",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            },
+            trailingIcon = {
+                AnimatedVisibility(
+                    visible = searchQuery.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(onClick = {
+                        onSearchQueryChanged("")
+                        onSearchActiveChanged(false)
+                        keyboardController?.hide()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Clear search",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() })
+        )
+    }
+}
+
+@Composable
+private fun CoinFilterSection(
+    selectedFilter: CoinFilterOption,
+    selectedSort: CoinSortOption,
+    onFilterOptionChanged: (CoinFilterOption) -> Unit,
+    onSortOptionChanged: (CoinSortOption) -> Unit
+) {
+    var isSortMenuExpanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            CoinFilterOption.entries.forEach { filterOption ->
+                FilterChip(
+                    selected = selectedFilter == filterOption,
+                    onClick = { onFilterOptionChanged(filterOption) },
+                    label = {
+                        Text(
+                            text = getFilterOptionLabel(filterOption),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = if (selectedFilter == filterOption) FontWeight.Bold else FontWeight.Normal
+                        )
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = LocalCoinRoutineColorsPalette.current.profitGreen.copy(alpha = 0.2f),
+                        selectedLabelColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box {
+                FilterChip(
+                    selected = true,
+                    onClick = { isSortMenuExpanded = true },
+                    label = {
+                        Text(
+                            text = "Sort: ${getSortOptionLabel(selectedSort)}",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+                DropdownMenu(
+                    expanded = isSortMenuExpanded,
+                    onDismissRequest = { isSortMenuExpanded = false }
+                ) {
+                    CoinSortOption.entries.forEach { sortOption ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = getSortOptionLabel(sortOption),
+                                    fontWeight = if (selectedSort == sortOption) FontWeight.Bold else FontWeight.Normal
+                                )
+                            },
+                            onClick = {
+                                onSortOptionChanged(sortOption)
+                                isSortMenuExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun getFilterOptionLabel(option: CoinFilterOption): String {
+    return when (option) {
+        CoinFilterOption.ALL -> "All"
+        CoinFilterOption.GAINERS -> "Gainers 📈"
+        CoinFilterOption.LOSERS -> "Losers 📉"
+    }
+}
+
+private fun getSortOptionLabel(option: CoinSortOption): String {
+    return when (option) {
+        CoinSortOption.NAME_ASC -> "Name A-Z"
+        CoinSortOption.NAME_DESC -> "Name Z-A"
+        CoinSortOption.PRICE_ASC -> "Price ↑"
+        CoinSortOption.PRICE_DESC -> "Price ↓"
+        CoinSortOption.CHANGE_ASC -> "Change ↑"
+        CoinSortOption.CHANGE_DESC -> "Change ↓"
     }
 }
 
@@ -120,10 +358,40 @@ fun CoinList(
     onCoinClicked: (String) -> Unit,
     onCreateAlertClicked: (String) -> Unit
 ) {
+    if (coins.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(32.dp)
+            ) {
+                Text(
+                    text = "🔍",
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "No coins found",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Try adjusting your search or filters",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            }
+        }
+        return
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
-            top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding() + 8.dp,
+            top = 16.dp,
             bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 8.dp,
             start = 20.dp,
             end = 20.dp
@@ -131,38 +399,30 @@ fun CoinList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "🔥",
-                        style = MaterialTheme.typography.displaySmall,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Column {
-                        Text(
-                            text = "Top Coins",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "${coins.size} cryptocurrencies",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        )
-                    }
-                }
+                Text(
+                    text = "🔥",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "Top Coins",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "${coins.size} coins",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
             }
         }
-        items(coins) { coin ->
+        items(coins, key = { it.id }) { coin ->
             CoinListItem(
                 coin = coin,
                 onCoinLongPressed = onCoinLongPressed,
