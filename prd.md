@@ -369,6 +369,19 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 4. If "History" button is tapped → Goes to transaction history screen
 5. If "Analytics" button is tapped → Goes to portfolio analytics screen
 6. If "Alerts" button is tapped → Goes to price alerts screen
+7. If settings icon is tapped → Goes to settings screen
+
+### 4.8 Settings and Theme Change Flow
+1. Settings icon is tapped on portfolio screen (top-right corner)
+2. On settings screen:
+   - Current theme selection is displayed
+   - Three theme options are available:
+     - System Default (follows device theme)
+     - Light Mode (always light)
+     - Dark Mode (always dark)
+3. User taps desired theme option
+4. Theme changes immediately without app restart
+5. If back button is tapped → Returns to portfolio screen
 
 ### 4.3 Coin Discovery and Purchase Flow
 1. All coins are displayed on coin list screen
@@ -501,6 +514,8 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 - Custom theme (`CointyTheme`)
 - Custom color palette (`CointyColors`)
 - Typography system (`Font`)
+- Dark mode support with dedicated color schemes
+- Dynamic theme switching (Light/Dark/System)
 
 ### 8.2 User Experience
 - Loading states (skeleton screens or progress indicators)
@@ -570,7 +585,41 @@ composeApp/src/
 
 ---
 
-### 3.10 Price Alerts and Notifications
+### 3.10 Settings and Dark Mode
+**Purpose:** To allow users to customize their app experience with theme preferences.
+
+**Features:**
+- **Theme Selection:**
+  - System Default: Follow device theme settings
+  - Light Mode: Always use light theme
+  - Dark Mode: Always use dark theme
+  - Real-time theme switching without app restart
+
+- **Settings Screen:**
+  - Accessible from Portfolio screen via settings icon
+  - Clean and intuitive theme selection UI
+  - Visual feedback for selected theme option
+
+**Technical Details:**
+- `ThemeMode` - Enum for theme options (LIGHT, DARK, SYSTEM)
+- `SettingsRepository` - Repository interface for settings
+- `SettingsDataSource` - Data source interface for theme preferences
+- `InMemorySettingsDataSource` - In-memory implementation for theme storage
+- `SettingsRepositoryImpl` - Repository implementation
+- `SettingsViewModel` - State management with StateFlow
+- `SettingsScreen` - Settings Compose UI
+- `SettingsState` - UI state data class
+
+**Theme Implementation:**
+- `CointyTheme` - Updated to accept ThemeMode parameter
+- Dynamic color scheme switching based on theme preference
+- Support for system theme detection via `isSystemInDarkTheme()`
+- Consistent color palette for both light and dark themes
+- Custom profit/loss colors for both themes
+
+---
+
+### 3.11 Price Alerts and Notifications
 **Purpose:** For users to set price alerts on cryptocurrencies and receive notifications when target prices are reached.
 
 **Features:**
@@ -641,9 +690,6 @@ composeApp/src/
   - Filtering by price, change, and other criteria
   - Transaction history filtering (by coin, date, type)
   
-- **Dark Mode:**
-  - Dark theme support
-  
 - **Offline Mode:**
   - Work without internet
   - Work with cached data
@@ -658,6 +704,10 @@ composeApp/src/
   - Comparison with market benchmarks
   - Risk analysis metrics
   - Investment recommendations
+
+- **Persistent Theme Storage:**
+  - Save theme preference to local storage
+  - Restore theme preference on app launch
 
 ---
 
@@ -730,6 +780,19 @@ composeApp/src/
 │       │   ├── data/
 │       │   ├── domain/
 │       │   └── presentation/
+│       ├── settings/                 # Settings and theme module
+│       │   ├── data/                 # Data layer
+│       │   │   ├── InMemorySettingsDataSource.kt
+│       │   │   ├── SettingsDataSource.kt
+│       │   │   └── SettingsRepositoryImpl.kt
+│       │   ├── domain/               # Domain layer
+│       │   │   ├── model/
+│       │   │   │   └── ThemeMode.kt
+│       │   │   └── SettingsRepository.kt
+│       │   └── presentation/         # Presentation layer
+│       │       ├── SettingsScreen.kt
+│       │       ├── SettingsState.kt
+│       │       └── SettingsViewModel.kt
 │       ├── theme/                    # UI theme and styles
 │       ├── trade/                    # Buy/sell module
 │       │   ├── domain/
@@ -801,4 +864,4 @@ composeApp/src/
 ---
 
 **Last Updated:** 2025
-**Documentation Version:** 1.1
+**Documentation Version:** 1.2

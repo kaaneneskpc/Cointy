@@ -34,6 +34,7 @@
 - 🔍 **Search & Filter**: Find coins quickly with powerful search and filtering
 - 📊 **Analytics**: Detailed portfolio analytics with charts and statistics
 - 🎨 **Modern UI**: Beautiful Material Design 3 interface with smooth animations
+- 🌙 **Dark Mode**: Full dark mode support with system, light, and dark theme options
 - 💾 **Offline Support**: Local database for offline access to your portfolio
 
 ## ✨ Features
@@ -109,6 +110,13 @@
   - Search transactions by coin name
   - Filter by transaction type
   - Sort by date or amount
+
+- **🌙 Dark Mode & Settings**
+  - Three theme options: System, Light, Dark
+  - Real-time theme switching
+  - Accessible from Portfolio screen
+  - Consistent design across all themes
+  - Optimized colors for both light and dark modes
 
 ## 🛠 Tech Stack
 
@@ -189,6 +197,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   ├── analytics/               # Portfolio analytics
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
+│   │   ├── settings/                # Settings and theme preferences
 │   │   ├── theme/                   # UI theme and styles
 │   │   └── trade/                   # Buy/Sell functionality
 │   ├── androidMain/                 # Android-specific code
@@ -376,6 +385,14 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
     - Track portfolio history over time
     - See individual coin performance
 
+11. **Customize Theme**
+    - Tap the settings icon (⚙️) on the Portfolio screen
+    - Choose your preferred theme:
+      - System Default: Follows your device settings
+      - Light Mode: Always use light theme
+      - Dark Mode: Always use dark theme
+    - Theme changes apply immediately
+
 ## 🧪 Testing
 
 Run unit tests:
@@ -405,6 +422,7 @@ Run instrumentation tests (Android):
 - **`transaction`**: Transaction history with search and filter
 - **`analytics`**: Portfolio analytics and charts
 - **`alert`**: Price alerts and notifications
+- **`settings`**: Settings and theme preferences (dark mode)
 - **`biometric`**: Platform-specific biometric authentication
 - **`core`**: Shared utilities, database, network, and notification services
 - **`theme`**: UI theming and design system
@@ -422,7 +440,9 @@ Biometric → Portfolio → Coins → Buy
                 │
                 ├── Analytics
                 │
-                └── Price Alerts
+                ├── Price Alerts
+                │
+                └── Settings (Theme)
 ```
 
 ## 🔒 Security
@@ -484,7 +504,7 @@ Contributions are what make the open-source community such an amazing place to l
 - [x] Price alerts and notifications
 - [x] Portfolio analytics and charts
 - [x] Search and filter functionality
-- [ ] Dark mode support
+- [x] Dark mode support
 - [ ] Multi-currency support (USD, EUR, TRY, etc.)
 - [ ] Export portfolio data
 - [ ] Cloud sync
