@@ -30,6 +30,9 @@
 - 💼 **Portfolio Management**: Track your investments with detailed performance metrics
 - 📈 **Price Charts**: Visualize price trends with interactive sparkline charts
 - 💰 **Virtual Trading**: Practice buying and selling cryptocurrencies without real money
+- 🔔 **Price Alerts**: Set alerts for price targets and get notified
+- 🔍 **Search & Filter**: Find coins quickly with powerful search and filtering
+- 📊 **Analytics**: Detailed portfolio analytics with charts and statistics
 - 🎨 **Modern UI**: Beautiful Material Design 3 interface with smooth animations
 - 💾 **Offline Support**: Local database for offline access to your portfolio
 
@@ -74,6 +77,38 @@
   - Automatic balance updates on transactions
   - Initial balance setup
   - Real-time balance display
+
+- **🔔 Price Alerts & Notifications**
+  - Create price alerts for any cryptocurrency
+  - Set target price with condition (Above/Below)
+  - Enable/disable alerts with toggle
+  - Platform-native notifications (Android/iOS)
+  - Track triggered alerts history
+  - Automatic alert checking on coin list refresh
+
+- **🔍 Search & Filter**
+  - Real-time coin search by name or symbol
+  - Filter coins by performance (All, Gainers, Losers)
+  - Sort coins by name, price, or 24h change
+  - Transaction history search and filtering
+  - Filter transactions by type (Buy/Sell)
+  - Sort transactions by date or amount
+
+- **📊 Portfolio Analytics**
+  - Total portfolio value and profit/loss summary
+  - Interactive pie chart for coin distribution
+  - Portfolio history line chart with trends
+  - Transaction statistics (total, buy, sell counts)
+  - Individual coin performance tracking
+  - Color-coded profit/loss indicators
+
+- **📜 Transaction History**
+  - Complete buy/sell transaction records
+  - Chronological transaction listing
+  - Detailed transaction information
+  - Search transactions by coin name
+  - Filter by transaction type
+  - Sort by date or amount
 
 ## 🛠 Tech Stack
 
@@ -147,9 +182,13 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   │   ├── domain/              # Core domain models
 │   │   │   ├── navigation/          # Navigation routes
 │   │   │   ├── network/             # Network configuration
+│   │   │   ├── notification/        # Notification services
 │   │   │   └── util/                # Utility functions
 │   │   ├── di/                      # Dependency injection
 │   │   ├── portfolio/               # Portfolio management
+│   │   ├── analytics/               # Portfolio analytics
+│   │   ├── transaction/             # Transaction history
+│   │   ├── alert/                   # Price alerts
 │   │   ├── theme/                   # UI theme and styles
 │   │   └── trade/                   # Buy/Sell functionality
 │   ├── androidMain/                 # Android-specific code
@@ -173,6 +212,13 @@ The app follows **Clean Architecture** principles with clear separation of conce
   - `GetCoinPriceHistoryUseCase`
   - `BuyCoinUseCase`
   - `SellCoinUseCase`
+  - `GetTransactionHistoryUseCase`
+  - `GetPortfolioAnalyticsUseCase`
+  - `CreatePriceAlertUseCase`
+  - `GetPriceAlertsUseCase`
+  - `DeletePriceAlertUseCase`
+  - `TogglePriceAlertUseCase`
+  - `CheckPriceAlertsUseCase`
 - **Repository Interfaces**: Data abstraction
 - **Domain Models**: Core business entities
 
@@ -185,9 +231,11 @@ The app follows **Clean Architecture** principles with clear separation of conce
 
 ### Database Schema
 
-**PortfolioDatabase (Version 2)**
+**PortfolioDatabase (Version 4)**
 - `PortfolioCoinEntity`: User's cryptocurrency holdings
 - `UserBalanceEntity`: User's cash balance
+- `TransactionEntity`: Buy/sell transaction records
+- `PriceAlertEntity`: User's price alerts
 
 ## 🚀 Getting Started
 
@@ -300,6 +348,33 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
    - View historical price trends
    - Dismiss the chart by tapping outside
 
+7. **Search & Filter Coins**
+   - Use the search bar to find coins by name or symbol
+   - Filter by performance: All, Gainers, or Losers
+   - Sort by name, price, or 24h change
+   - Results update in real-time as you type
+
+8. **Set Price Alerts**
+   - Tap the bell icon on any coin in the discovery list
+   - Set target price and condition (Above/Below)
+   - Manage alerts from the Alerts screen
+   - Enable/disable alerts with toggle
+   - Receive notifications when price targets are hit
+
+9. **View Transaction History**
+   - Access from the Portfolio screen
+   - Search transactions by coin name
+   - Filter by type: All, Buy, or Sell
+   - Sort by date or amount
+   - View detailed transaction information
+
+10. **View Portfolio Analytics**
+    - Access from the Portfolio screen
+    - View profit/loss summary
+    - Explore coin distribution pie chart
+    - Track portfolio history over time
+    - See individual coin performance
+
 ## 🧪 Testing
 
 Run unit tests:
@@ -323,19 +398,30 @@ Run instrumentation tests (Android):
 
 ### Key Modules
 
-- **`coins`**: Coin discovery and listing functionality
+- **`coins`**: Coin discovery, listing, search and filter functionality
 - **`portfolio`**: Portfolio management and tracking
 - **`trade`**: Buy and sell transaction logic
+- **`transaction`**: Transaction history with search and filter
+- **`analytics`**: Portfolio analytics and charts
+- **`alert`**: Price alerts and notifications
 - **`biometric`**: Platform-specific biometric authentication
-- **`core`**: Shared utilities, database, and network configuration
+- **`core`**: Shared utilities, database, network, and notification services
 - **`theme`**: UI theming and design system
 
 ### Navigation Flow
 
 ```
 Biometric → Portfolio → Coins → Buy
-                ↓
-              Sell
+                │         │
+                │         └── Create Alert
+                │
+                ├── Sell
+                │
+                ├── Transaction History
+                │
+                ├── Analytics
+                │
+                └── Price Alerts
 ```
 
 ## 🔒 Security
@@ -393,15 +479,15 @@ Contributions are what make the open-source community such an amazing place to l
 - [x] Price charts
 - [x] Biometric authentication
 - [x] Local database persistence
-- [ ] Dark mode support
-- [ ] Multi-currency support (USD, EUR, TRY, etc.)
 - [x] Transaction history
 - [x] Price alerts and notifications
 - [x] Portfolio analytics and charts
+- [x] Search and filter functionality
+- [ ] Dark mode support
+- [ ] Multi-currency support (USD, EUR, TRY, etc.)
 - [ ] Export portfolio data
 - [ ] Cloud sync
 - [ ] Favorites/watchlist
-- [ ] Search and filter functionality
 - [ ] Multi-language support
 
 ## 📄 License
