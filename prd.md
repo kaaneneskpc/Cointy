@@ -371,17 +371,33 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 6. If "Alerts" button is tapped → Goes to price alerts screen
 7. If settings icon is tapped → Goes to settings screen
 
-### 4.8 Settings and Theme Change Flow
+### 4.8 Settings and Personalization Flow
 1. Settings icon is tapped on portfolio screen (top-right corner)
 2. On settings screen:
-   - Current theme selection is displayed
-   - Three theme options are available:
-     - System Default (follows device theme)
-     - Light Mode (always light)
-     - Dark Mode (always dark)
-3. User taps desired theme option
-4. Theme changes immediately without app restart
-5. If back button is tapped → Returns to portfolio screen
+   - **Profile Section:**
+     - User profile card is displayed with avatar and name
+     - Tap to edit profile opens dialog
+     - Enter first name and last name
+     - Save to update profile
+   - **General Section:**
+     - Language selection (English/Turkish)
+     - Currency selection (USD/EUR/TRY/GBP)
+     - Expandable cards for selection
+   - **Appearance Section:**
+     - Three theme options are available:
+       - System Default (follows device theme)
+       - Light Mode (always light)
+       - Dark Mode (always dark)
+   - **Notifications Section:**
+     - General notifications toggle
+     - Price alerts toggle
+   - **About Section:**
+     - Version information
+     - Terms of Service, Privacy Policy, Rate App links
+3. User taps desired option
+4. Changes apply immediately without app restart
+5. Language change updates all UI texts instantly
+6. If back button is tapped → Returns to portfolio screen
 
 ### 4.3 Coin Discovery and Purchase Flow
 1. All coins are displayed on coin list screen
@@ -585,30 +601,73 @@ composeApp/src/
 
 ---
 
-### 3.10 Settings and Dark Mode
-**Purpose:** To allow users to customize their app experience with theme preferences.
+### 3.10 Settings and Personalization
+**Purpose:** To allow users to customize their app experience with comprehensive settings including profile, theme, language, and notification preferences.
 
 **Features:**
+- **User Profile:**
+  - Profile photo display (avatar with initials)
+  - First name and last name fields
+  - Edit profile dialog
+  - Profile section with visual feedback
+
+- **Language Selection (Multi-language Support):**
+  - English language support
+  - Turkish language support (Türkçe)
+  - Real-time language switching without app restart
+  - All UI texts change dynamically based on selected language
+  - Localization system with StringResources
+
 - **Theme Selection:**
   - System Default: Follow device theme settings
   - Light Mode: Always use light theme
   - Dark Mode: Always use dark theme
   - Real-time theme switching without app restart
 
+- **Currency Selection:**
+  - USD (US Dollar)
+  - EUR (Euro)
+  - TRY (Turkish Lira)
+  - GBP (British Pound)
+  - Expandable selection card
+
+- **Notification Settings:**
+  - General notifications toggle
+  - Price alerts toggle (disabled when general notifications are off)
+  - Visual feedback for toggle states
+
+- **About Section:**
+  - Version information
+  - Terms of Service link
+  - Privacy Policy link
+  - Rate App link
+
 - **Settings Screen:**
   - Accessible from Portfolio screen via settings icon
-  - Clean and intuitive theme selection UI
-  - Visual feedback for selected theme option
+  - Clean and intuitive UI with sections
+  - Scrollable content for all settings
+  - Visual feedback for selected options
 
 **Technical Details:**
 - `ThemeMode` - Enum for theme options (LIGHT, DARK, SYSTEM)
-- `SettingsRepository` - Repository interface for settings
-- `SettingsDataSource` - Data source interface for theme preferences
-- `InMemorySettingsDataSource` - In-memory implementation for theme storage
+- `Language` - Enum for language options (ENGLISH, TURKISH)
+- `Currency` - Enum for currency options (USD, EUR, TRY, GBP)
+- `UserProfile` - Data class for user profile (firstName, lastName, profilePhotoUri)
+- `SettingsRepository` - Repository interface for all settings
+- `SettingsDataSource` - Data source interface for settings preferences
+- `InMemorySettingsDataSource` - In-memory implementation for settings storage
 - `SettingsRepositoryImpl` - Repository implementation
 - `SettingsViewModel` - State management with StateFlow
-- `SettingsScreen` - Settings Compose UI
-- `SettingsState` - UI state data class
+- `SettingsScreen` - Settings Compose UI with multiple sections
+- `SettingsState` - UI state data class with all settings fields
+
+**Localization System:**
+- `StringResources` - Data class containing all UI strings
+- `EnglishStrings` - English language strings
+- `TurkishStrings` - Turkish language strings
+- `LocalStringResources` - CompositionLocal for string access
+- `ProvideStringResources` - Composable wrapper for language context
+- `getStringResources()` - Function to get strings by language
 
 **Theme Implementation:**
 - `CointyTheme` - Updated to accept ThemeMode parameter
@@ -616,6 +675,22 @@ composeApp/src/
 - Support for system theme detection via `isSystemInDarkTheme()`
 - Consistent color palette for both light and dark themes
 - Custom profit/loss colors for both themes
+
+**Settings Models:**
+- `Language` - Enum with code and displayName:
+  - ENGLISH: "en", "English"
+  - TURKISH: "tr", "Türkçe"
+
+- `Currency` - Enum with code, symbol, and displayName:
+  - USD: "$", "US Dollar"
+  - EUR: "€", "Euro"
+  - TRY: "₺", "Turkish Lira"
+  - GBP: "£", "British Pound"
+
+- `UserProfile` - Data class:
+  - firstName: User's first name
+  - lastName: User's last name
+  - profilePhotoUri: Optional profile photo URI
 
 ---
 
@@ -678,9 +753,6 @@ composeApp/src/
 - **Notifications:**
   - Portfolio value change notifications
   
-- **Multiple Currency Support:**
-  - Different currencies like USD, EUR, TRY
-  
 - **Favorites:**
   - Add coins to favorites
   - Favorite coin list
@@ -705,9 +777,14 @@ composeApp/src/
   - Risk analysis metrics
   - Investment recommendations
 
-- **Persistent Theme Storage:**
-  - Save theme preference to local storage
-  - Restore theme preference on app launch
+- **Persistent Settings Storage:**
+  - Save all settings to local storage
+  - Restore settings on app launch
+  - Cloud sync for settings
+
+- **Additional Languages:**
+  - German, French, Spanish support
+  - RTL language support (Arabic, Hebrew)
 
 ---
 
@@ -780,19 +857,25 @@ composeApp/src/
 │       │   ├── data/
 │       │   ├── domain/
 │       │   └── presentation/
-│       ├── settings/                 # Settings and theme module
+│       ├── settings/                 # Settings and personalization module
 │       │   ├── data/                 # Data layer
 │       │   │   ├── InMemorySettingsDataSource.kt
 │       │   │   ├── SettingsDataSource.kt
 │       │   │   └── SettingsRepositoryImpl.kt
 │       │   ├── domain/               # Domain layer
 │       │   │   ├── model/
-│       │   │   │   └── ThemeMode.kt
+│       │   │   │   ├── Currency.kt
+│       │   │   │   ├── Language.kt
+│       │   │   │   ├── ThemeMode.kt
+│       │   │   │   └── UserProfile.kt
 │       │   │   └── SettingsRepository.kt
 │       │   └── presentation/         # Presentation layer
 │       │       ├── SettingsScreen.kt
 │       │       ├── SettingsState.kt
 │       │       └── SettingsViewModel.kt
+│       ├── core/
+│       │   ├── localization/         # Multi-language support
+│       │   │   └── StringResources.kt
 │       ├── theme/                    # UI theme and styles
 │       ├── trade/                    # Buy/sell module
 │       │   ├── domain/
@@ -864,4 +947,4 @@ composeApp/src/
 ---
 
 **Last Updated:** 2025
-**Documentation Version:** 1.2
+**Documentation Version:** 1.3

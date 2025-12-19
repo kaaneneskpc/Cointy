@@ -118,6 +118,29 @@
   - Consistent design across all themes
   - Optimized colors for both light and dark modes
 
+- **👤 User Profile**
+  - Profile photo display with avatar initials
+  - First name and last name management
+  - Edit profile dialog
+  - Personalized user experience
+
+- **🌐 Multi-Language Support**
+  - English language support
+  - Turkish language support (Türkçe)
+  - Real-time language switching
+  - All UI texts update dynamically
+
+- **💱 Currency Selection**
+  - USD (US Dollar)
+  - EUR (Euro)
+  - TRY (Turkish Lira)
+  - GBP (British Pound)
+
+- **🔔 Notification Settings**
+  - General notifications toggle
+  - Price alerts notification toggle
+  - Granular notification control
+
 ## 🛠 Tech Stack
 
 ### Multiplatform & Language
@@ -197,7 +220,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   ├── analytics/               # Portfolio analytics
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
-│   │   ├── settings/                # Settings and theme preferences
+│   │   ├── settings/                # Settings and personalization (profile, language, theme)
 │   │   ├── theme/                   # UI theme and styles
 │   │   └── trade/                   # Buy/Sell functionality
 │   ├── androidMain/                 # Android-specific code
@@ -385,13 +408,27 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
     - Track portfolio history over time
     - See individual coin performance
 
-11. **Customize Theme**
+11. **Customize Settings**
     - Tap the settings icon (⚙️) on the Portfolio screen
-    - Choose your preferred theme:
+    - **Edit Profile:**
+      - Tap the profile section
+      - Enter your first name and last name
+      - Save to update your profile
+    - **Change Language:**
+      - Tap Language section
+      - Choose English or Turkish (Türkçe)
+      - All app texts update immediately
+    - **Select Currency:**
+      - Tap Currency section
+      - Choose from USD, EUR, TRY, or GBP
+    - **Choose Theme:**
       - System Default: Follows your device settings
       - Light Mode: Always use light theme
       - Dark Mode: Always use dark theme
-    - Theme changes apply immediately
+    - **Manage Notifications:**
+      - Toggle general notifications on/off
+      - Toggle price alert notifications on/off
+    - All changes apply immediately without app restart
 
 ## 🧪 Testing
 
@@ -422,7 +459,7 @@ Run instrumentation tests (Android):
 - **`transaction`**: Transaction history with search and filter
 - **`analytics`**: Portfolio analytics and charts
 - **`alert`**: Price alerts and notifications
-- **`settings`**: Settings and theme preferences (dark mode)
+- **`settings`**: Settings and personalization (profile, language, theme, currency, notifications)
 - **`biometric`**: Platform-specific biometric authentication
 - **`core`**: Shared utilities, database, network, and notification services
 - **`theme`**: UI theming and design system
@@ -505,11 +542,15 @@ Contributions are what make the open-source community such an amazing place to l
 - [x] Portfolio analytics and charts
 - [x] Search and filter functionality
 - [x] Dark mode support
-- [ ] Multi-currency support (USD, EUR, TRY, etc.)
+- [x] Multi-currency support (USD, EUR, TRY, GBP)
 - [ ] Export portfolio data
 - [ ] Cloud sync
 - [x] Favorites/watchlist
-- [ ] Multi-language support
+- [x] Multi-language support (English, Turkish)
+- [x] User profile management
+- [x] Notification settings
+- [ ] Persistent settings storage
+- [ ] Additional languages (German, French, Spanish)
 
 ## 📄 License
 
