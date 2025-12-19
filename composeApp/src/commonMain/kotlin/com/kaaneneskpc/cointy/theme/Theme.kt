@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.kaaneneskpc.cointy.settings.domain.model.ThemeMode
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryLight,
@@ -85,12 +86,17 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 internal fun CointyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
+    val isSystemDark = isSystemInDarkTheme()
+    val darkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemDark
+    }
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val cointyColorsPalette = if (darkTheme) DarkCoinRoutineColorsPalette else LightCoinRoutineColorsPalette
-
     CompositionLocalProvider(
         LocalCoinRoutineColorsPalette provides cointyColorsPalette,
     ) {

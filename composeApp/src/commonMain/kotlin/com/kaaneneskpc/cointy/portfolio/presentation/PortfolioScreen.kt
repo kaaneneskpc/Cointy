@@ -18,11 +18,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +51,8 @@ fun PortfolioScreen(
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
-    onPriceAlertsClicked: () -> Unit
+    onPriceAlertsClicked: () -> Unit,
+    onSettingsClicked: () -> Unit
 ) {
     val portfolioViewModel = koinViewModel<PortfolioViewModel>()
     val state by portfolioViewModel.state.collectAsStateWithLifecycle()
@@ -68,7 +73,8 @@ fun PortfolioScreen(
             onDiscoverCoinsClicked = onDiscoverCoinsClicked,
             onTransactionHistoryClicked = onTransactionHistoryClicked,
             onAnalyticsClicked = onAnalyticsClicked,
-            onPriceAlertsClicked = onPriceAlertsClicked
+            onPriceAlertsClicked = onPriceAlertsClicked,
+            onSettingsClicked = onSettingsClicked
         )
     }
 }
@@ -80,7 +86,8 @@ fun PortfolioContent(
     onDiscoverCoinsClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
-    onPriceAlertsClicked: () -> Unit
+    onPriceAlertsClicked: () -> Unit,
+    onSettingsClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -95,7 +102,8 @@ fun PortfolioContent(
             onBuyButtonClicked = onDiscoverCoinsClicked,
             onTransactionHistoryClicked = onTransactionHistoryClicked,
             onAnalyticsClicked = onAnalyticsClicked,
-            onPriceAlertsClicked = onPriceAlertsClicked
+            onPriceAlertsClicked = onPriceAlertsClicked,
+            onSettingsClicked = onSettingsClicked
         )
         PortfolioCoinsList(
             coins = state.coins,
@@ -113,7 +121,8 @@ private fun PortfolioBalanceSection(
     onBuyButtonClicked: () -> Unit,
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
-    onPriceAlertsClicked: () -> Unit
+    onPriceAlertsClicked: () -> Unit,
+    onSettingsClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -128,6 +137,18 @@ private fun PortfolioBalanceSection(
             )
             .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
+        IconButton(
+            onClick = onSettingsClicked,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
