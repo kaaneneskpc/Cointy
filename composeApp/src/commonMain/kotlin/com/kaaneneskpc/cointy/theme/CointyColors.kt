@@ -27,3 +27,9 @@ val DarkCoinRoutineColorsPalette = CoinRoutineColorsPalette(
 )
 
 val LocalCoinRoutineColorsPalette = compositionLocalOf { CoinRoutineColorsPalette() }
+
+object CointyColors {
+    val Primary = Color(0xFF485F84)
+    val Profit = ProfitGreenColor
+    val Loss = LossRedColor
+}

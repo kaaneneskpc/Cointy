@@ -52,7 +52,20 @@ data class StringResources(
     val tapToEdit: String,
     val profileUpdated: String,
     val enterFirstName: String,
-    val enterLastName: String
+    val enterLastName: String,
+    val exportData: String,
+    val exportPortfolio: String,
+    val exportFormat: String,
+    val exportCsv: String,
+    val exportJson: String,
+    val exportButton: String,
+    val exportSuccess: String,
+    val exportError: String,
+    val exportPreview: String,
+    val exportCoinsCount: String,
+    val exportTransactionsCount: String,
+    val exportFileSaved: String,
+    val exportSelectFormat: String
 )
 
 val EnglishStrings = StringResources(
@@ -102,7 +115,20 @@ val EnglishStrings = StringResources(
     tapToEdit = "Tap to edit",
     profileUpdated = "Profile updated",
     enterFirstName = "Enter first name",
-    enterLastName = "Enter last name"
+    enterLastName = "Enter last name",
+    exportData = "Export Data",
+    exportPortfolio = "Export Portfolio",
+    exportFormat = "Export Format",
+    exportCsv = "CSV",
+    exportJson = "JSON",
+    exportButton = "Export",
+    exportSuccess = "Export Successful",
+    exportError = "Export Failed",
+    exportPreview = "Export Preview",
+    exportCoinsCount = "Portfolio Coins",
+    exportTransactionsCount = "Transactions",
+    exportFileSaved = "File saved to Downloads",
+    exportSelectFormat = "Select export format"
 )
 
 val TurkishStrings = StringResources(
@@ -152,7 +178,20 @@ val TurkishStrings = StringResources(
     tapToEdit = "Düzenlemek için dokunun",
     profileUpdated = "Profil güncellendi",
     enterFirstName = "Adınızı girin",
-    enterLastName = "Soyadınızı girin"
+    enterLastName = "Soyadınızı girin",
+    exportData = "Veri Dışa Aktar",
+    exportPortfolio = "Portföyü Dışa Aktar",
+    exportFormat = "Dışa Aktarma Formatı",
+    exportCsv = "CSV",
+    exportJson = "JSON",
+    exportButton = "Dışa Aktar",
+    exportSuccess = "Dışa Aktarma Başarılı",
+    exportError = "Dışa Aktarma Başarısız",
+    exportPreview = "Dışa Aktarma Önizleme",
+    exportCoinsCount = "Portföy Coinleri",
+    exportTransactionsCount = "İşlemler",
+    exportFileSaved = "Dosya İndirilenler'e kaydedildi",
+    exportSelectFormat = "Dışa aktarma formatı seçin"
 )
 
 fun getStringResources(language: Language): StringResources {

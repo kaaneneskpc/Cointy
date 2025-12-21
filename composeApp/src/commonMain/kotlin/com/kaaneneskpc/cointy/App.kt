@@ -26,6 +26,8 @@ import com.kaaneneskpc.cointy.core.navigation.Coins
 import com.kaaneneskpc.cointy.core.navigation.Portfolio
 import com.kaaneneskpc.cointy.core.navigation.Sell
 import com.kaaneneskpc.cointy.core.navigation.TransactionHistory
+import com.kaaneneskpc.cointy.core.navigation.Export
+import com.kaaneneskpc.cointy.export.presentation.ExportScreen
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioScreen
 import com.kaaneneskpc.cointy.settings.presentation.SettingsScreen
 import com.kaaneneskpc.cointy.settings.presentation.SettingsViewModel
@@ -72,6 +74,9 @@ fun App() {
                         },
                         onSettingsClicked = {
                             navController.navigate(Settings)
+                        },
+                        onExportClicked = {
+                            navController.navigate(Export)
                         }
                     )
                 }
@@ -149,6 +154,13 @@ fun App() {
                             navController.navigate(Portfolio) {
                                 popUpTo(Portfolio) { inclusive = true }
                             }
+                        }
+                    )
+                }
+                composable<Export> {
+                    ExportScreen(
+                        onNavigateBack = {
+                            navController.popBackStack()
                         }
                     )
                 }

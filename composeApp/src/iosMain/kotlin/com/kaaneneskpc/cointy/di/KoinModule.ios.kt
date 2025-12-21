@@ -3,6 +3,8 @@ package com.kaaneneskpc.cointy.di
 import androidx.room.RoomDatabase
 import com.kaaneneskpc.cointy.core.database.getPortfolioDatabaseBuilder
 import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
+import com.kaaneneskpc.cointy.core.export.FileExporter
+import com.kaaneneskpc.cointy.core.export.IosFileExporter
 import com.kaaneneskpc.cointy.core.notification.IosNotificationService
 import com.kaaneneskpc.cointy.core.notification.NotificationManager
 import com.kaaneneskpc.cointy.core.notification.NotificationService
@@ -13,15 +15,13 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual val platformModule = module {
-
     //Core
     single <HttpClientEngine>{ Darwin.create() }
-
     //Portfolio
     singleOf(::getPortfolioDatabaseBuilder).bind<RoomDatabase.Builder<PortfolioDatabase>>()
-
     //Notification
     singleOf(::NotificationManager)
     singleOf(::IosNotificationService).bind<NotificationService>()
-
+    //Export
+    singleOf(::IosFileExporter).bind<FileExporter>()
 }

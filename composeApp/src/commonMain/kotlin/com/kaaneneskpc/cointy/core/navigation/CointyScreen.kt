@@ -31,3 +31,6 @@ data class Sell(val coinId: String)
 
 @Serializable
 object Settings
+
+@Serializable
+object Export

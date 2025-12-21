@@ -52,7 +52,8 @@ fun PortfolioScreen(
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
     onPriceAlertsClicked: () -> Unit,
-    onSettingsClicked: () -> Unit
+    onSettingsClicked: () -> Unit,
+    onExportClicked: () -> Unit = {}
 ) {
     val portfolioViewModel = koinViewModel<PortfolioViewModel>()
     val state by portfolioViewModel.state.collectAsStateWithLifecycle()
@@ -74,7 +75,8 @@ fun PortfolioScreen(
             onTransactionHistoryClicked = onTransactionHistoryClicked,
             onAnalyticsClicked = onAnalyticsClicked,
             onPriceAlertsClicked = onPriceAlertsClicked,
-            onSettingsClicked = onSettingsClicked
+            onSettingsClicked = onSettingsClicked,
+            onExportClicked = onExportClicked
         )
     }
 }
@@ -87,7 +89,8 @@ fun PortfolioContent(
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
     onPriceAlertsClicked: () -> Unit,
-    onSettingsClicked: () -> Unit
+    onSettingsClicked: () -> Unit,
+    onExportClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -103,7 +106,8 @@ fun PortfolioContent(
             onTransactionHistoryClicked = onTransactionHistoryClicked,
             onAnalyticsClicked = onAnalyticsClicked,
             onPriceAlertsClicked = onPriceAlertsClicked,
-            onSettingsClicked = onSettingsClicked
+            onSettingsClicked = onSettingsClicked,
+            onExportClicked = onExportClicked
         )
         PortfolioCoinsList(
             coins = state.coins,
@@ -122,7 +126,8 @@ private fun PortfolioBalanceSection(
     onTransactionHistoryClicked: () -> Unit,
     onAnalyticsClicked: () -> Unit,
     onPriceAlertsClicked: () -> Unit,
-    onSettingsClicked: () -> Unit
+    onSettingsClicked: () -> Unit,
+    onExportClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -307,29 +312,52 @@ private fun PortfolioBalanceSection(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                if (showBuyButton) {
-                    Button(
-                        onClick = onBuyButtonClicked,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp)
-                            .shadow(
-                                elevation = 6.dp,
-                                shape = RoundedCornerShape(12.dp)
-                            ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                Button(
+                    onClick = onExportClicked,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(12.dp)
                         ),
-                        shape = RoundedCornerShape(12.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                    ) {
-                        Text(
-                            text = "Buy",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "Export",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            if (showBuyButton) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = onBuyButtonClicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .shadow(
+                            elevation = 6.dp,
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "Buy",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }

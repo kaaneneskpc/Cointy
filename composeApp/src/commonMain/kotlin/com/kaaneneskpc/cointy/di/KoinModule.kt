@@ -22,6 +22,11 @@ import com.kaaneneskpc.cointy.coins.presentation.CoinListViewModel
 import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
 import com.kaaneneskpc.cointy.core.database.portfolio.getPortfolioDatabase
 import com.kaaneneskpc.cointy.core.network.HttpClientFactory
+import com.kaaneneskpc.cointy.export.data.ExportRepositoryImpl
+import com.kaaneneskpc.cointy.export.domain.ExportPortfolioDataUseCase
+import com.kaaneneskpc.cointy.export.domain.ExportRepository
+import com.kaaneneskpc.cointy.export.domain.GetExportDataUseCase
+import com.kaaneneskpc.cointy.export.presentation.ExportViewModel
 import com.kaaneneskpc.cointy.portfolio.data.PortfolioRepositoryImpl
 import com.kaaneneskpc.cointy.portfolio.domain.PortfolioRepository
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioViewModel
@@ -106,4 +111,9 @@ val sharedModule = module {
     singleOf(::InMemorySettingsDataSource).bind<SettingsDataSource>()
     singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
     viewModel { SettingsViewModel(get()) }
+    //Export
+    single<ExportRepository> { ExportRepositoryImpl(get(), get(), get()) }
+    singleOf(::GetExportDataUseCase)
+    singleOf(::ExportPortfolioDataUseCase)
+    viewModel { ExportViewModel(get(), get()) }
 }
