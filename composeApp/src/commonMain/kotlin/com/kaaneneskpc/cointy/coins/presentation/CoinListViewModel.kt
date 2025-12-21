@@ -168,6 +168,7 @@ class CoinListViewModel(
             it.copy(
                 chartState = UiChartState(
                     sparkLine = emptyList(),
+                    timestamps = emptyList(),
                     isLoading = true,
                 )
             )
@@ -175,13 +176,16 @@ class CoinListViewModel(
         viewModelScope.launch {
             when (val priceHistory = getCoinPriceHistoryUseCase.execute(coinId)) {
                 is Result.Success -> {
+                    val sortedHistory = priceHistory.data.sortedBy { it.timestamp }
+                    val coin = _state.value.coins.find { it.id == coinId }
                     _state.update { state ->
                         state.copy(
                             chartState = UiChartState(
-                                sparkLine = priceHistory.data.sortedBy { it.timestamp }
-                                    .map { it.price },
+                                sparkLine = sortedHistory.map { it.price },
+                                timestamps = sortedHistory.map { it.timestamp },
                                 isLoading = false,
-                                coinName = _state.value.coins.find { it.id == coinId }?.name.orEmpty()
+                                coinName = coin?.name.orEmpty(),
+                                coinSymbol = coin?.symbol.orEmpty()
                             )
                         )
                     }
@@ -191,8 +195,10 @@ class CoinListViewModel(
                         state.copy(
                             chartState = UiChartState(
                                 sparkLine = emptyList(),
+                                timestamps = emptyList(),
                                 isLoading = false,
-                                coinName = ""
+                                coinName = "",
+                                coinSymbol = ""
                             )
                         )
                     }

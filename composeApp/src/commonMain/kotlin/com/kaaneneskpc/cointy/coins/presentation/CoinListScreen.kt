@@ -62,13 +62,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.kaaneneskpc.cointy.coins.presentation.component.CoinChart
+import com.kaaneneskpc.cointy.coins.presentation.component.ChartDataPoint
+import com.kaaneneskpc.cointy.coins.presentation.component.TradingViewChart
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
+import kotlinx.datetime.Clock
 import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.jetbrains.compose.resources.StringResource
@@ -596,8 +599,8 @@ fun CoinChartDialog(
     val colors = LocalCoinRoutineColorsPalette.current
     val isPositive = uiChartState.sparkLine.isNotEmpty() && 
                      uiChartState.sparkLine.last() > uiChartState.sparkLine.first()
-    
     val currentPrice = uiChartState.sparkLine.lastOrNull() ?: 0.0
+    val openPrice = uiChartState.sparkLine.firstOrNull() ?: 0.0
     val minPrice = uiChartState.sparkLine.minOrNull() ?: 0.0
     val maxPrice = uiChartState.sparkLine.maxOrNull() ?: 0.0
     val priceChange = if (uiChartState.sparkLine.isNotEmpty()) {
@@ -606,28 +609,96 @@ fun CoinChartDialog(
     val priceChangePercent = if (uiChartState.sparkLine.isNotEmpty() && uiChartState.sparkLine.first() != 0.0) {
         (priceChange / uiChartState.sparkLine.first()) * 100
     } else 0.0
-    
+    val chartDataPoints = remember(uiChartState.sparkLine, uiChartState.timestamps) {
+        if (uiChartState.timestamps.size == uiChartState.sparkLine.size) {
+            uiChartState.sparkLine.zip(uiChartState.timestamps).map { (price, timestamp) ->
+                ChartDataPoint(price = price, timestamp = timestamp)
+            }
+        } else {
+            val currentTimestamp = Clock.System.now().epochSeconds
+            uiChartState.sparkLine.mapIndexed { index, price ->
+                ChartDataPoint(price = price, timestamp = currentTimestamp - (uiChartState.sparkLine.size - index) * 3600)
+            }
+        }
+    }
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(24.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(16.dp),
+        containerColor = Color(0xFF1E222D),
         title = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = uiChartState.coinName,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "24h Price Chart",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = uiChartState.coinName,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        if (uiChartState.coinSymbol.isNotEmpty()) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color(0xFF2A2E39))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = uiChartState.coinSymbol.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFF787B86)
+                                )
+                            }
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Color(0xFF2A2E39))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "24H",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2962FF)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = formatCoinPrice(currentPrice),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                if (isPositive) colors.profitGreen.copy(alpha = 0.2f)
+                                else colors.lossRed.copy(alpha = 0.2f)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "${if (isPositive) "+" else ""}${formatCoinPricePercentage(priceChangePercent)}",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isPositive) colors.profitGreen else colors.lossRed
+                        )
+                    }
+                }
             }
         },
         text = {
@@ -635,7 +706,8 @@ fun CoinChartDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp),
+                        .height(380.dp)
+                        .background(Color(0xFF131722)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(
@@ -644,12 +716,12 @@ fun CoinChartDialog(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(48.dp),
-                            color = colors.profitGreen
+                            color = Color(0xFF2962FF)
                         )
                         Text(
                             text = "Loading chart data...",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            color = Color(0xFF787B86)
                         )
                     }
                 }
@@ -657,7 +729,8 @@ fun CoinChartDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp),
+                        .height(380.dp)
+                        .background(Color(0xFF131722)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(
@@ -671,136 +744,57 @@ fun CoinChartDialog(
                         Text(
                             text = "No chart data available",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            color = Color(0xFF787B86)
                         )
                     }
                 }
             } else {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Card(
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(12.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "Current",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = "$${formatCoinPrice(currentPrice)}",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        }
-
-                        Card(
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (isPositive) {
-                                    colors.profitGreen.copy(alpha = 0.15f)
-                                } else {
-                                    colors.lossRed.copy(alpha = 0.15f)
-                                }
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(12.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "24h Change",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = formatCoinPricePercentage(priceChangePercent),
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isPositive) colors.profitGreen else colors.lossRed
-                                )
-                            }
-                        }
+                        TradingViewPriceInfo(label = "O", value = openPrice, color = Color(0xFF787B86))
+                        TradingViewPriceInfo(label = "H", value = maxPrice, color = colors.profitGreen)
+                        TradingViewPriceInfo(label = "L", value = minPrice, color = colors.lossRed)
+                        TradingViewPriceInfo(label = "C", value = currentPrice, color = if (isPositive) colors.profitGreen else colors.lossRed)
                     }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(
-                                text = "Low:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                            Text(
-                                text = formatCoinPrice(minPrice),
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Medium,
-                                color = colors.lossRed
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(
-                                text = "High:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                            Text(
-                                text = formatCoinPrice(maxPrice),
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Medium,
-                                color = colors.profitGreen
-                            )
-                        }
-                    }
-
-                    Card(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(280.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            .height(320.dp)
+                            .clip(RoundedCornerShape(8.dp))
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        ) {
-                            CoinChart(
-                                modifier = Modifier.fillMaxSize(),
-                                nodes = uiChartState.sparkLine,
-                                profitColor = colors.profitGreen,
-                                lossColor = colors.lossRed,
-                            )
-                        }
+                        TradingViewChart(
+                            modifier = Modifier.fillMaxSize(),
+                            dataPoints = chartDataPoints,
+                            profitColor = colors.profitGreen,
+                            lossColor = colors.lossRed,
+                            backgroundColor = Color(0xFF131722),
+                            gridColor = Color(0xFF2A2E39),
+                            textColor = Color(0xFF787B86),
+                            crosshairColor = Color(0xFF9598A1)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        TradingViewStatItem(
+                            label = "24h Volume",
+                            value = formatVolumeDisplay(maxPrice - minPrice),
+                            valueColor = Color.White
+                        )
+                        TradingViewStatItem(
+                            label = "24h Range",
+                            value = "${formatCompactPrice(minPrice)} - ${formatCompactPrice(maxPrice)}",
+                            valueColor = Color.White
+                        )
                     }
                 }
             }
@@ -809,18 +803,84 @@ fun CoinChartDialog(
         dismissButton = {
             Button(
                 onClick = onDismiss,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = Color(0xFF2962FF)
                 ),
                 modifier = Modifier.padding(horizontal = 4.dp)
             ) {
                 Text(
                     text = "Close",
                     style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
                 )
             }
         }
     )
+}
+
+@Composable
+private fun TradingViewPriceInfo(
+    label: String,
+    value: Double,
+    color: Color
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color(0xFF787B86)
+        )
+        Text(
+            text = formatCompactPrice(value),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Medium,
+            color = color
+        )
+    }
+}
+
+@Composable
+private fun TradingViewStatItem(
+    label: String,
+    value: String,
+    valueColor: Color
+) {
+    Column(horizontalAlignment = Alignment.Start) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color(0xFF787B86)
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Medium,
+            color = valueColor
+        )
+    }
+}
+
+private fun formatCompactPrice(price: Double): String {
+    return when {
+        price >= 10000 -> formatCoinPrice(price)
+        price >= 1000 -> formatCoinPrice(price)
+        price >= 100 -> formatCoinPrice(price)
+        price >= 1 -> formatCoinPrice(price)
+        price >= 0.01 -> formatCoinPrice(price)
+        else -> formatCoinPrice(price)
+    }
+}
+
+private fun formatVolumeDisplay(range: Double): String {
+    return when {
+        range >= 1000000 -> formatCoinPrice(range / 1000000)
+        range >= 1000 -> formatCoinPrice(range / 1000)
+        else -> formatCoinPrice(range)
+    }
 }

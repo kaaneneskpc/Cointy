@@ -33,6 +33,8 @@ data class CoinState(
 @Stable
 data class UiChartState(
     val sparkLine: List<Double> = emptyList(),
+    val timestamps: List<Long> = emptyList(),
     val isLoading: Boolean = false,
     val coinName: String = "",
+    val coinSymbol: String = "",
 )
