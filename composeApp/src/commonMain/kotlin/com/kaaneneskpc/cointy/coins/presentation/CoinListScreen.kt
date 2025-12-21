@@ -692,7 +692,7 @@ fun CoinChartDialog(
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = "${if (isPositive) "+" else ""}${formatCoinPricePercentage(priceChangePercent)}",
+                            text = formatCoinPricePercentage(priceChangePercent),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = if (isPositive) colors.profitGreen else colors.lossRed
@@ -792,7 +792,7 @@ fun CoinChartDialog(
                         )
                         TradingViewStatItem(
                             label = "24h Range",
-                            value = "${formatCompactPrice(minPrice)} - ${formatCompactPrice(maxPrice)}",
+                            value = "${formatCoinPrice(minPrice)} - ${formatCoinPrice(maxPrice)}",
                             valueColor = Color.White
                         )
                     }
@@ -836,7 +836,7 @@ private fun TradingViewPriceInfo(
             color = Color(0xFF787B86)
         )
         Text(
-            text = formatCompactPrice(value),
+            text = formatCoinPrice(value),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Medium,
             color = color
@@ -866,21 +866,10 @@ private fun TradingViewStatItem(
     }
 }
 
-private fun formatCompactPrice(price: Double): String {
-    return when {
-        price >= 10000 -> formatCoinPrice(price)
-        price >= 1000 -> formatCoinPrice(price)
-        price >= 100 -> formatCoinPrice(price)
-        price >= 1 -> formatCoinPrice(price)
-        price >= 0.01 -> formatCoinPrice(price)
-        else -> formatCoinPrice(price)
-    }
-}
-
 private fun formatVolumeDisplay(range: Double): String {
     return when {
-        range >= 1000000 -> formatCoinPrice(range / 1000000)
-        range >= 1000 -> formatCoinPrice(range / 1000)
+        range >= 1000000 -> "${formatCoinPrice(range / 1000000)}M"
+        range >= 1000 -> "${formatCoinPrice(range / 1000)}K"
         else -> formatCoinPrice(range)
     }
 }
