@@ -555,13 +555,11 @@ Contributions are what make the open-source community such an amazing place to l
 - [x] Search and filter functionality
 - [x] Dark mode support
 - [x] Multi-currency support (USD, EUR, TRY, GBP)
-- [ ] Export portfolio data
-- [ ] Cloud sync
+- [x] Export portfolio data
 - [x] Favorites/watchlist
 - [x] Multi-language support (English, Turkish)
 - [x] User profile management
 - [x] Notification settings
-- [ ] Persistent settings storage
 - [ ] Additional languages (German, French, Spanish)
 
 ## 📄 License
