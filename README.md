@@ -51,7 +51,7 @@
 - 🔐 **Secure**: Biometric authentication for enhanced security
 - 📊 **Real-Time Data**: Live cryptocurrency prices and market data via CoinRanking API
 - 💼 **Portfolio Management**: Track your investments with detailed performance metrics
-- 📈 **Price Charts**: Visualize price trends with interactive sparkline charts
+- 📈 **Price Charts**: Professional TradingView-style charts with interactive crosshair
 - 💰 **Virtual Trading**: Practice buying and selling cryptocurrencies without real money
 - 🔔 **Price Alerts**: Set alerts for price targets and get notified
 - 🔍 **Search & Filter**: Find coins quickly with powerful search and filtering
@@ -84,10 +84,17 @@
   - Automatic average purchase price calculation (DCA)
   - Insufficient funds validation
 
-- **Price Charts**
-  - Interactive sparkline charts
-  - Historical price data visualization
-  - Track price trends over time
+- **Price Charts (TradingView Style)**
+  - Professional TradingView-style dark theme charts
+  - Interactive crosshair for precise price tracking
+  - OHLC (Open, High, Low, Close) data display
+  - Animated chart line drawing with smooth transitions
+  - Gradient fill under the price line
+  - Price axis with dynamic labels on the right
+  - Time axis with HH:mm format at the bottom
+  - Current price indicator with colored badge
+  - 24h price change percentage display
+  - Touch and drag gesture support
   - Quick access via long-press gesture
 
 - **Biometric Security**
@@ -229,6 +236,8 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   │   │   └── UseCases         # Business logic
 │   │   │   └── presentation/        # Presentation layer
 │   │   │       ├── component/       # UI components
+│   │   │       │   ├── CoinChart.kt          # Legacy sparkline chart
+│   │   │       │   └── TradingViewChart.kt   # TradingView-style chart
 │   │   │       └── ViewModels       # State management
 │   │   ├── core/                    # Core modules
 │   │   │   ├── biometric/           # Biometric abstraction
@@ -376,10 +385,14 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
    - Tap "Sell" to complete the transaction
    - Your portfolio and cash balance will update automatically
 
-6. **View Price Charts**
+6. **View Price Charts (TradingView Style)**
    - Long-press any coin in the discovery list
-   - View historical price trends
-   - Dismiss the chart by tapping outside
+   - View professional TradingView-style chart with dark theme
+   - See OHLC (Open, High, Low, Close) values at the top
+   - Touch and drag to show interactive crosshair
+   - View precise price and time at crosshair position
+   - Check 24h price change and range statistics
+   - Dismiss the chart by tapping "Close" button
 
 7. **Search & Filter Coins**
    - Use the search bar to find coins by name or symbol

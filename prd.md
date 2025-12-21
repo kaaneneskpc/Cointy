@@ -195,19 +195,72 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 ---
 
-### 3.6 Price Charts
-**Purpose:** For users to visualize cryptocurrency price trends.
+### 3.6 Price Charts (TradingView Style)
+**Purpose:** For users to visualize cryptocurrency price trends with professional-grade charting similar to TradingView.
 
 **Features:**
-- Sparkline chart display
-- Open chart with long press in coin list
-- Time-based price data
-- Loading and error states
+- **TradingView-Style Chart Display:**
+  - Professional dark theme interface (#131722 background)
+  - Interactive crosshair for precise price tracking
+  - Animated chart line drawing with smooth transitions
+  - Gradient fill under the price line
+  - Bezier curve smoothing for data points
+
+- **Price Axis (Right Side):**
+  - Dynamic price labels
+  - Current price indicator with colored badge
+  - Dashed horizontal price lines
+
+- **Time Axis (Bottom):**
+  - Time labels in HH:mm format
+  - Dashed vertical grid lines
+  - Automatic time interval calculation
+
+- **OHLC Data Display:**
+  - Open (O) - Opening price
+  - High (H) - Highest price (green)
+  - Low (L) - Lowest price (red)
+  - Close (C) - Current/closing price
+
+- **Interactive Features:**
+  - Touch and drag to show crosshair
+  - Real-time price and time display on crosshair
+  - Tap to dismiss crosshair
+
+- **Chart Statistics:**
+  - 24h price change percentage with color coding
+  - 24h price range (Low - High)
+  - Volume indicator
+
+- **Visual Indicators:**
+  - Green color for positive price movement
+  - Red color for negative price movement
+  - Current price dashed line
 
 **Technical Details:**
-- `CoinChart` - Compose chart component
+- `TradingViewChart` - Main chart Compose component with Canvas drawing
+- `ChartDataPoint` - Data class for price and timestamp
+- `CoinChart` - Legacy sparkline chart component (still available)
 - `GetCoinPriceHistoryUseCase` - Fetch price history from API
+- `UiChartState` - Extended state with timestamps and coin symbol
 - Timestamp-based data sorting
+- Crosshair position tracking with gesture detection
+- Animation using `Animatable` with `FastOutSlowInEasing`
+
+**UI Components:**
+- `TradingViewChart` - Full-featured TradingView-style chart
+- `CrosshairInfoBar` - Price and time display when crosshair is active
+- `TradingViewPriceInfo` - OHLC price display component
+- `TradingViewStatItem` - Statistics display component
+
+**Color Scheme (TradingView Dark Theme):**
+- Background: #131722
+- Grid: #2A2E39
+- Text: #787B86
+- Crosshair: #9598A1
+- Accent Blue: #2962FF
+- Profit Green: Theme profitGreen
+- Loss Red: Theme lossRed
 
 ---
 
@@ -842,6 +895,12 @@ composeApp/src/
 │       │   ├── data/                 # Data layer
 │       │   ├── domain/               # Domain layer
 │       │   └── presentation/         # Presentation layer
+│       │       ├── component/
+│       │       │   ├── CoinChart.kt          # Legacy sparkline chart
+│       │       │   └── TradingViewChart.kt   # TradingView-style chart
+│       │       ├── CoinListScreen.kt
+│       │       ├── CoinListViewModel.kt
+│       │       └── CoinState.kt
 │       ├── core/                     # Core utilities and abstractions
 │       │   ├── biometric/
 │       │   ├── database/
