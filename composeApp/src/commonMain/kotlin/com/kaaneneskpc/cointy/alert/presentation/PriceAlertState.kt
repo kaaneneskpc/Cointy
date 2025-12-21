@@ -3,7 +3,9 @@ package com.kaaneneskpc.cointy.alert.presentation
 import com.kaaneneskpc.cointy.alert.domain.model.AlertCondition
 import com.kaaneneskpc.cointy.alert.domain.model.PriceAlertModel
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
+import kotlinx.datetime.Instant.Companion.fromEpochMilliseconds
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 
 data class PriceAlertState(
     val alerts: List<UiPriceAlertItem> = emptyList(),
@@ -49,8 +51,8 @@ fun PriceAlertModel.toUiItem(): UiPriceAlertItem {
 }
 
 private fun formatTimestamp(timestamp: Long): String {
-    val date = kotlinx.datetime.Instant.fromEpochMilliseconds(timestamp)
-        .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+    val date = fromEpochMilliseconds(timestamp)
+        .toLocalDateTime(currentSystemDefault())
     return "${date.dayOfMonth}/${date.monthNumber}/${date.year} ${date.hour}:${date.minute.toString().padStart(2, '0')}"
 }
 

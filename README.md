@@ -58,6 +58,7 @@
 - 🎨 **Modern UI**: Beautiful Material Design 3 interface with smooth animations
 - 🌙 **Dark Mode**: Full dark mode support with system, light, and dark theme options
 - 💾 **Offline Support**: Local database for offline access to your portfolio
+- 📤 **Export Data**: Export portfolio and transactions to CSV or JSON
 
 ## ✨ Features
 
@@ -139,6 +140,15 @@
   - Search transactions by coin name
   - Filter by transaction type
   - Sort by date or amount
+
+- **📤 Export Portfolio Data**
+  - Export to CSV format for spreadsheet compatibility
+  - Export to JSON format for data interchange
+  - Portfolio holdings with performance data
+  - Complete transaction history
+  - Export preview with statistics
+  - Android: Saves to Downloads folder
+  - iOS: Saves to Documents folder (Files app)
 
 - **🌙 Dark Mode & Settings**
   - Three theme options: System, Light, Dark
@@ -251,6 +261,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   ├── analytics/               # Portfolio analytics
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
+│   │   ├── export/                  # Export portfolio data (CSV/JSON)
 │   │   ├── settings/                # Settings and personalization (profile, language, theme)
 │   │   ├── theme/                   # UI theme and styles
 │   │   └── trade/                   # Buy/Sell functionality
@@ -282,6 +293,8 @@ The app follows **Clean Architecture** principles with clear separation of conce
   - `DeletePriceAlertUseCase`
   - `TogglePriceAlertUseCase`
   - `CheckPriceAlertsUseCase`
+  - `ExportPortfolioDataUseCase`
+  - `GetExportDataUseCase`
 - **Repository Interfaces**: Data abstraction
 - **Domain Models**: Core business entities
 
@@ -420,7 +433,16 @@ The app uses the CoinRanking API for cryptocurrency data. No API key is required
     - Track portfolio history over time
     - See individual coin performance
 
-11. **Customize Settings**
+11. **Export Portfolio Data**
+    - Tap "Export" button on the Portfolio screen
+    - View export preview (coin count, transaction count, values)
+    - Select export format (CSV or JSON)
+    - Tap "Export" to save the file
+    - Android: File saved to Downloads folder
+    - iOS: File saved to Documents folder (accessible via Files app)
+    - Success message shows the exported file name
+
+12. **Customize Settings**
     - Tap the settings icon (⚙️) on the Portfolio screen
     - **Edit Profile:**
       - Tap the profile section
@@ -471,9 +493,10 @@ Run instrumentation tests (Android):
 - **`transaction`**: Transaction history with search and filter
 - **`analytics`**: Portfolio analytics and charts
 - **`alert`**: Price alerts and notifications
+- **`export`**: Export portfolio data to CSV/JSON
 - **`settings`**: Settings and personalization (profile, language, theme, currency, notifications)
 - **`biometric`**: Platform-specific biometric authentication
-- **`core`**: Shared utilities, database, network, and notification services
+- **`core`**: Shared utilities, database, network, export services
 - **`theme`**: UI theming and design system
 
 ### Navigation Flow
@@ -490,6 +513,8 @@ Biometric → Portfolio → Coins → Buy
                 ├── Analytics
                 │
                 ├── Price Alerts
+                │
+                ├── Export
                 │
                 └── Settings (Theme)
 ```

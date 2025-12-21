@@ -422,7 +422,8 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 4. If "History" button is tapped → Goes to transaction history screen
 5. If "Analytics" button is tapped → Goes to portfolio analytics screen
 6. If "Alerts" button is tapped → Goes to price alerts screen
-7. If settings icon is tapped → Goes to settings screen
+7. If "Export" button is tapped → Goes to export screen
+8. If settings icon is tapped → Goes to settings screen
 
 ### 4.8 Settings and Personalization Flow
 1. Settings icon is tapped on portfolio screen (top-right corner)
@@ -492,7 +493,20 @@ To provide a secure and user-friendly platform that makes it easy for users to t
    - Individual coin performances are listed
 3. If back button is tapped → Returns to portfolio screen
 
-### 4.7 Price Alert Creation Flow
+### 4.7 Export Portfolio Data Flow
+1. "Export" button is tapped on portfolio screen
+2. On export screen:
+   - Export preview is displayed (coin count, transaction count, values)
+   - Export format selection (CSV/JSON)
+3. User selects desired format
+4. "Export" button is tapped
+5. File is saved to:
+   - Android: Downloads folder
+   - iOS: Documents folder (accessible via Files app)
+6. Success message is displayed with file name
+7. If back button is tapped → Returns to portfolio screen
+
+### 4.8 Price Alert Creation Flow
 1. "Alerts" button is tapped on portfolio screen
 2. On price alerts screen:
    - All alerts are listed
@@ -747,7 +761,75 @@ composeApp/src/
 
 ---
 
-### 3.11 Price Alerts and Notifications
+### 3.11 Export Portfolio Data
+**Purpose:** For users to export their portfolio data and transaction history for backup, analysis, or record-keeping purposes.
+
+**Features:**
+- **Export Formats:**
+  - CSV format for spreadsheet compatibility
+  - JSON format for data interchange and backup
+
+- **Export Content:**
+  - Portfolio holdings (coin details, amounts, purchase prices, performance)
+  - Transaction history (all buy/sell transactions)
+  - Cash balance and total portfolio value
+  - Export timestamp
+
+- **Export Preview:**
+  - View summary before exporting
+  - Portfolio coin count
+  - Transaction count
+  - Total portfolio value
+  - Cash balance
+
+- **Platform-Specific Export:**
+  - Android: Saves to Downloads folder via MediaStore API
+  - iOS: Saves to Documents folder (accessible via Files app)
+
+- **Export Screen:**
+  - Format selection (CSV/JSON)
+  - Export preview with statistics
+  - Export button with loading state
+  - Success/error feedback with file name
+
+**Technical Details:**
+- `ExportFormat` - Enum for export formats (CSV, JSON)
+- `ExportData` - Data class containing all export data
+- `ExportResult` - Sealed interface for Success/Error results
+- `ExportRepository` - Repository interface for export operations
+- `ExportRepositoryImpl` - Implementation with CSV/JSON generation
+- `ExportPortfolioDataUseCase` - Use case for executing export
+- `GetExportDataUseCase` - Use case for fetching export preview data
+- `ExportViewModel` - State management with StateFlow
+- `ExportScreen` - Export Compose UI
+- `FileExporter` - Platform abstraction for file operations
+- `AndroidFileExporter` - Android implementation (MediaStore)
+- `IosFileExporter` - iOS implementation (NSFileManager)
+
+**Export Data Models:**
+- `PortfolioExportItem` - Portfolio coin export data:
+  - coinId, coinName, coinSymbol
+  - averagePurchasePrice, ownedAmountInUnit, ownedAmountInFiat
+  - performancePercent
+
+- `TransactionExportItem` - Transaction export data:
+  - id, type, coinId, coinName, coinSymbol
+  - amountInFiat, amountInUnit, price
+  - timestamp, formattedDate
+
+**CSV Format:**
+- Header section with export date, total value, cash balance
+- Portfolio holdings section with column headers
+- Transaction history section with column headers
+
+**JSON Format:**
+- Structured JSON with exportDate, summary, portfolioHoldings, transactions
+- Pretty-printed for readability
+- Includes all portfolio and transaction details
+
+---
+
+### 3.12 Price Alerts and Notifications
 **Purpose:** For users to set price alerts on cryptocurrencies and receive notifications when target prices are reached.
 
 **Features:**
@@ -819,10 +901,10 @@ composeApp/src/
   - Work without internet
   - Work with cached data
   
-- **Export/Import:**
-  - Export portfolio data
-  - Export transaction history (CSV, PDF)
+- **Import Data:**
+  - Import portfolio data from CSV/JSON
   - Backup and restore features
+  - Cloud sync for data
 
 - **Advanced Analytics:**
   - Time period selection (24h, 7d, 30d, 1y)
@@ -897,6 +979,28 @@ composeApp/src/
 │       │   └── presentation/         # Presentation layer
 │       │       ├── component/
 │       │       │   ├── CoinChart.kt          # Legacy sparkline chart
+│       │       │   └── TradingViewChart.kt   # TradingView-style chart
+│       ├── export/                   # Export portfolio data module
+│       │   ├── data/                 # Data layer
+│       │   │   ├── ExportRepositoryImpl.kt
+│       │   │   └── mapper/
+│       │   │       └── ExportMapper.kt
+│       │   ├── domain/               # Domain layer
+│       │   │   ├── ExportRepository.kt
+│       │   │   ├── ExportPortfolioDataUseCase.kt
+│       │   │   ├── GetExportDataUseCase.kt
+│       │   │   └── model/
+│       │   │       ├── ExportData.kt
+│       │   │       ├── ExportFormat.kt
+│       │   │       └── ExportResult.kt
+│       │   └── presentation/         # Presentation layer
+│       │       ├── ExportScreen.kt
+│       │       ├── ExportState.kt
+│       │       └── ExportViewModel.kt
+│       ├── coins/                    # Coin discovery module (continued)
+│       │   └── presentation/
+│       │       └── component/
+│       │           ├── CoinChart.kt          # Legacy sparkline chart
 │       │       │   └── TradingViewChart.kt   # TradingView-style chart
 │       │       ├── CoinListScreen.kt
 │       │       ├── CoinListViewModel.kt
