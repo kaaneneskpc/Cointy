@@ -47,6 +47,7 @@
 ### Why Cointy?
 
 - 📱 **Cross-Platform**: Single codebase for Android and iOS using Kotlin Multiplatform
+- 🚀 **Interactive Onboarding**: Engaging and animated introduction for new users
 - 🔐 **Secure**: Biometric authentication for enhanced security
 - 📊 **Real-Time Data**: Live cryptocurrency prices and market data via CoinRanking API
 - 💼 **Portfolio Management**: Track your investments with detailed performance metrics
@@ -63,6 +64,12 @@
 ## ✨ Features
 
 ### 🏦 Core Features
+
+- **Interactive Onboarding**
+  - Smooth first-time user experience
+  - Animated icons with floating, pulsing, and wobbling effects
+  - Multi-page introduction to app concepts
+  - Fully localized in English and Turkish
 
 - **Portfolio Dashboard**
   - View total portfolio value and cash balance
@@ -194,6 +201,7 @@
 - **Material Design 3**: Modern design system
 - **Coil**: Image loading and caching
 - **Compose Navigation**: Type-safe navigation
+- **Compose Animations**: Professional-grade animations and transitions
 
 ### Architecture & Patterns
 - **Clean Architecture**: Separation of concerns with multiple layers
@@ -233,36 +241,19 @@ The app follows **Clean Architecture** principles with clear separation of conce
 ├── 📱 composeApp                    # Main application module
 │   ├── commonMain/                  # Shared code for all platforms
 │   │   ├── biometric/               # Biometric authentication
+│   │   ├── onboarding/              # Interactive onboarding
 │   │   ├── coins/                   # Coin discovery feature
 │   │   │   ├── data/                # Data layer
-│   │   │   │   ├── mapper/          # Data mappers
-│   │   │   │   └── remote/          # Remote data source
-│   │   │   │       ├── dto/         # Data transfer objects
-│   │   │   │       └── impl/        # API implementation
 │   │   │   ├── domain/              # Domain layer
-│   │   │   │   ├── api/             # Repository interfaces
-│   │   │   │   ├── model/           # Domain models
-│   │   │   │   └── UseCases         # Business logic
 │   │   │   └── presentation/        # Presentation layer
-│   │   │       ├── component/       # UI components
-│   │   │       │   ├── CoinChart.kt          # Legacy sparkline chart
-│   │   │       │   └── TradingViewChart.kt   # TradingView-style chart
-│   │   │       └── ViewModels       # State management
 │   │   ├── core/                    # Core modules
-│   │   │   ├── biometric/           # Biometric abstraction
-│   │   │   ├── database/            # Database setup
-│   │   │   ├── domain/              # Core domain models
-│   │   │   ├── navigation/          # Navigation routes
-│   │   │   ├── network/             # Network configuration
-│   │   │   ├── notification/        # Notification services
-│   │   │   └── util/                # Utility functions
 │   │   ├── di/                      # Dependency injection
 │   │   ├── portfolio/               # Portfolio management
 │   │   ├── analytics/               # Portfolio analytics
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
 │   │   ├── export/                  # Export portfolio data (CSV/JSON)
-│   │   ├── settings/                # Settings and personalization (profile, language, theme)
+│   │   ├── settings/                # Settings and personalization
 │   │   ├── theme/                   # UI theme and styles
 │   │   └── trade/                   # Buy/Sell functionality
 │   ├── androidMain/                 # Android-specific code
@@ -270,48 +261,6 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │
 └── 📱 iosApp/                       # iOS application entry point
 ```
-
-### Layer Responsibilities
-
-#### 🎨 Presentation Layer
-- **Composables**: UI components (Compose)
-- **ViewModels**: UI state management with StateFlow
-- **UI Models**: UI-specific data models
-- **Events**: User interaction handling
-
-#### 🧠 Domain Layer
-- **Use Cases**: Single-responsibility business logic
-  - `GetCoinsListUseCase`
-  - `GetCoinDetailsUseCase`
-  - `GetCoinPriceHistoryUseCase`
-  - `BuyCoinUseCase`
-  - `SellCoinUseCase`
-  - `GetTransactionHistoryUseCase`
-  - `GetPortfolioAnalyticsUseCase`
-  - `CreatePriceAlertUseCase`
-  - `GetPriceAlertsUseCase`
-  - `DeletePriceAlertUseCase`
-  - `TogglePriceAlertUseCase`
-  - `CheckPriceAlertsUseCase`
-  - `ExportPortfolioDataUseCase`
-  - `GetExportDataUseCase`
-- **Repository Interfaces**: Data abstraction
-- **Domain Models**: Core business entities
-
-#### 💾 Data Layer
-- **Repositories**: Data sources coordination
-- **Remote Data Source**: API calls via Ktor
-- **Local Data Source**: Room Database queries
-- **Mappers**: Entity transformations
-- **DTOs & Entities**: Data transfer objects
-
-### Database Schema
-
-**PortfolioDatabase (Version 4)**
-- `PortfolioCoinEntity`: User's cryptocurrency holdings
-- `UserBalanceEntity`: User's cash balance
-- `TransactionEntity`: Buy/sell transaction records
-- `PriceAlertEntity`: User's price alerts
 
 ## 🚀 Getting Started
 
@@ -362,208 +311,7 @@ cd Cointy
    - Select your target device or simulator
    - Click the "Run" button in Xcode
 
-### Configuration
-
-The app uses the CoinRanking API for cryptocurrency data. No API key is required for basic usage, but you may need to configure rate limiting if you plan to use it extensively.
-
-## 🎮 How to Use
-
-1. **Authenticate**
-   - Launch the app
-   - Use biometric authentication (Face ID/Touch ID or Fingerprint)
-   - Access your portfolio dashboard
-
-2. **View Portfolio**
-   - See your total portfolio value
-   - Check your cash balance
-   - Browse owned cryptocurrencies
-   - View performance percentages
-
-3. **Discover Coins**
-   - Tap "Discover Coins" to browse all cryptocurrencies
-   - View current prices and 24h changes
-   - Long-press any coin to see price chart
-   - Tap a coin to buy it
-
-4. **Buy Cryptocurrency**
-   - Select a coin from the discovery screen
-   - Enter the amount you want to invest (in fiat currency)
-   - Tap "Buy" to complete the transaction
-   - Your portfolio and cash balance will update automatically
-
-5. **Sell Cryptocurrency**
-   - Tap any coin in your portfolio
-   - Enter the amount you want to sell (in fiat currency)
-   - Tap "Sell" to complete the transaction
-   - Your portfolio and cash balance will update automatically
-
-6. **View Price Charts (TradingView Style)**
-   - Long-press any coin in the discovery list
-   - View professional TradingView-style chart with dark theme
-   - See OHLC (Open, High, Low, Close) values at the top
-   - Touch and drag to show interactive crosshair
-   - View precise price and time at crosshair position
-   - Check 24h price change and range statistics
-   - Dismiss the chart by tapping "Close" button
-
-7. **Search & Filter Coins**
-   - Use the search bar to find coins by name or symbol
-   - Filter by performance: All, Gainers, or Losers
-   - Sort by name, price, or 24h change
-   - Results update in real-time as you type
-
-8. **Set Price Alerts**
-   - Tap the bell icon on any coin in the discovery list
-   - Set target price and condition (Above/Below)
-   - Manage alerts from the Alerts screen
-   - Enable/disable alerts with toggle
-   - Receive notifications when price targets are hit
-
-9. **View Transaction History**
-   - Access from the Portfolio screen
-   - Search transactions by coin name
-   - Filter by type: All, Buy, or Sell
-   - Sort by date or amount
-   - View detailed transaction information
-
-10. **View Portfolio Analytics**
-    - Access from the Portfolio screen
-    - View profit/loss summary
-    - Explore coin distribution pie chart
-    - Track portfolio history over time
-    - See individual coin performance
-
-11. **Export Portfolio Data**
-    - Tap "Export" button on the Portfolio screen
-    - View export preview (coin count, transaction count, values)
-    - Select export format (CSV or JSON)
-    - Tap "Export" to save the file
-    - Android: File saved to Downloads folder
-    - iOS: File saved to Documents folder (accessible via Files app)
-    - Success message shows the exported file name
-
-12. **Customize Settings**
-    - Tap the settings icon (⚙️) on the Portfolio screen
-    - **Edit Profile:**
-      - Tap the profile section
-      - Enter your first name and last name
-      - Save to update your profile
-    - **Change Language:**
-      - Tap Language section
-      - Choose English or Turkish (Türkçe)
-      - All app texts update immediately
-    - **Select Currency:**
-      - Tap Currency section
-      - Choose from USD, EUR, TRY, or GBP
-    - **Choose Theme:**
-      - System Default: Follows your device settings
-      - Light Mode: Always use light theme
-      - Dark Mode: Always use dark theme
-    - **Manage Notifications:**
-      - Toggle general notifications on/off
-      - Toggle price alert notifications on/off
-    - All changes apply immediately without app restart
-
-## 🧪 Testing
-
-Run unit tests:
-```bash
-./gradlew :composeApp:testDebugUnitTest
-```
-
-Run instrumentation tests (Android):
-```bash
-./gradlew :composeApp:connectedDebugAndroidTest
-```
-
-### Test Libraries
-- **Kotlin Test**: Unit testing framework
-- **AssertK**: Fluent assertion library
-- **Turbine**: Flow testing library
-- **Coroutines Test**: Testing coroutines
-- **Compose UI Test**: UI component testing
-
-## 📋 Project Structure
-
-### Key Modules
-
-- **`coins`**: Coin discovery, listing, search and filter functionality
-- **`portfolio`**: Portfolio management and tracking
-- **`trade`**: Buy and sell transaction logic
-- **`transaction`**: Transaction history with search and filter
-- **`analytics`**: Portfolio analytics and charts
-- **`alert`**: Price alerts and notifications
-- **`export`**: Export portfolio data to CSV/JSON
-- **`settings`**: Settings and personalization (profile, language, theme, currency, notifications)
-- **`biometric`**: Platform-specific biometric authentication
-- **`core`**: Shared utilities, database, network, export services
-- **`theme`**: UI theming and design system
-
-### Navigation Flow
-
-```
-Biometric → Portfolio → Coins → Buy
-                │         │
-                │         └── Create Alert
-                │
-                ├── Sell
-                │
-                ├── Transaction History
-                │
-                ├── Analytics
-                │
-                ├── Price Alerts
-                │
-                ├── Export
-                │
-                └── Settings (Theme)
-```
-
-## 🔒 Security
-
-- **Biometric Authentication**: Platform-native biometric security
-- **Local Database**: Secure local storage with Room
-- **HTTPS**: All network requests use secure connections
-- **Data Privacy**: No user data is shared with third parties
-
-## 🌐 API Integration
-
-**CoinRanking API**
-- Base URL: `https://api.coinranking.com/v2`
-- Endpoints:
-  - `GET /coins` - List all cryptocurrencies
-  - `GET /coin/{coinId}` - Get coin details
-  - `GET /coin/{coinId}/history` - Get price history
-
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-### How to Contribute
-
-1. **Fork the Project**
-2. **Create your Feature Branch**
-   ```bash
-   git checkout -b feature/AmazingFeature
-   ```
-3. **Commit your Changes**
-   ```bash
-   git commit -m 'Add some AmazingFeature'
-   ```
-4. **Push to the Branch**
-   ```bash
-   git push origin feature/AmazingFeature
-   ```
-5. **Open a Pull Request**
-
-### Contribution Guidelines
-
-- Follow the existing code style and architecture
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation when needed
-- Ensure all tests pass before submitting PR
-- Follow Clean Architecture principles
+---
 
 ## 📋 Project Roadmap
 
@@ -581,7 +329,7 @@ Contributions are what make the open-source community such an amazing place to l
 - [x] Dark mode support
 - [x] Multi-currency support (USD, EUR, TRY, GBP)
 - [x] Export portfolio data
-- [x] Favorites/watchlist
+- [x] Interactive Onboarding 🚀
 - [x] Multi-language support (English, Turkish)
 - [x] User profile management
 - [x] Notification settings
@@ -606,14 +354,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Material Design 3](https://m3.material.io/) for design guidelines
 - [CoinRanking API](https://developers.coinranking.com/) for cryptocurrency data
 - All contributors who help improve this project
-
-## 📞 Support
-
-If you have any questions or need help, feel free to:
-
-- Open an [issue](https://github.com/kaaneneskpc/Cointy/issues)
-- Start a [discussion](https://github.com/kaaneneskpc/Cointy/discussions)
-- Reach out via email
 
 ## ⭐ Show Your Support
 

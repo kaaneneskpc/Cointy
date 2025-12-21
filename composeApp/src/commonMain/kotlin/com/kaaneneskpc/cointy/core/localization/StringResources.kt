@@ -65,7 +65,16 @@ data class StringResources(
     val exportCoinsCount: String,
     val exportTransactionsCount: String,
     val exportFileSaved: String,
-    val exportSelectFormat: String
+    val exportSelectFormat: String,
+    val welcomeToCointy: String,
+    val welcomeDescription: String,
+    val virtualBalanceTitle: String,
+    val virtualBalanceDescription: String,
+    val portfolioManagementTitle: String,
+    val portfolioManagementDescription: String,
+    val getStarted: String,
+    val next: String,
+    val skip: String
 )
 
 val EnglishStrings = StringResources(
@@ -128,7 +137,16 @@ val EnglishStrings = StringResources(
     exportCoinsCount = "Portfolio Coins",
     exportTransactionsCount = "Transactions",
     exportFileSaved = "File saved to Downloads",
-    exportSelectFormat = "Select export format"
+    exportSelectFormat = "Select export format",
+    welcomeToCointy = "Welcome to Cointy",
+    welcomeDescription = "Your personal cryptocurrency portfolio tracker and virtual trading simulator.",
+    virtualBalanceTitle = "Virtual Balance",
+    virtualBalanceDescription = "Start with a virtual cash balance to practice trading without any real risk.",
+    portfolioManagementTitle = "Portfolio Management",
+    portfolioManagementDescription = "Monitor your holdings, track performance, and analyze your investment history.",
+    getStarted = "Get Started",
+    next = "Next",
+    skip = "Skip"
 )
 
 val TurkishStrings = StringResources(
@@ -191,7 +209,16 @@ val TurkishStrings = StringResources(
     exportCoinsCount = "Portföy Coinleri",
     exportTransactionsCount = "İşlemler",
     exportFileSaved = "Dosya İndirilenler'e kaydedildi",
-    exportSelectFormat = "Dışa aktarma formatı seçin"
+    exportSelectFormat = "Dışa aktarma formatı seçin",
+    welcomeToCointy = "Cointy'ye Hoş Geldiniz",
+    welcomeDescription = "Kişisel kripto para portföy takipçiniz ve sanal ticaret simülatörünüz.",
+    virtualBalanceTitle = "Sanal Bakiye",
+    virtualBalanceDescription = "Herhangi bir gerçek risk almadan ticaret pratiği yapmak için sanal bir nakit bakiye ile başlayın.",
+    portfolioManagementTitle = "Portföy Yönetimi",
+    portfolioManagementDescription = "Varlıklarınızı izleyin, performansı takip edin ve yatırım geçmişinizi analiz edin.",
+    getStarted = "Başla",
+    next = "İleri",
+    skip = "Atla"
 )
 
 fun getStringResources(language: Language): StringResources {

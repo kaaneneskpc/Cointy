@@ -12,6 +12,7 @@ data class SettingsState(
     val userProfile: UserProfile = UserProfile(),
     val isNotificationsEnabled: Boolean = true,
     val isPriceAlertsEnabled: Boolean = true,
+    val isOnboardingCompleted: Boolean = false,
     val isLoading: Boolean = false,
     val isEditProfileDialogVisible: Boolean = false
 )

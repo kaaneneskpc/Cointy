@@ -28,6 +28,8 @@ import com.kaaneneskpc.cointy.core.navigation.Sell
 import com.kaaneneskpc.cointy.core.navigation.TransactionHistory
 import com.kaaneneskpc.cointy.core.navigation.Export
 import com.kaaneneskpc.cointy.export.presentation.ExportScreen
+import com.kaaneneskpc.cointy.onboarding.presentation.OnboardingScreen
+import com.kaaneneskpc.cointy.core.navigation.Onboarding
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioScreen
 import com.kaaneneskpc.cointy.settings.presentation.SettingsScreen
 import com.kaaneneskpc.cointy.settings.presentation.SettingsViewModel
@@ -43,126 +45,144 @@ fun App() {
     val navController: NavHostController = rememberNavController()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
     val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
+
+    var startDestination by remember { mutableStateOf<Any?>(null) }
+
+    LaunchedEffect(settingsState.isOnboardingCompleted) {
+        if (startDestination == null) {
+            startDestination = if (settingsState.isOnboardingCompleted) Biometric else Onboarding
+        }
+    }
+
     CointyTheme(themeMode = settingsState.themeMode) {
         ProvideStringResources(language = settingsState.language) {
-            NavHost(
-                navController = navController,
-                startDestination = Portfolio,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                composable<Biometric> {
-                    BiometricScreen {
-                        navController.navigate(Portfolio)
+            if (startDestination != null) {
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination!!,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable<Onboarding> {
+                        OnboardingScreen {
+                            navController.navigate(Portfolio) {
+                                popUpTo(Onboarding) { inclusive = true }
+                            }
+                        }
                     }
-                }
-                composable<Portfolio> {
-                    PortfolioScreen(
-                        onCoinItemClicked = { coinId ->
-                            navController.navigate(Sell(coinId))
-                        },
-                        onDiscoverCoinsClicked = {
-                            navController.navigate(Coins)
-                        },
-                        onTransactionHistoryClicked = {
-                            navController.navigate(TransactionHistory)
-                        },
-                        onAnalyticsClicked = {
-                            navController.navigate(Analytics)
-                        },
-                        onPriceAlertsClicked = {
-                            navController.navigate(PriceAlerts)
-                        },
-                        onSettingsClicked = {
-                            navController.navigate(Settings)
-                        },
-                        onExportClicked = {
-                            navController.navigate(Export)
+                    composable<Biometric> {
+                        BiometricScreen {
+                            navController.navigate(Portfolio)
                         }
-                    )
-                }
-                composable<Settings> {
-                    SettingsScreen(
-                        onBackClicked = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-                composable<TransactionHistory> {
-                    TransactionHistoryScreen(
-                        onBackClicked = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-                composable<Analytics> {
-                    AnalyticsScreen(
-                        onBackClicked = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-                composable<PriceAlerts> {
-                    PriceAlertScreen(
-                        onBackClicked = {
-                            navController.popBackStack()
-                        },
-                        onAddAlertClicked = {
-                            navController.navigate(Coins)
-                        }
-                    )
-                }
-                composable<CreateAlert> { navBackStackEntry ->
-                    val coinId: String = navBackStackEntry.toRoute<CreateAlert>().coinId
-                    CreateAlertScreen(
-                        coinId = coinId,
-                        onBackClicked = {
-                            navController.popBackStack()
-                        },
-                        onAlertCreated = {
-                            navController.navigate(PriceAlerts) {
-                                popUpTo(PriceAlerts) { inclusive = true }
+                    }
+                    composable<Portfolio> {
+                        PortfolioScreen(
+                            onCoinItemClicked = { coinId ->
+                                navController.navigate(Sell(coinId))
+                            },
+                            onDiscoverCoinsClicked = {
+                                navController.navigate(Coins)
+                            },
+                            onTransactionHistoryClicked = {
+                                navController.navigate(TransactionHistory)
+                            },
+                            onAnalyticsClicked = {
+                                navController.navigate(Analytics)
+                            },
+                            onPriceAlertsClicked = {
+                                navController.navigate(PriceAlerts)
+                            },
+                            onSettingsClicked = {
+                                navController.navigate(Settings)
+                            },
+                            onExportClicked = {
+                                navController.navigate(Export)
                             }
-                        }
-                    )
-                }
-                composable<Coins> {
-                    CoinListScreen(
-                        onCoinClicked = { coinId ->
-                            navController.navigate(Buy(coinId))
-                        },
-                        onCreateAlertClicked = { coinId ->
-                            navController.navigate(CreateAlert(coinId))
-                        }
-                    )
-                }
-                composable<Buy> { navBackStackEntry ->
-                    val coinId: String = navBackStackEntry.toRoute<Buy>().coinId
-                    BuyScreen(
-                        coinId = coinId,
-                        navigateToPortfolio = {
-                            navController.navigate(Portfolio) {
-                                popUpTo(Portfolio) { inclusive = true }
+                        )
+                    }
+                    composable<Settings> {
+                        SettingsScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
                             }
-                        }
-                    )
-                }
-                composable<Sell> { navBackStackEntry ->
-                    val coinId: String = navBackStackEntry.toRoute<Sell>().coinId
-                    SellScreen(
-                        coinId = coinId,
-                        navigateToPortfolio = {
-                            navController.navigate(Portfolio) {
-                                popUpTo(Portfolio) { inclusive = true }
+                        )
+                    }
+                    composable<TransactionHistory> {
+                        TransactionHistoryScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
                             }
-                        }
-                    )
-                }
-                composable<Export> {
-                    ExportScreen(
-                        onNavigateBack = {
-                            navController.popBackStack()
-                        }
-                    )
+                        )
+                    }
+                    composable<Analytics> {
+                        AnalyticsScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                    composable<PriceAlerts> {
+                        PriceAlertScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
+                            },
+                            onAddAlertClicked = {
+                                navController.navigate(Coins)
+                            }
+                        )
+                    }
+                    composable<CreateAlert> { navBackStackEntry ->
+                        val coinId: String = navBackStackEntry.toRoute<CreateAlert>().coinId
+                        CreateAlertScreen(
+                            coinId = coinId,
+                            onBackClicked = {
+                                navController.popBackStack()
+                            },
+                            onAlertCreated = {
+                                navController.navigate(PriceAlerts) {
+                                    popUpTo(PriceAlerts) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable<Coins> {
+                        CoinListScreen(
+                            onCoinClicked = { coinId ->
+                                navController.navigate(Buy(coinId))
+                            },
+                            onCreateAlertClicked = { coinId ->
+                                navController.navigate(CreateAlert(coinId))
+                            }
+                        )
+                    }
+                    composable<Buy> { navBackStackEntry ->
+                        val coinId: String = navBackStackEntry.toRoute<Buy>().coinId
+                        BuyScreen(
+                            coinId = coinId,
+                            navigateToPortfolio = {
+                                navController.navigate(Portfolio) {
+                                    popUpTo(Portfolio) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable<Sell> { navBackStackEntry ->
+                        val coinId: String = navBackStackEntry.toRoute<Sell>().coinId
+                        SellScreen(
+                            coinId = coinId,
+                            navigateToPortfolio = {
+                                navController.navigate(Portfolio) {
+                                    popUpTo(Portfolio) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable<Export> {
+                        ExportScreen(
+                            onNavigateBack = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
             }
         }

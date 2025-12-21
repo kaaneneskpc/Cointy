@@ -19,4 +19,6 @@ interface SettingsRepository {
     suspend fun setNotificationsEnabled(enabled: Boolean)
     fun getPriceAlertsEnabled(): Flow<Boolean>
     suspend fun setPriceAlertsEnabled(enabled: Boolean)
+    fun isOnboardingCompleted(): Flow<Boolean>
+    suspend fun setOnboardingCompleted(completed: Boolean)
 }

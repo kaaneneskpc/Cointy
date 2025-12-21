@@ -39,6 +39,7 @@ import com.kaaneneskpc.cointy.trade.domain.BuyCoinUseCase
 import com.kaaneneskpc.cointy.trade.domain.SellCoinUseCase
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyViewModel
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellViewModel
+import com.kaaneneskpc.cointy.onboarding.presentation.OnboardingViewModel
 import com.kaaneneskpc.cointy.transaction.data.TransactionRepositoryImpl
 import com.kaaneneskpc.cointy.transaction.domain.GetTransactionHistoryUseCase
 import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
@@ -116,4 +117,7 @@ val sharedModule = module {
     singleOf(::GetExportDataUseCase)
     singleOf(::ExportPortfolioDataUseCase)
     viewModel { ExportViewModel(get(), get()) }
+
+    //Onboarding
+    viewModel { OnboardingViewModel(get()) }
 }

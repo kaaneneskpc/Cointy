@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 object Biometric
 
 @Serializable
+object Onboarding
+
+@Serializable
 object Portfolio
 
 @Serializable

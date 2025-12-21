@@ -26,6 +26,7 @@ class SettingsViewModel(
         settingsRepository.getUserProfile(),
         settingsRepository.getNotificationsEnabled(),
         settingsRepository.getPriceAlertsEnabled(),
+        settingsRepository.isOnboardingCompleted(),
         isLoading,
         isEditProfileDialogVisible
     ) { values ->
@@ -36,8 +37,9 @@ class SettingsViewModel(
             userProfile = values[3] as UserProfile,
             isNotificationsEnabled = values[4] as Boolean,
             isPriceAlertsEnabled = values[5] as Boolean,
-            isLoading = values[6] as Boolean,
-            isEditProfileDialogVisible = values[7] as Boolean
+            isOnboardingCompleted = values[6] as Boolean,
+            isLoading = values[7] as Boolean,
+            isEditProfileDialogVisible = values[8] as Boolean
         )
     }.stateIn(
         scope = viewModelScope,

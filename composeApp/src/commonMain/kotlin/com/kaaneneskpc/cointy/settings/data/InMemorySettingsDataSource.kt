@@ -15,6 +15,8 @@ class InMemorySettingsDataSource : SettingsDataSource {
     private val userProfileFlow: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile())
     private val notificationsEnabledFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val priceAlertsEnabledFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val onboardingCompletedFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     override fun getThemeMode(): Flow<ThemeMode> = themeModeFlow.asStateFlow()
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         themeModeFlow.value = themeMode
@@ -38,5 +40,11 @@ class InMemorySettingsDataSource : SettingsDataSource {
     override fun getPriceAlertsEnabled(): Flow<Boolean> = priceAlertsEnabledFlow.asStateFlow()
     override suspend fun setPriceAlertsEnabled(enabled: Boolean) {
         priceAlertsEnabledFlow.value = enabled
+    }
+
+    override fun isOnboardingCompleted(): Flow<Boolean> = onboardingCompletedFlow.asStateFlow()
+
+    override suspend fun setOnboardingCompleted(completed: Boolean) {
+        onboardingCompletedFlow.value = completed
     }
 }

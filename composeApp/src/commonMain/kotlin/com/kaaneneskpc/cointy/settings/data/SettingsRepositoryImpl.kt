@@ -34,4 +34,10 @@ class SettingsRepositoryImpl(
     override suspend fun setPriceAlertsEnabled(enabled: Boolean) {
         settingsDataSource.setPriceAlertsEnabled(enabled)
     }
+
+    override fun isOnboardingCompleted(): Flow<Boolean> = settingsDataSource.isOnboardingCompleted()
+
+    override suspend fun setOnboardingCompleted(completed: Boolean) {
+        settingsDataSource.setOnboardingCompleted(completed)
+    }
 }
