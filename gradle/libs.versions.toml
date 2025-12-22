@@ -23,6 +23,7 @@ biometry = "1.4.0-alpha02"
 assertK = "0.25"
 turbine = "0.7.0"
 core-ktx = "1.7.0"
+datastore = "1.1.1"
 
 [libraries]
 # Shared Libraries
@@ -71,6 +72,9 @@ coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil-compose" 
 
 # Biometry Libraries
 biometric = { module = "androidx.biometric:biometric-ktx", version.ref = "biometry" }
+
+# DataStore Libraries
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

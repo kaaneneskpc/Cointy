@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -97,6 +98,7 @@ private fun TransactionHistoryContent(
     onFilterOptionChanged: (TransactionFilterOption) -> Unit,
     onSortOptionChanged: (TransactionSortOption) -> Unit
 ) {
+    val strings = LocalStringResources.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,14 +115,14 @@ private fun TransactionHistoryContent(
                 modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
             ) {
                 Text(
-                    text = "Transaction History",
+                    text = strings.transactionHistory,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "${state.filteredTransactions.size} ${if (state.filteredTransactions.size == 1) "transaction" else "transactions"}",
+                    text = "${state.filteredTransactions.size} ${if (state.filteredTransactions.size == 1) strings.transaction else strings.transactions}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                 )
@@ -163,6 +165,7 @@ private fun TransactionSearchBar(
     onSearchQueryChanged: (String) -> Unit,
     onSearchActiveChanged: (Boolean) -> Unit
 ) {
+    val strings = LocalStringResources.current
     val keyboardController = LocalSoftwareKeyboardController.current
     Box(
         modifier = Modifier
@@ -180,7 +183,7 @@ private fun TransactionSearchBar(
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
                 Text(
-                    text = "Search transactions...",
+                    text = strings.searchTransactions,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 )
@@ -188,7 +191,7 @@ private fun TransactionSearchBar(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
+                    contentDescription = strings.searchTransactions,
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             },
@@ -205,7 +208,7 @@ private fun TransactionSearchBar(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Clear search",
+                            contentDescription = strings.cancel,
                             tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
                     }
@@ -232,6 +235,7 @@ private fun TransactionFilterSection(
     onFilterOptionChanged: (TransactionFilterOption) -> Unit,
     onSortOptionChanged: (TransactionSortOption) -> Unit
 ) {
+    val strings = LocalStringResources.current
     var isSortMenuExpanded by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -250,7 +254,7 @@ private fun TransactionFilterSection(
                     onClick = { onFilterOptionChanged(filterOption) },
                     label = {
                         Text(
-                            text = getTransactionFilterLabel(filterOption),
+                            text = getTransactionFilterLabel(filterOption, strings),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = if (selectedFilter == filterOption) FontWeight.Bold else FontWeight.Normal
                         )
@@ -276,7 +280,7 @@ private fun TransactionFilterSection(
                     onClick = { isSortMenuExpanded = true },
                     label = {
                         Text(
-                            text = "Sort: ${getTransactionSortLabel(selectedSort)}",
+                            text = "${strings.sort}: ${getTransactionSortLabel(selectedSort, strings)}",
                             style = MaterialTheme.typography.labelMedium
                         )
                     },
@@ -293,7 +297,7 @@ private fun TransactionFilterSection(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = getTransactionSortLabel(sortOption),
+                                    text = getTransactionSortLabel(sortOption, strings),
                                     fontWeight = if (selectedSort == sortOption) FontWeight.Bold else FontWeight.Normal
                                 )
                             },
@@ -309,25 +313,26 @@ private fun TransactionFilterSection(
     }
 }
 
-private fun getTransactionFilterLabel(option: TransactionFilterOption): String {
+private fun getTransactionFilterLabel(option: TransactionFilterOption, strings: com.kaaneneskpc.cointy.core.localization.StringResources): String {
     return when (option) {
-        TransactionFilterOption.ALL -> "All"
-        TransactionFilterOption.BUY_ONLY -> "Buy 📈"
-        TransactionFilterOption.SELL_ONLY -> "Sell 📉"
+        TransactionFilterOption.ALL -> strings.all
+        TransactionFilterOption.BUY_ONLY -> "${strings.buyOnly} 📈"
+        TransactionFilterOption.SELL_ONLY -> "${strings.sellOnly} 📉"
     }
 }
 
-private fun getTransactionSortLabel(option: TransactionSortOption): String {
+private fun getTransactionSortLabel(option: TransactionSortOption, strings: com.kaaneneskpc.cointy.core.localization.StringResources): String {
     return when (option) {
-        TransactionSortOption.DATE_DESC -> "Newest"
-        TransactionSortOption.DATE_ASC -> "Oldest"
-        TransactionSortOption.AMOUNT_DESC -> "Amount ↓"
-        TransactionSortOption.AMOUNT_ASC -> "Amount ↑"
+        TransactionSortOption.DATE_DESC -> strings.sortNewest
+        TransactionSortOption.DATE_ASC -> strings.sortOldest
+        TransactionSortOption.AMOUNT_DESC -> strings.sortAmountDesc
+        TransactionSortOption.AMOUNT_ASC -> strings.sortAmountAsc
     }
 }
 
 @Composable
 private fun TransactionNoResultsSection() {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -342,7 +347,7 @@ private fun TransactionNoResultsSection() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             Text(
-                text = "No Results Found",
+                text = strings.noResultsFound,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
@@ -350,7 +355,7 @@ private fun TransactionNoResultsSection() {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Try adjusting your search or filters",
+                text = strings.tryAdjustingFilters,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
@@ -468,6 +473,7 @@ private fun TransactionItem(
 
 @Composable
 private fun TransactionHistoryEmptySection() {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -482,7 +488,7 @@ private fun TransactionHistoryEmptySection() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             Text(
-                text = "No Transactions Yet",
+                text = strings.noTransactionsYet,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
@@ -490,7 +496,7 @@ private fun TransactionHistoryEmptySection() {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Your transaction history will appear here once you start buying or selling coins",
+                text = strings.transactionHistoryWillAppear,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center

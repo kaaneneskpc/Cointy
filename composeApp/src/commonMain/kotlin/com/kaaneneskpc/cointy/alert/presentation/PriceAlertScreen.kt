@@ -42,13 +42,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -58,6 +58,7 @@ fun PriceAlertScreen(
     onBackClicked: () -> Unit,
     onAddAlertClicked: () -> Unit
 ) {
+    val strings = LocalStringResources.current
     val viewModel = koinViewModel<PriceAlertViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     Scaffold(
@@ -65,7 +66,7 @@ fun PriceAlertScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Price Alerts",
+                        text = strings.priceAlerts,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -74,7 +75,7 @@ fun PriceAlertScreen(
                     IconButton(onClick = onBackClicked) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -92,7 +93,7 @@ fun PriceAlertScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Alert"
+                    contentDescription = strings.addAlert
                 )
             }
         }
@@ -137,6 +138,7 @@ private fun PriceAlertList(
     onToggleAlert: (Long, Boolean) -> Unit,
     onDeleteAlert: (Long) -> Unit
 ) {
+    val strings = LocalStringResources.current
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -144,7 +146,7 @@ private fun PriceAlertList(
     ) {
         item {
             Text(
-                text = "${alerts.size} ${if (alerts.size == 1) "Alert" else "Alerts"}",
+                text = "${alerts.size} ${if (alerts.size == 1) strings.alert else strings.alerts}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -166,6 +168,7 @@ private fun PriceAlertItem(
     onToggle: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
+    val strings = LocalStringResources.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,24 +215,29 @@ private fun PriceAlertItem(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.width(8.dp))
+                    val isAbove = alert.conditionText == "Above"
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
                             .background(
                                 when {
                                     alert.isTriggered -> LocalCoinRoutineColorsPalette.current.profitGreen.copy(alpha = 0.2f)
-                                    alert.conditionText == "Above" -> LocalCoinRoutineColorsPalette.current.profitGreen.copy(alpha = 0.15f)
+                                    isAbove -> LocalCoinRoutineColorsPalette.current.profitGreen.copy(alpha = 0.15f)
                                     else -> LocalCoinRoutineColorsPalette.current.lossRed.copy(alpha = 0.15f)
                                 }
                             )
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = if (alert.isTriggered) "Triggered" else alert.conditionText,
+                            text = when {
+                                alert.isTriggered -> strings.triggered
+                                isAbove -> strings.above
+                                else -> strings.below
+                            },
                             style = MaterialTheme.typography.labelSmall,
                             color = when {
                                 alert.isTriggered -> LocalCoinRoutineColorsPalette.current.profitGreen
-                                alert.conditionText == "Above" -> LocalCoinRoutineColorsPalette.current.profitGreen
+                                isAbove -> LocalCoinRoutineColorsPalette.current.profitGreen
                                 else -> LocalCoinRoutineColorsPalette.current.lossRed
                             }
                         )
@@ -237,16 +245,16 @@ private fun PriceAlertItem(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Target: ${alert.targetPriceText}",
+                    text = "${strings.target}: ${alert.targetPriceText}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = if (alert.isTriggered && alert.triggeredAtText != null) {
-                        "Triggered: ${alert.triggeredAtText}"
+                        "${strings.triggered}: ${alert.triggeredAtText}"
                     } else {
-                        "Created: ${alert.createdAtText}"
+                        "${strings.created}: ${alert.createdAtText}"
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
@@ -266,7 +274,7 @@ private fun PriceAlertItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = strings.cancel,
                     tint = LocalCoinRoutineColorsPalette.current.lossRed
                 )
             }
@@ -276,6 +284,7 @@ private fun PriceAlertItem(
 
 @Composable
 private fun PriceAlertEmptyState() {
+    val strings = LocalStringResources.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -309,7 +318,7 @@ private fun PriceAlertEmptyState() {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "No Price Alerts",
+                    text = strings.noPriceAlerts,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -317,7 +326,7 @@ private fun PriceAlertEmptyState() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Set up price alerts to get notified when your favorite coins reach your target price",
+                    text = strings.priceAlertsDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center

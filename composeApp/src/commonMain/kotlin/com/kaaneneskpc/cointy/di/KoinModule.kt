@@ -30,7 +30,8 @@ import com.kaaneneskpc.cointy.export.presentation.ExportViewModel
 import com.kaaneneskpc.cointy.portfolio.data.PortfolioRepositoryImpl
 import com.kaaneneskpc.cointy.portfolio.domain.PortfolioRepository
 import com.kaaneneskpc.cointy.portfolio.presentation.PortfolioViewModel
-import com.kaaneneskpc.cointy.settings.data.InMemorySettingsDataSource
+import com.kaaneneskpc.cointy.core.datastore.createDataStore
+import com.kaaneneskpc.cointy.settings.data.DataStoreSettingsDataSource
 import com.kaaneneskpc.cointy.settings.data.SettingsDataSource
 import com.kaaneneskpc.cointy.settings.data.SettingsRepositoryImpl
 import com.kaaneneskpc.cointy.settings.domain.SettingsRepository
@@ -109,7 +110,8 @@ val sharedModule = module {
     singleOf(::CheckPriceAlertsUseCase)
     viewModel { PriceAlertViewModel(get(), get(), get(), get()) }
     //Settings
-    singleOf(::InMemorySettingsDataSource).bind<SettingsDataSource>()
+    single { createDataStore() }
+    single<SettingsDataSource> { DataStoreSettingsDataSource(get()) }
     singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
     viewModel { SettingsViewModel(get()) }
     //Export

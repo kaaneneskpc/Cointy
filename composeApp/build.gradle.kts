@@ -70,6 +70,8 @@ kotlin {
             implementation(libs.coil.core)
             implementation(libs.coil.svg)
             implementation(libs.coil.network.ktor)
+
+            implementation(libs.datastore.preferences.core)
         }
         iosMain.dependencies {
             implementation(libs.ktor.ios)

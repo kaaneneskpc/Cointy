@@ -1,6 +1,7 @@
 package com.kaaneneskpc.cointy
 
 import android.app.Application
+import com.kaaneneskpc.cointy.core.datastore.initializeDataStore
 import com.kaaneneskpc.cointy.core.notification.NotificationManager
 import com.kaaneneskpc.cointy.di.initKoin
 import org.koin.android.ext.android.inject
@@ -11,6 +12,7 @@ import org.koin.core.component.KoinComponent
 class CointyApplication : Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
+        initializeDataStore(this)
         initKoin {
             androidLogger()
             androidContext(this@CointyApplication)

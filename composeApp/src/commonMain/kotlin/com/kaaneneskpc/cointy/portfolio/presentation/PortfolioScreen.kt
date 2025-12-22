@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -129,6 +130,7 @@ private fun PortfolioBalanceSection(
     onSettingsClicked: () -> Unit,
     onExportClicked: () -> Unit
 ) {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,7 +152,7 @@ private fun PortfolioBalanceSection(
         ) {
             Icon(
                 imageVector = Icons.Default.Settings,
-                contentDescription = "Settings",
+                contentDescription = strings.settings,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
@@ -159,7 +161,7 @@ private fun PortfolioBalanceSection(
             modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
         ) {
             Text(
-                text = "Portfolio",
+                text = strings.portfolio,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold,
@@ -186,7 +188,7 @@ private fun PortfolioBalanceSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Total Portfolio Value",
+                        text = strings.totalPortfolioValue,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center
@@ -223,7 +225,7 @@ private fun PortfolioBalanceSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Cash Balance",
+                        text = strings.cashBalance,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
@@ -256,7 +258,7 @@ private fun PortfolioBalanceSection(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "History",
+                        text = strings.history,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
@@ -278,7 +280,7 @@ private fun PortfolioBalanceSection(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "Analytics",
+                        text = strings.analytics,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold
@@ -306,7 +308,7 @@ private fun PortfolioBalanceSection(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "Alerts",
+                        text = strings.alerts,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.SemiBold
@@ -328,7 +330,7 @@ private fun PortfolioBalanceSection(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "Export",
+                        text = strings.export,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onTertiary,
                         fontWeight = FontWeight.SemiBold
@@ -353,7 +355,7 @@ private fun PortfolioBalanceSection(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "Buy",
+                        text = strings.buy,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold
@@ -370,6 +372,7 @@ private fun PortfolioCoinsList(
     onCoinItemClicked: (String) -> Unit,
     onDiscoverCoinsClicked: () -> Unit,
 ) {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -391,19 +394,18 @@ private fun PortfolioCoinsList(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Your Assets",
+                        text = strings.yourAssets,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "${coins.size} ${if (coins.size == 1) "coin" else "coins"}",
+                        text = "${coins.size} ${if (coins.size == 1) strings.coin else strings.coins}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
-
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
@@ -526,6 +528,7 @@ fun CoinListItem(
 fun PortfolioEmptySection(
     onDiscoverCoinsClicked: () -> Unit,
 ) {
+    val strings = LocalStringResources.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -558,7 +561,7 @@ fun PortfolioEmptySection(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(
-                    text = "Your Portfolio is Empty",
+                    text = strings.portfolioEmpty,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
@@ -566,7 +569,7 @@ fun PortfolioEmptySection(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "Start building your crypto portfolio by discovering and buying coins",
+                    text = strings.portfolioEmptyDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center,
@@ -588,7 +591,7 @@ fun PortfolioEmptySection(
                     contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
                 ) {
                     Text(
-                        text = "Discover & Buy Coins",
+                        text = strings.discoverAndBuyCoins,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold

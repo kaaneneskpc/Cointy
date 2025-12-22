@@ -37,7 +37,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
@@ -48,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -57,6 +57,7 @@ fun TradeScreen(
     onAmountChange: (String) -> Unit,
     onSubmitClicked: () -> Unit,
 ) {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -99,15 +100,14 @@ fun TradeScreen(
                     ) {
                         Text(
                             text = when (tradeType) {
-                                TradeType.BUY -> "Buy Coin"
-                                TradeType.SELL -> "Sell Coin"
+                                TradeType.BUY -> strings.buyCoin
+                                TradeType.SELL -> strings.sellCoin
                             },
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
-
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -159,7 +159,6 @@ fun TradeScreen(
                         }
                     }
                 }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -167,7 +166,6 @@ fun TradeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(32.dp))
-
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -189,22 +187,19 @@ fun TradeScreen(
                         ) {
                             Text(
                                 text = when (tradeType) {
-                                    TradeType.BUY -> "Enter Amount to Buy"
-                                    TradeType.SELL -> "Enter Amount to Sell"
+                                    TradeType.BUY -> strings.enterAmountToBuy
+                                    TradeType.SELL -> strings.enterAmountToSell
                                 },
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
-                            
                             CenteredDollarTextField(
                                 amountText = state.amount,
                                 onAmountChange = onAmountChange,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            
                             Spacer(modifier = Modifier.height(16.dp))
-
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -223,7 +218,6 @@ fun TradeScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
-
                             if (state.error != null) {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Box(
@@ -248,9 +242,7 @@ fun TradeScreen(
                             }
                         }
                     }
-                    
                     Spacer(modifier = Modifier.weight(1f))
-
                     Button(
                         onClick = onSubmitClicked,
                         modifier = Modifier
@@ -271,15 +263,14 @@ fun TradeScreen(
                     ) {
                         Text(
                             text = when (tradeType) {
-                                TradeType.BUY -> "Buy Now"
-                                TradeType.SELL -> "Sell Now"
+                                TradeType.BUY -> strings.buyNow
+                                TradeType.SELL -> strings.sellNow
                             },
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Spacer(modifier = Modifier.height(32.dp))
                 }
             }

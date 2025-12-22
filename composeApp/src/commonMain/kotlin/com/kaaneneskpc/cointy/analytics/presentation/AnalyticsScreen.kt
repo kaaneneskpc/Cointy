@@ -43,6 +43,7 @@ import com.kaaneneskpc.cointy.analytics.presentation.component.PieChartLegend
 import com.kaaneneskpc.cointy.analytics.presentation.component.PortfolioHistoryChart
 import com.kaaneneskpc.cointy.analytics.presentation.component.PortfolioPieChart
 import com.kaaneneskpc.cointy.analytics.presentation.component.TransactionStatsCard
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
 import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
@@ -53,6 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AnalyticsScreen(
     onBackClicked: () -> Unit
 ) {
+    val strings = LocalStringResources.current
     val viewModel = koinViewModel<AnalyticsViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     Scaffold(
@@ -60,7 +62,7 @@ fun AnalyticsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Portfolio Analytics",
+                        text = strings.portfolioAnalytics,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -69,7 +71,7 @@ fun AnalyticsScreen(
                     IconButton(onClick = onBackClicked) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -143,6 +145,7 @@ private fun ErrorContent(errorMessage: String) {
 
 @Composable
 private fun EmptyAnalyticsContent() {
+    val strings = LocalStringResources.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -157,14 +160,14 @@ private fun EmptyAnalyticsContent() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "No Analytics Data",
+                text = strings.noAnalyticsData,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Start investing to see your portfolio analytics and performance charts",
+                text = strings.noAnalyticsDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
@@ -175,6 +178,7 @@ private fun EmptyAnalyticsContent() {
 
 @Composable
 private fun AnalyticsContent(state: AnalyticsState) {
+    val strings = LocalStringResources.current
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -201,7 +205,7 @@ private fun AnalyticsContent(state: AnalyticsState) {
         if (state.coinPerformances.isNotEmpty()) {
             item {
                 Text(
-                    text = "Coin Performance",
+                    text = strings.coinPerformance,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -225,6 +229,7 @@ private fun AnalyticsContent(state: AnalyticsState) {
 
 @Composable
 private fun ProfitLossSummarySection(state: AnalyticsState) {
+    val strings = LocalStringResources.current
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -234,12 +239,12 @@ private fun ProfitLossSummarySection(state: AnalyticsState) {
         ) {
             AnalyticsSummaryCard(
                 modifier = Modifier.weight(1f),
-                title = "Total Value",
+                title = strings.totalValue,
                 value = state.totalPortfolioValue
             )
             AnalyticsSummaryCard(
                 modifier = Modifier.weight(1f),
-                title = "Invested",
+                title = strings.invested,
                 value = state.totalInvestedAmount
             )
         }
@@ -264,7 +269,7 @@ private fun ProfitLossSummarySection(state: AnalyticsState) {
             ) {
                 Column {
                     Text(
-                        text = "Total Profit/Loss",
+                        text = strings.totalProfitLoss,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -306,6 +311,7 @@ private fun ProfitLossSummarySection(state: AnalyticsState) {
 
 @Composable
 private fun PortfolioDistributionSection(state: AnalyticsState) {
+    val strings = LocalStringResources.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -325,7 +331,7 @@ private fun PortfolioDistributionSection(state: AnalyticsState) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "Portfolio Distribution",
+                text = strings.portfolioDistribution,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -348,6 +354,7 @@ private fun PortfolioDistributionSection(state: AnalyticsState) {
 
 @Composable
 private fun PortfolioHistorySection(state: AnalyticsState) {
+    val strings = LocalStringResources.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -367,7 +374,7 @@ private fun PortfolioHistorySection(state: AnalyticsState) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "Portfolio History",
+                text = strings.portfolioHistory,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
