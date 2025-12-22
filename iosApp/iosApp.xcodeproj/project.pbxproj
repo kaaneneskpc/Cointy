@@ -38,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		217E9FFB935B841414FFA366 /* Cointy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cointy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A935BAE2EF97A8C00061B8C /* iosAppWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosAppWidgetExtension.entitlements; sourceTree = "<group>"; };
 		4AE531A12EF96F57000F9755 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		4AE531A32EF96F57000F9755 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		4AE531BF2EF96F85000F9755 /* iosAppWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iosAppWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +113,7 @@
 		362A801DCA04505A545018A8 = {
 			isa = PBXGroup;
 			children = (
+				4A935BAE2EF97A8C00061B8C /* iosAppWidgetExtension.entitlements */,
 				85D2D41345FB87AC9E258EDD /* Configuration */,
 				5F260ECEFE64F232229098A1 /* iosApp */,
 				4AE531A52EF96F57000F9755 /* group.com.kaaneneskpc.cointy */,
@@ -297,10 +299,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = iosAppWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosAppWidget/Info.plist;
@@ -327,10 +330,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = iosAppWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosAppWidget/Info.plist;

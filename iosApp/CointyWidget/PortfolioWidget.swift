@@ -11,17 +11,12 @@ struct PortfolioEntry: TimelineEntry {
 
 struct PortfolioProvider: TimelineProvider {
     func placeholder(in context: Context) -> PortfolioEntry {
-        PortfolioEntry(date: Date(), totalValue: 10000.0, cashBalance: 10000.0, lastUpdated: Date(), debugInfo: "Placeholder")
+        PortfolioEntry(date: Date(), totalValue: 10000.0, cashBalance: 10000.0, lastUpdated: Date(), debugInfo: "")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (PortfolioEntry) -> Void) {
-        if context.isPreview {
-            let entry = PortfolioEntry(date: Date(), totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: Date(), debugInfo: "Preview")
-            completion(entry)
-        } else {
-            let entry = loadPortfolioData()
-            completion(entry)
-        }
+        let entry = loadPortfolioData()
+        completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<PortfolioEntry>) -> Void) {
@@ -32,7 +27,6 @@ struct PortfolioProvider: TimelineProvider {
     }
     
     private func loadPortfolioData() -> PortfolioEntry {
-        // Try App Group first
         var debugInfo = ""
         var totalValue: Double = 0.0
         var cashBalance: Double = 10000.0
@@ -40,21 +34,14 @@ struct PortfolioProvider: TimelineProvider {
         
         if let sharedDefaults = UserDefaults(suiteName: "group.com.kaaneneskpc.cointy") {
             totalValue = sharedDefaults.double(forKey: "totalPortfolioValue")
-            cashBalance = sharedDefaults.double(forKey: "cashBalance")
-            timestamp = sharedDefaults.double(forKey: "lastUpdatedTimestamp")
-            
-            if totalValue > 0 || cashBalance != 10000.0 {
-                debugInfo = "AppGroup ✓"
-            } else {
-                debugInfo = "AppGroup (empty)"
+            let storedCash = sharedDefaults.double(forKey: "cashBalance")
+            if storedCash > 0 {
+                cashBalance = storedCash
             }
+            timestamp = sharedDefaults.double(forKey: "lastUpdatedTimestamp")
+            debugInfo = totalValue > 0 ? "✓" : "○"
         } else {
-            debugInfo = "No AppGroup"
-        }
-        
-        // If no data, use defaults
-        if cashBalance == 0 {
-            cashBalance = 10000.0
+            debugInfo = "✗"
         }
         
         let lastUpdated = timestamp > 0 ? Date(timeIntervalSince1970: timestamp / 1000) : Date()
@@ -74,73 +61,61 @@ struct PortfolioWidgetEntryView: View {
     var entry: PortfolioProvider.Entry
     
     var body: some View {
-        ZStack {
-            Color(hex: "1C1C1E")
-            
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("💰 Cointy")
-                        .font(.system(size: family == .systemSmall ? 11 : 13, weight: .bold))
-                        .foregroundColor(.white)
-                    Spacer()
-                    Button(intent: RefreshPortfolioIntent()) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(Color(hex: "30D158"))
-                    }
-                    .buttonStyle(.plain)
-                }
+        GeometryReader { geo in
+            ZStack {
+                WidgetColors.background
                 
-                Spacer()
-                
-                Text("Total Value")
-                    .font(.system(size: family == .systemSmall ? 8 : 10))
-                    .foregroundColor(Color(hex: "8E8E93"))
-                
-                Text(formatCurrency(entry.totalValue))
-                    .font(.system(size: family == .systemSmall ? 18 : 24, weight: .bold))
-                    .foregroundColor(entry.totalValue > 0 ? Color(hex: "30D158") : Color(hex: "8E8E93"))
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                
-                Spacer()
-                
-                HStack {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text("Cash")
-                            .font(.system(size: 7))
-                            .foregroundColor(Color(hex: "8E8E93"))
-                        Text(formatCurrency(entry.cashBalance))
-                            .font(.system(size: family == .systemSmall ? 9 : 11, weight: .medium))
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("💰 Cointy")
+                            .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.white)
-                            .minimumScaleFactor(0.7)
-                            .lineLimit(1)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 1) {
                         Text(entry.debugInfo)
-                            .font(.system(size: 6))
-                            .foregroundColor(Color(hex: "666666"))
+                            .font(.system(size: 8))
+                            .foregroundColor(WidgetColors.debugGray)
+                        Spacer()
+                    }
+                    
+                    Spacer()
+                    
+                    Text("Total Value")
+                        .font(.system(size: 9))
+                        .foregroundColor(WidgetColors.textGray)
+                    
+                    Text(formatCurrency(entry.totalValue))
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(entry.totalValue > 0 ? WidgetColors.profitGreen : WidgetColors.textGray)
+                        .minimumScaleFactor(0.6)
+                        .lineLimit(1)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text("Cash")
+                                .font(.system(size: 7))
+                                .foregroundColor(WidgetColors.textGray)
+                            Text(formatCurrency(entry.cashBalance))
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                        Spacer()
                         Text(formatTime(entry.lastUpdated))
                             .font(.system(size: 7))
-                            .foregroundColor(Color(hex: "8E8E93"))
+                            .foregroundColor(WidgetColors.textGray)
                     }
                 }
+                .padding(10)
             }
-            .padding(10)
         }
-        .containerBackground(.clear, for: .widget)
     }
     
     private func formatCurrency(_ amount: Double) -> String {
-        if amount == 0 {
-            return "$0.00"
-        }
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "USD"
         formatter.maximumFractionDigits = amount >= 1000 ? 0 : 2
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0"
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
     
     private func formatTime(_ date: Date) -> String {
@@ -160,38 +135,11 @@ struct PortfolioWidget: Widget {
         .configurationDisplayName("Portfolio Value")
         .description("Shows your total portfolio value and cash balance")
         .supportedFamilies([.systemSmall, .systemMedium])
-        .contentMarginsDisabled()
-    }
-}
-
-extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3:
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (1, 1, 1, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue:  Double(b) / 255,
-            opacity: Double(a) / 255
-        )
     }
 }
 
 #Preview(as: .systemSmall) {
     PortfolioWidget()
 } timeline: {
-    PortfolioEntry(date: .now, totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: .now, debugInfo: "Preview")
+    PortfolioEntry(date: .now, totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: .now, debugInfo: "✓")
 }

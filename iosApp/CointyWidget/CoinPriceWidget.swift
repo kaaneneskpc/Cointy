@@ -20,17 +20,12 @@ struct CoinPriceProvider: TimelineProvider {
         CoinPriceEntry(date: Date(), coins: [
             CoinData(id: "1", symbol: "BTC", name: "Bitcoin", price: 43250.0, change24h: 2.5),
             CoinData(id: "2", symbol: "ETH", name: "Ethereum", price: 2280.0, change24h: -1.2)
-        ], debugInfo: "Placeholder")
+        ], debugInfo: "")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (CoinPriceEntry) -> Void) {
-        if context.isPreview {
-            let entry = placeholder(in: context)
-            completion(entry)
-        } else {
-            let entry = loadCoinData()
-            completion(entry)
-        }
+        let entry = loadCoinData()
+        completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<CoinPriceEntry>) -> Void) {
@@ -50,15 +45,15 @@ struct CoinPriceProvider: TimelineProvider {
                 do {
                     let decoded = try JSONDecoder().decode([CoinData].self, from: jsonData)
                     coins = decoded
-                    debugInfo = "AppGroup ✓ (\(coins.count))"
+                    debugInfo = "✓\(coins.count)"
                 } catch {
-                    debugInfo = "JSON Error"
+                    debugInfo = "⚠"
                 }
             } else {
-                debugInfo = "AppGroup (no data)"
+                debugInfo = "○"
             }
         } else {
-            debugInfo = "No AppGroup"
+            debugInfo = "✗"
         }
         
         return CoinPriceEntry(date: Date(), coins: Array(coins.prefix(5)), debugInfo: debugInfo)
@@ -70,52 +65,47 @@ struct CoinPriceWidgetEntryView: View {
     var entry: CoinPriceProvider.Entry
     
     var body: some View {
-        ZStack {
-            Color(hex: "1C1C1E")
-            
-            VStack(alignment: .leading, spacing: 2) {
-                HStack {
-                    Text("📈 Prices")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
-                    Text(entry.debugInfo)
-                        .font(.system(size: 7))
-                        .foregroundColor(Color(hex: "666666"))
-                    Spacer()
-                    Button(intent: RefreshCoinPriceIntent()) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(Color(hex: "30D158"))
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(.bottom, 2)
+        GeometryReader { geo in
+            ZStack {
+                WidgetColors.background
                 
-                if entry.coins.isEmpty {
-                    Spacer()
+                VStack(alignment: .leading, spacing: 2) {
                     HStack {
+                        Text("📈 Prices")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.white)
+                        Text(entry.debugInfo)
+                            .font(.system(size: 8))
+                            .foregroundColor(WidgetColors.debugGray)
                         Spacer()
-                        VStack(spacing: 4) {
-                            Image(systemName: "wallet.pass")
-                                .font(.system(size: 20))
-                                .foregroundColor(Color(hex: "8E8E93"))
-                            Text("Open app to sync")
-                                .font(.system(size: 10))
-                                .foregroundColor(Color(hex: "8E8E93"))
+                    }
+                    .padding(.bottom, 2)
+                    
+                    if entry.coins.isEmpty {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 4) {
+                                Image(systemName: "wallet.pass")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(WidgetColors.textGray)
+                                Text("Open app to sync")
+                                    .font(.system(size: 9))
+                                    .foregroundColor(WidgetColors.textGray)
+                            }
+                            Spacer()
+                        }
+                        Spacer()
+                    } else {
+                        ForEach(entry.coins.prefix(getMaxCoins())) { coin in
+                            CoinRowView(coin: coin)
                         }
                         Spacer()
                     }
-                    Spacer()
-                } else {
-                    ForEach(entry.coins.prefix(getMaxCoins())) { coin in
-                        CoinRowView(coin: coin)
-                    }
-                    Spacer()
                 }
+                .padding(10)
             }
-            .padding(10)
         }
-        .containerBackground(.clear, for: .widget)
     }
     
     private func getMaxCoins() -> Int {
@@ -139,7 +129,7 @@ struct CoinRowView: View {
                     .foregroundColor(.white)
                 Text(String(coin.name.prefix(8)))
                     .font(.system(size: 8))
-                    .foregroundColor(Color(hex: "8E8E93"))
+                    .foregroundColor(WidgetColors.textGray)
             }
             .frame(width: 50, alignment: .leading)
             
@@ -153,7 +143,7 @@ struct CoinRowView: View {
                     .lineLimit(1)
                 Text(formatChange(coin.change24h))
                     .font(.system(size: 8, weight: .medium))
-                    .foregroundColor(coin.change24h >= 0 ? Color(hex: "30D158") : Color(hex: "FF453A"))
+                    .foregroundColor(coin.change24h >= 0 ? WidgetColors.profitGreen : WidgetColors.lossRed)
             }
         }
         .padding(.vertical, 2)
@@ -183,7 +173,6 @@ struct CoinPriceWidget: Widget {
         .configurationDisplayName("Coin Prices")
         .description("Shows current prices of your portfolio coins")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
-        .contentMarginsDisabled()
     }
 }
 
@@ -192,7 +181,6 @@ struct CoinPriceWidget: Widget {
 } timeline: {
     CoinPriceEntry(date: .now, coins: [
         CoinData(id: "1", symbol: "BTC", name: "Bitcoin", price: 43250.0, change24h: 2.5),
-        CoinData(id: "2", symbol: "ETH", name: "Ethereum", price: 2280.0, change24h: -1.2),
-        CoinData(id: "3", symbol: "SOL", name: "Solana", price: 98.50, change24h: 5.3)
-    ], debugInfo: "Preview")
+        CoinData(id: "2", symbol: "ETH", name: "Ethereum", price: 2280.0, change24h: -1.2)
+    ], debugInfo: "✓2")
 }
