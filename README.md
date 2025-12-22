@@ -341,7 +341,7 @@ cd Cointy
 - [x] Multi-language support (English, Turkish)
 - [x] User profile management
 - [x] Notification settings
-- [x] Home Screen Widgets (Android)
+- [x] Widgets (Android/IOS)
 - [ ] Additional languages (German, French, Spanish)
 
 ## 📄 License
