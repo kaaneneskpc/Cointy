@@ -650,6 +650,59 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 ---
 
+### 3.14 Home Screen Widgets (Android)
+**Purpose:** To provide users with quick access to portfolio information directly from their home screen without opening the app.
+
+**Features:**
+- **Portfolio Value Widget:**
+  - Display total portfolio value
+  - Show cash balance
+  - Last updated time indicator
+  - Manual refresh button
+  - Tap to open app
+
+- **Coin Prices Widget:**
+  - List of portfolio coins (up to 5)
+  - Current price for each coin
+  - 24h price change percentage with color coding
+  - Manual refresh button
+  - Empty state when no coins in portfolio
+  - Tap to open app
+
+- **Widget Customization:**
+  - Resizable widgets (horizontal and vertical)
+  - Dark theme design matching app theme
+  - Automatic periodic updates (30 minutes)
+
+**Technical Details:**
+- `PortfolioWidget` - Glance widget for portfolio summary
+- `CoinPriceWidget` - Glance widget for coin prices
+- `PortfolioWidgetReceiver` - Widget receiver for system registration
+- `CoinPriceWidgetReceiver` - Widget receiver for coin prices
+- `GetWidgetDataUseCase` - Use case for fetching widget data
+- `WidgetData` - Data models for widget display
+- `RefreshPortfolioWidgetAction` - Action callback for refresh
+- `RefreshCoinPriceWidgetAction` - Action callback for refresh
+
+**Widget Data Models:**
+- `PortfolioWidgetData` - Portfolio summary:
+  - totalPortfolioValue: Total value of all holdings
+  - cashBalance: Available cash balance
+  - lastUpdated: Timestamp of last data refresh
+
+- `CoinWidgetData` - Individual coin data:
+  - coinId, name, symbol, iconUrl
+  - price: Current price
+  - change24h: 24-hour price change percentage
+
+**Android-Specific Implementation:**
+- Jetpack Glance 1.1.0 for Compose-based widgets
+- Material 3 design language
+- Koin dependency injection integration
+- WorkManager for background updates
+
+---
+
 ## 4. User Flows
 
 ### 4.1 Application Startup Flow

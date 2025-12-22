@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 
-struct CoinData: Identifiable {
+struct CoinData: Identifiable, Codable {
     let id: String
     let symbol: String
     let name: String
@@ -12,6 +12,7 @@ struct CoinData: Identifiable {
 struct CoinPriceEntry: TimelineEntry {
     let date: Date
     let coins: [CoinData]
+    let debugInfo: String
 }
 
 struct CoinPriceProvider: TimelineProvider {
@@ -19,72 +20,111 @@ struct CoinPriceProvider: TimelineProvider {
         CoinPriceEntry(date: Date(), coins: [
             CoinData(id: "1", symbol: "BTC", name: "Bitcoin", price: 43250.0, change24h: 2.5),
             CoinData(id: "2", symbol: "ETH", name: "Ethereum", price: 2280.0, change24h: -1.2)
-        ])
+        ], debugInfo: "Placeholder")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (CoinPriceEntry) -> Void) {
-        let entry = loadCoinData()
-        completion(entry)
+        if context.isPreview {
+            let entry = placeholder(in: context)
+            completion(entry)
+        } else {
+            let entry = loadCoinData()
+            completion(entry)
+        }
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<CoinPriceEntry>) -> Void) {
         let entry = loadCoinData()
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
     }
     
     private func loadCoinData() -> CoinPriceEntry {
-        let sharedDefaults = UserDefaults(suiteName: "group.com.kaaneneskpc.cointy")
         var coins: [CoinData] = []
-        if let coinsData = sharedDefaults?.data(forKey: "widgetCoins"),
-           let decoded = try? JSONDecoder().decode([CoinDataCodable].self, from: coinsData) {
-            coins = decoded.map { CoinData(id: $0.id, symbol: $0.symbol, name: $0.name, price: $0.price, change24h: $0.change24h) }
+        var debugInfo = ""
+        
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.kaaneneskpc.cointy") {
+            if let jsonString = sharedDefaults.string(forKey: "widgetCoins"),
+               let jsonData = jsonString.data(using: .utf8) {
+                do {
+                    let decoded = try JSONDecoder().decode([CoinData].self, from: jsonData)
+                    coins = decoded
+                    debugInfo = "AppGroup ✓ (\(coins.count))"
+                } catch {
+                    debugInfo = "JSON Error"
+                }
+            } else {
+                debugInfo = "AppGroup (no data)"
+            }
+        } else {
+            debugInfo = "No AppGroup"
         }
-        return CoinPriceEntry(date: Date(), coins: Array(coins.prefix(5)))
+        
+        return CoinPriceEntry(date: Date(), coins: Array(coins.prefix(5)), debugInfo: debugInfo)
     }
 }
 
-struct CoinDataCodable: Codable {
-    let id: String
-    let symbol: String
-    let name: String
-    let price: Double
-    let change24h: Double
-}
-
 struct CoinPriceWidgetEntryView: View {
+    @Environment(\.widgetFamily) var family
     var entry: CoinPriceProvider.Entry
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text("Coin Prices")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white)
-                Spacer()
-            }
-            .padding(.bottom, 4)
+        ZStack {
+            Color(hex: "1C1C1E")
             
-            if entry.coins.isEmpty {
-                Spacer()
+            VStack(alignment: .leading, spacing: 2) {
                 HStack {
+                    Text("📈 Prices")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white)
+                    Text(entry.debugInfo)
+                        .font(.system(size: 7))
+                        .foregroundColor(Color(hex: "666666"))
                     Spacer()
-                    Text("No coins in portfolio")
-                        .font(.system(size: 12))
-                        .foregroundColor(Color(hex: "8E8E93"))
+                    Button(intent: RefreshCoinPriceIntent()) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(Color(hex: "30D158"))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.bottom, 2)
+                
+                if entry.coins.isEmpty {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        VStack(spacing: 4) {
+                            Image(systemName: "wallet.pass")
+                                .font(.system(size: 20))
+                                .foregroundColor(Color(hex: "8E8E93"))
+                            Text("Open app to sync")
+                                .font(.system(size: 10))
+                                .foregroundColor(Color(hex: "8E8E93"))
+                        }
+                        Spacer()
+                    }
+                    Spacer()
+                } else {
+                    ForEach(entry.coins.prefix(getMaxCoins())) { coin in
+                        CoinRowView(coin: coin)
+                    }
                     Spacer()
                 }
-                Spacer()
-            } else {
-                ForEach(entry.coins) { coin in
-                    CoinRowView(coin: coin)
-                }
-                Spacer()
             }
+            .padding(10)
         }
-        .padding(12)
-        .containerBackground(Color(hex: "1C1C1E"), for: .widget)
+        .containerBackground(.clear, for: .widget)
+    }
+    
+    private func getMaxCoins() -> Int {
+        switch family {
+        case .systemSmall: return 2
+        case .systemMedium: return 3
+        case .systemLarge: return 6
+        default: return 3
+        }
     }
 }
 
@@ -93,24 +133,26 @@ struct CoinRowView: View {
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(coin.symbol)
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: 10, weight: .bold))
                     .foregroundColor(.white)
-                Text(coin.name.prefix(10))
-                    .font(.system(size: 9))
+                Text(String(coin.name.prefix(8)))
+                    .font(.system(size: 8))
                     .foregroundColor(Color(hex: "8E8E93"))
             }
-            .frame(width: 60, alignment: .leading)
+            .frame(width: 50, alignment: .leading)
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 1) {
+            VStack(alignment: .trailing, spacing: 0) {
                 Text(formatCurrency(coin.price))
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.white)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
                 Text(formatChange(coin.change24h))
-                    .font(.system(size: 9))
+                    .font(.system(size: 8, weight: .medium))
                     .foregroundColor(coin.change24h >= 0 ? Color(hex: "30D158") : Color(hex: "FF453A"))
             }
         }
@@ -127,7 +169,7 @@ struct CoinRowView: View {
     
     private func formatChange(_ change: Double) -> String {
         let sign = change >= 0 ? "+" : ""
-        return String(format: "%@%.2f%%", sign, change)
+        return String(format: "%@%.1f%%", sign, change)
     }
 }
 
@@ -140,7 +182,8 @@ struct CoinPriceWidget: Widget {
         }
         .configurationDisplayName("Coin Prices")
         .description("Shows current prices of your portfolio coins")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .contentMarginsDisabled()
     }
 }
 
@@ -151,5 +194,5 @@ struct CoinPriceWidget: Widget {
         CoinData(id: "1", symbol: "BTC", name: "Bitcoin", price: 43250.0, change24h: 2.5),
         CoinData(id: "2", symbol: "ETH", name: "Ethereum", price: 2280.0, change24h: -1.2),
         CoinData(id: "3", symbol: "SOL", name: "Solana", price: 98.50, change24h: 5.3)
-    ])
+    ], debugInfo: "Preview")
 }

@@ -46,6 +46,7 @@ import com.kaaneneskpc.cointy.transaction.data.TransactionRepositoryImpl
 import com.kaaneneskpc.cointy.transaction.domain.GetTransactionHistoryUseCase
 import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
 import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryViewModel
+import com.kaaneneskpc.cointy.widget.domain.GetWidgetDataUseCase
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -124,4 +125,7 @@ val sharedModule = module {
 
     //Onboarding
     viewModel { OnboardingViewModel(get()) }
+
+    //Widget
+    singleOf(::GetWidgetDataUseCase)
 }

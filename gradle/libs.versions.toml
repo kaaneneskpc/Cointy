@@ -25,6 +25,7 @@ turbine = "0.7.0"
 core-ktx = "1.7.0"
 datastore = "1.1.1"
 work-runtime = "2.9.1"
+glance = "1.1.0"
 
 [libraries]
 # Shared Libraries
@@ -79,6 +80,11 @@ datastore-preferences-core = { module = "androidx.datastore:datastore-preference
 
 # WorkManager Libraries
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime" }
+
+# Glance Widget Libraries
+glance = { module = "androidx.glance:glance", version.ref = "glance" }
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

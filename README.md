@@ -60,6 +60,7 @@
 - 🌙 **Dark Mode**: Full dark mode support with system, light, and dark theme options
 - 💾 **Offline Support**: Local database for offline access to your portfolio
 - 📤 **Export Data**: Export portfolio and transactions to CSV or JSON
+- 📱 **Home Screen Widgets**: Quick access to portfolio value and coin prices (Android)
 
 ## ✨ Features
 
@@ -186,6 +187,13 @@
   - General notifications toggle
   - Price alerts notification toggle
   - Granular notification control
+
+- **📱 Home Screen Widgets (Android)**
+  - Portfolio Value widget with total value and cash balance
+  - Coin Prices widget showing portfolio coins with 24h change
+  - Manual refresh button for instant updates
+  - Dark theme design matching app aesthetics
+  - Resizable widgets for customization
 
 ## 🛠 Tech Stack
 
@@ -333,6 +341,7 @@ cd Cointy
 - [x] Multi-language support (English, Turkish)
 - [x] User profile management
 - [x] Notification settings
+- [x] Home Screen Widgets (Android)
 - [ ] Additional languages (German, French, Spanish)
 
 ## 📄 License

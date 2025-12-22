@@ -7,7 +7,12 @@ import platform.BackgroundTasks.BGTaskScheduler
 
 object IosBackgroundTaskHandler : KoinComponent {
     private val backgroundPriceChecker: BackgroundPriceChecker by inject()
+    private var isRegistered: Boolean = false
     fun registerBackgroundTasks() {
+        if (isRegistered) {
+            println("IosBackgroundTaskHandler: Background tasks already registered, skipping")
+            return
+        }
         println("IosBackgroundTaskHandler: Registering background tasks")
         BGTaskScheduler.sharedScheduler.registerForTaskWithIdentifier(
             identifier = IosBackgroundPriceChecker.TASK_IDENTIFIER,
@@ -15,6 +20,7 @@ object IosBackgroundTaskHandler : KoinComponent {
         ) { task ->
             handleAppRefresh(task as BGAppRefreshTask)
         }
+        isRegistered = true
         println("IosBackgroundTaskHandler: Background tasks registered")
     }
     private fun handleAppRefresh(task: BGAppRefreshTask) {
@@ -33,4 +39,3 @@ object IosBackgroundTaskHandler : KoinComponent {
         backgroundPriceChecker.schedulePeriodicPriceCheck()
     }
 }
-

@@ -44,6 +44,9 @@ kotlin {
             implementation(libs.koin.androidx.compose)
             implementation(libs.biometric)
             implementation(libs.work.runtime.ktx)
+            implementation(libs.glance)
+            implementation(libs.glance.appwidget)
+            implementation(libs.glance.material3)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

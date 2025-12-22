@@ -6,86 +6,147 @@ struct PortfolioEntry: TimelineEntry {
     let totalValue: Double
     let cashBalance: Double
     let lastUpdated: Date
+    let debugInfo: String
 }
 
 struct PortfolioProvider: TimelineProvider {
     func placeholder(in context: Context) -> PortfolioEntry {
-        PortfolioEntry(date: Date(), totalValue: 10000.0, cashBalance: 10000.0, lastUpdated: Date())
+        PortfolioEntry(date: Date(), totalValue: 10000.0, cashBalance: 10000.0, lastUpdated: Date(), debugInfo: "Placeholder")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (PortfolioEntry) -> Void) {
-        let entry = loadPortfolioData()
-        completion(entry)
+        if context.isPreview {
+            let entry = PortfolioEntry(date: Date(), totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: Date(), debugInfo: "Preview")
+            completion(entry)
+        } else {
+            let entry = loadPortfolioData()
+            completion(entry)
+        }
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<PortfolioEntry>) -> Void) {
         let entry = loadPortfolioData()
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
     }
     
     private func loadPortfolioData() -> PortfolioEntry {
-        let sharedDefaults = UserDefaults(suiteName: "group.com.kaaneneskpc.cointy")
-        let totalValue = sharedDefaults?.double(forKey: "totalPortfolioValue") ?? 0.0
-        let cashBalance = sharedDefaults?.double(forKey: "cashBalance") ?? 10000.0
-        let lastUpdated = sharedDefaults?.object(forKey: "lastUpdated") as? Date ?? Date()
-        return PortfolioEntry(date: Date(), totalValue: totalValue, cashBalance: cashBalance, lastUpdated: lastUpdated)
+        // Try App Group first
+        var debugInfo = ""
+        var totalValue: Double = 0.0
+        var cashBalance: Double = 10000.0
+        var timestamp: Double = 0
+        
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.kaaneneskpc.cointy") {
+            totalValue = sharedDefaults.double(forKey: "totalPortfolioValue")
+            cashBalance = sharedDefaults.double(forKey: "cashBalance")
+            timestamp = sharedDefaults.double(forKey: "lastUpdatedTimestamp")
+            
+            if totalValue > 0 || cashBalance != 10000.0 {
+                debugInfo = "AppGroup ✓"
+            } else {
+                debugInfo = "AppGroup (empty)"
+            }
+        } else {
+            debugInfo = "No AppGroup"
+        }
+        
+        // If no data, use defaults
+        if cashBalance == 0 {
+            cashBalance = 10000.0
+        }
+        
+        let lastUpdated = timestamp > 0 ? Date(timeIntervalSince1970: timestamp / 1000) : Date()
+        
+        return PortfolioEntry(
+            date: Date(),
+            totalValue: totalValue,
+            cashBalance: cashBalance,
+            lastUpdated: lastUpdated,
+            debugInfo: debugInfo
+        )
     }
 }
 
 struct PortfolioWidgetEntryView: View {
+    @Environment(\.widgetFamily) var family
     var entry: PortfolioProvider.Entry
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Cointy Portfolio")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white)
-                Spacer()
-            }
+        ZStack {
+            Color(hex: "1C1C1E")
             
-            Text("Total Value")
-                .font(.system(size: 10))
-                .foregroundColor(Color(hex: "8E8E93"))
-            
-            Text(formatCurrency(entry.totalValue))
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(Color(hex: "30D158"))
-            
-            Spacer()
-            
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Cash Balance")
-                        .font(.system(size: 9))
-                        .foregroundColor(Color(hex: "8E8E93"))
-                    Text(formatCurrency(entry.cashBalance))
-                        .font(.system(size: 12, weight: .medium))
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("💰 Cointy")
+                        .font(.system(size: family == .systemSmall ? 11 : 13, weight: .bold))
                         .foregroundColor(.white)
+                    Spacer()
+                    Button(intent: RefreshPortfolioIntent()) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(Color(hex: "30D158"))
+                    }
+                    .buttonStyle(.plain)
                 }
+                
                 Spacer()
-                Text(formatTime(entry.lastUpdated))
-                    .font(.system(size: 9))
+                
+                Text("Total Value")
+                    .font(.system(size: family == .systemSmall ? 8 : 10))
                     .foregroundColor(Color(hex: "8E8E93"))
+                
+                Text(formatCurrency(entry.totalValue))
+                    .font(.system(size: family == .systemSmall ? 18 : 24, weight: .bold))
+                    .foregroundColor(entry.totalValue > 0 ? Color(hex: "30D158") : Color(hex: "8E8E93"))
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                
+                Spacer()
+                
+                HStack {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Cash")
+                            .font(.system(size: 7))
+                            .foregroundColor(Color(hex: "8E8E93"))
+                        Text(formatCurrency(entry.cashBalance))
+                            .font(.system(size: family == .systemSmall ? 9 : 11, weight: .medium))
+                            .foregroundColor(.white)
+                            .minimumScaleFactor(0.7)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 1) {
+                        Text(entry.debugInfo)
+                            .font(.system(size: 6))
+                            .foregroundColor(Color(hex: "666666"))
+                        Text(formatTime(entry.lastUpdated))
+                            .font(.system(size: 7))
+                            .foregroundColor(Color(hex: "8E8E93"))
+                    }
+                }
             }
+            .padding(10)
         }
-        .padding(16)
-        .containerBackground(Color(hex: "1C1C1E"), for: .widget)
+        .containerBackground(.clear, for: .widget)
     }
     
     private func formatCurrency(_ amount: Double) -> String {
+        if amount == 0 {
+            return "$0.00"
+        }
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "USD"
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+        formatter.maximumFractionDigits = amount >= 1000 ? 0 : 2
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0"
     }
     
     private func formatTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        return "Updated: \(formatter.string(from: date))"
+        return formatter.string(from: date)
     }
 }
 
@@ -99,6 +160,7 @@ struct PortfolioWidget: Widget {
         .configurationDisplayName("Portfolio Value")
         .description("Shows your total portfolio value and cash balance")
         .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
     }
 }
 
@@ -131,5 +193,5 @@ extension Color {
 #Preview(as: .systemSmall) {
     PortfolioWidget()
 } timeline: {
-    PortfolioEntry(date: .now, totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: .now)
+    PortfolioEntry(date: .now, totalValue: 15234.56, cashBalance: 5000.0, lastUpdated: .now, debugInfo: "Preview")
 }
