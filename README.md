@@ -28,9 +28,17 @@
 
 <div align="center">
 
-| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History | Portfolio History | Notification & Price Alerts | Search & Filter | Dark Mode | Settings | Export Portfolio |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| <img src="https://github.com/user-attachments/assets/4e98becf-ac71-4680-abcf-bf190efedea2" width="200"/> | <img src="https://github.com/user-attachments/assets/738334a6-728c-4f04-86c5-5e364f5c98e2" width="200"/> | <img src="https://github.com/user-attachments/assets/cdf6ae97-eeb9-41f3-91f5-b953c3f02cd3" width="200"/> | <img src="https://github.com/user-attachments/assets/c9b46e5c-3712-4b16-92e6-549b8ec4a617" width="200"/> | <img src="https://github.com/user-attachments/assets/857e3d31-69e3-4686-8273-b1087215e072" width="200"/> | <img src="https://github.com/user-attachments/assets/e8b7271f-1c9d-4d29-9531-8421b11eb8d6" width="200"/> | <img src="https://github.com/user-attachments/assets/8735d96c-f089-4480-a386-091081b25929" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/ab387b01-aa74-4f50-b70b-f3ad5d7f4653" width="100"/> <img src="https://github.com/user-attachments/assets/4883e7d8-092d-4595-b9bf-7ddd2f0b407b" width="100"/></td></tr></table> | <table><tr><td> <img src="https://github.com/user-attachments/assets/6ac37ed7-b189-4d4e-9457-862bc9152e9d" width="100"/> <img src="https://github.com/user-attachments/assets/8a60298e-1112-4a23-a68b-bee4dc0136a2" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d3dde0ac-459c-4b76-9fa7-a9b7b6fd7c53" width="200"/> | <img src="https://github.com/user-attachments/assets/bd1a2c01-529a-4db5-a095-3856f804db2b" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/9f46474e-942e-4df2-8fe0-742f68badba3" width="100"/> <img src="https://github.com/user-attachments/assets/feda169c-8000-4957-8cd7-bb15ffae32f9" width="100"/></td></tr></table>
+| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/4e98becf-ac71-4680-abcf-bf190efedea2" width="200"/> | <img src="https://github.com/user-attachments/assets/738334a6-728c-4f04-86c5-5e364f5c98e2" width="200"/> | <img src="https://github.com/user-attachments/assets/cdf6ae97-eeb9-41f3-91f5-b953c3f02cd3" width="200"/> | <img src="https://github.com/user-attachments/assets/c9b46e5c-3712-4b16-92e6-549b8ec4a617" width="200"/> | <img src="https://github.com/user-attachments/assets/857e3d31-69e3-4686-8273-b1087215e072" width="200"/> | <img src="https://github.com/user-attachments/assets/e8b7271f-1c9d-4d29-9531-8421b11eb8d6" width="200"/> |
+
+| Portfolio History | Notification & Price Alerts | Search & Filter | Dark Mode | Settings | Export Portfolio |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/8735d96c-f089-4480-a386-091081b25929" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/ab387b01-aa74-4f50-b70b-f3ad5d7f4653" width="100"/> <img src="https://github.com/user-attachments/assets/4883e7d8-092d-4595-b9bf-7ddd2f0b407b" width="100"/></td></tr></table> | <table><tr><td> <img src="https://github.com/user-attachments/assets/6ac37ed7-b189-4d4e-9457-862bc9152e9d" width="100"/> <img src="https://github.com/user-attachments/assets/8a60298e-1112-4a23-a68b-bee4dc0136a2" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d3dde0ac-459c-4b76-9fa7-a9b7b6fd7c53" width="200"/> | <img src="https://github.com/user-attachments/assets/bd1a2c01-529a-4db5-a095-3856f804db2b" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/9f46474e-942e-4df2-8fe0-742f68badba3" width="100"/> <img src="https://github.com/user-attachments/assets/feda169c-8000-4957-8cd7-bb15ffae32f9" width="100"/></td></tr></table>
+
+| Widget |
+|:-:|
+| <img src="https://github.com/user-attachments/assets/4c459443-18c5-4d6f-abd2-c77e9f4bd4be" width="200"/> |
 
 </div>
 
@@ -38,9 +46,17 @@
 
 <div align="center">
 
-| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History | Portfolio History | Notification & Price Alerts | Search & Filter | Dark Mode | Settings | Export Portfolio |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| <img src="https://github.com/user-attachments/assets/7ae637d6-b276-4a52-b849-e271eebe5269" width="200"/> | <img src="https://github.com/user-attachments/assets/4855272f-6f1a-47f7-9155-3ff72bd4dee2" width="200"/> | <img src="https://github.com/user-attachments/assets/ec6b0de0-1ed1-4a0d-9aa5-18576dada854" width="200"/> | <img src= "https://github.com/user-attachments/assets/5c57520c-fa0d-4ca2-b1e4-605a205c3fff" width="200"/> | <img src="https://github.com/user-attachments/assets/d8ff4c9d-876d-4122-a139-cbc68322e2a9" width="200"/> | <img src="https://github.com/user-attachments/assets/d646edb7-f00d-4222-945d-da068a23e0dd" width="200"/> | <img src="https://github.com/user-attachments/assets/1fd7deea-b2f8-4afe-ba74-a92ef4f801a3" width="200"/> |  <table><tr><td><img src="https://github.com/user-attachments/assets/2a65d11c-1fc1-42e5-838d-23708abf8bad" width="100"/> <img src="https://github.com/user-attachments/assets/50d56405-6a19-480b-9125-5cc6251bee31" width="100"/></td></tr></table> | <table><tr><td><img src="https://github.com/user-attachments/assets/9306e199-955e-49c7-888b-6dc1b8eef491" width="100"/> <img src="https://github.com/user-attachments/assets/3e520688-77b1-4a85-a478-312dd178edfc" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d0738910-06a0-4b46-9b75-bf7fc115084e" width="200"/> | <img src="https://github.com/user-attachments/assets/17560334-aae8-403f-b4a1-23ec2209e579" width="200"/> | <img src="https://github.com/user-attachments/assets/50ca013b-692e-4544-8668-450fffeb9424" width="200"/> |
+| Portfolio | Coin Discovery | Buy Screen | Sell Screen | Price Chart | Transaction History |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/7ae637d6-b276-4a52-b849-e271eebe5269" width="200"/> | <img src="https://github.com/user-attachments/assets/4855272f-6f1a-47f7-9155-3ff72bd4dee2" width="200"/> | <img src="https://github.com/user-attachments/assets/ec6b0de0-1ed1-4a0d-9aa5-18576dada854" width="200"/> | <img src= "https://github.com/user-attachments/assets/5c57520c-fa0d-4ca2-b1e4-605a205c3fff" width="200"/> | <img src="https://github.com/user-attachments/assets/d8ff4c9d-876d-4122-a139-cbc68322e2a9" width="200"/> | <img src="https://github.com/user-attachments/assets/d646edb7-f00d-4222-945d-da068a23e0dd" width="200"/> |
+
+| Portfolio History | Notification & Price Alerts | Search & Filter | Dark Mode | Settings | Export Portfolio |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/1fd7deea-b2f8-4afe-ba74-a92ef4f801a3" width="200"/> |  <table><tr><td><img src="https://github.com/user-attachments/assets/2a65d11c-1fc1-42e5-838d-23708abf8bad" width="100"/> <img src="https://github.com/user-attachments/assets/50d56405-6a19-480b-9125-5cc6251bee31" width="100"/></td></tr></table> | <table><tr><td><img src="https://github.com/user-attachments/assets/9306e199-955e-49c7-888b-6dc1b8eef491" width="100"/> <img src="https://github.com/user-attachments/assets/3e520688-77b1-4a85-a478-312dd178edfc" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d0738910-06a0-4b46-9b75-bf7fc115084e" width="200"/> | <img src="https://github.com/user-attachments/assets/17560334-aae8-403f-b4a1-23ec2209e579" width="200"/> | <img src="https://github.com/user-attachments/assets/50ca013b-692e-4544-8668-450fffeb9424" width="200"/> |
+
+| Widget |
+|:-:|
+| <img src="https://github.com/user-attachments/assets/4c0bca83-9018-45f1-ac8a-72b2275e5dba" width="200"/> |
 
 </div>
 
