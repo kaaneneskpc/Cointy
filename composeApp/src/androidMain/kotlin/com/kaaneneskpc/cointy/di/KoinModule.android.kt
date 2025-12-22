@@ -1,5 +1,7 @@
 package com.kaaneneskpc.cointy.di
 import androidx.room.RoomDatabase
+import com.kaaneneskpc.cointy.core.background.BackgroundPriceChecker
+import com.kaaneneskpc.cointy.core.background.createBackgroundPriceChecker
 import com.kaaneneskpc.cointy.core.database.getPortfolioDatabaseBuilder
 import com.kaaneneskpc.cointy.core.database.portfolio.PortfolioDatabase
 import com.kaaneneskpc.cointy.core.export.AndroidFileExporter
@@ -23,4 +25,6 @@ actual val platformModule = module {
     singleOf(::AndroidNotificationService).bind<NotificationService>()
     //Export
     singleOf(::AndroidFileExporter).bind<FileExporter>()
+    //Background
+    single<BackgroundPriceChecker> { createBackgroundPriceChecker(get()) }
 }

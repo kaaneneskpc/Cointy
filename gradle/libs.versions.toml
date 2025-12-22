@@ -24,6 +24,7 @@ assertK = "0.25"
 turbine = "0.7.0"
 core-ktx = "1.7.0"
 datastore = "1.1.1"
+work-runtime = "2.9.1"
 
 [libraries]
 # Shared Libraries
@@ -75,6 +76,9 @@ biometric = { module = "androidx.biometric:biometric-ktx", version.ref = "biomet
 
 # DataStore Libraries
 datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+
+# WorkManager Libraries
+work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

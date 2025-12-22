@@ -588,6 +588,13 @@ To provide a secure and user-friendly platform that makes it easy for users to t
   - Notification permission handling
   - Alert triggered notifications with coin details
 
+- **Background Price Checking:**
+  - Automatic price checking even when app is closed
+  - Android: WorkManager with 15-minute periodic work
+  - iOS: BGTaskScheduler with BGAppRefreshTask
+  - Network connectivity constraint for efficient battery usage
+  - Automatic retry on failure with exponential backoff
+
 **Technical Details:**
 - `PriceAlertEntity` - Database entity for alerts
 - `PriceAlertDao` - Database Access Object
@@ -597,11 +604,17 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 - `DeletePriceAlertUseCase` - Delete alert
 - `TogglePriceAlertUseCase` - Enable/disable alert
 - `CheckPriceAlertsUseCase` - Check and trigger alerts
+- `BackgroundCheckPriceAlertsUseCase` - Background price fetching and alert checking
 - `PriceAlertViewModel` - State management with StateFlow
 - `PriceAlertScreen` - Alert list Compose UI
 - `CreateAlertScreen` - Alert creation Compose UI
 - `NotificationService` - Platform abstraction for notifications
 - `NotificationManager` - Permission and channel management
+- `BackgroundPriceChecker` - Common interface for background tasks
+- `PriceAlertWorker` - Android WorkManager worker
+- `AndroidBackgroundPriceChecker` - Android WorkManager implementation
+- `IosBackgroundPriceChecker` - iOS BGTaskScheduler implementation
+- `IosBackgroundTaskHandler` - iOS background task registration and handling
 
 **Alert Models:**
 - `PriceAlertModel` - Domain model containing:

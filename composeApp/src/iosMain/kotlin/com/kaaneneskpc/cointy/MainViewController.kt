@@ -1,6 +1,7 @@
 package com.kaaneneskpc.cointy
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.kaaneneskpc.cointy.core.background.IosBackgroundTaskHandler
 import com.kaaneneskpc.cointy.core.notification.NotificationManager
 import com.kaaneneskpc.cointy.di.initKoin
 import org.koin.core.component.KoinComponent
@@ -13,9 +14,20 @@ object IosNotificationInitializer : KoinComponent {
     }
 }
 
+object IosBackgroundInitializer {
+    fun registerBackgroundTasks() {
+        IosBackgroundTaskHandler.registerBackgroundTasks()
+    }
+    fun scheduleBackgroundTasks() {
+        IosBackgroundTaskHandler.scheduleBackgroundTasks()
+    }
+}
+
 fun MainViewController() = ComposeUIViewController(
     configure = {
         initKoin()
         IosNotificationInitializer.initialize()
+        IosBackgroundInitializer.registerBackgroundTasks()
+        IosBackgroundInitializer.scheduleBackgroundTasks()
     }
 ) { App() }

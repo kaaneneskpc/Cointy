@@ -1,6 +1,7 @@
 package com.kaaneneskpc.cointy
 
 import android.app.Application
+import com.kaaneneskpc.cointy.core.background.BackgroundPriceChecker
 import com.kaaneneskpc.cointy.core.datastore.initializeDataStore
 import com.kaaneneskpc.cointy.core.notification.NotificationManager
 import com.kaaneneskpc.cointy.di.initKoin
@@ -18,9 +19,14 @@ class CointyApplication : Application(), KoinComponent {
             androidContext(this@CointyApplication)
         }
         initializeNotifications()
+        initializeBackgroundTasks()
     }
     private fun initializeNotifications() {
         val notificationManager: NotificationManager by inject()
         notificationManager.initialize()
+    }
+    private fun initializeBackgroundTasks() {
+        val backgroundPriceChecker: BackgroundPriceChecker by inject()
+        backgroundPriceChecker.schedulePeriodicPriceCheck()
     }
 }
