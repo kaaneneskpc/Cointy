@@ -404,6 +404,76 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 ---
 
+### 3.15 Risk Analysis
+**Purpose:** To calculate portfolio volatility and provide users with risk scoring to help them understand their investment risk exposure.
+
+**Features:**
+- **Risk Score Display:**
+  - Animated circular gauge showing risk score (0-100)
+  - Color-coded risk levels (green to red gradient)
+  - Risk level label (Low, Moderate, High, Critical)
+
+- **Risk Breakdown:**
+  - Portfolio volatility percentage
+  - Diversification score (based on number of coins)
+  - Concentration risk (max allocation percentage)
+
+- **Coin Risk Metrics:**
+  - Individual coin volatility (24h price change)
+  - Allocation percentage per coin
+  - Risk contribution to overall portfolio
+  - Sorted by risk contribution
+
+- **Risk Levels:**
+  - LOW (0-30): Conservative portfolio with stable assets
+  - MODERATE (31-50): Balanced risk exposure
+  - HIGH (51-70): Elevated volatility
+  - CRITICAL (71-100): Very high-risk portfolio
+
+- **Empty State:**
+  - User-friendly message when no portfolio data exists
+  - Guidance to start investing
+
+**Technical Details:**
+- `RiskAnalysisRepository` - Repository interface for risk analysis
+- `RiskAnalysisRepositoryImpl` - Implementation with volatility calculations
+- `GetPortfolioRiskAnalysisUseCase` - Use case for fetching risk data
+- `RiskAnalysisViewModel` - State management with StateFlow
+- `RiskAnalysisScreen` - Main risk analysis Compose UI
+- `RiskAnalysisState` - UI state data class
+
+**Risk Calculation Algorithm:**
+- **Volatility Calculation:** Weighted average of 24h price changes based on portfolio allocation
+  - Formula: Σ(coin_allocation_% × |coin_24h_change_%|)
+- **Risk Score Formula:** Weighted combination of three factors
+  - Volatility Component (50% weight): Normalized portfolio volatility
+  - Diversification Component (30% weight): Inverse of coin count (max 10)
+  - Concentration Component (20% weight): Maximum allocation percentage
+- **Risk Score:** (Volatility × 0.5) + ((100 - Diversification) × 0.3) + (Concentration × 0.2)
+
+**Risk Models:**
+- `RiskLevel` - Enum (LOW, MODERATE, HIGH, CRITICAL)
+- `PortfolioRiskAnalysis` - Comprehensive risk data model containing:
+  - portfolioVolatility: Weighted average volatility
+  - riskScore: Calculated risk score (0-100)
+  - riskLevel: Categorized risk level enum
+  - diversificationScore: Based on coin count
+  - concentrationRisk: Maximum allocation percentage
+  - coinRiskMetrics: List of per-coin risk data
+
+- `CoinRiskMetrics` - Individual coin risk data:
+  - coinId, coinName, coinSymbol, coinIconUrl
+  - volatility: Absolute 24h price change
+  - allocationPercentage: Portfolio weight
+  - contributionToRisk: Risk contribution to portfolio
+
+**UI Components:**
+- `RiskScoreGauge` - Animated circular gauge with color gradient
+- `CoinRiskItem` - Individual coin risk row with volatility indicator
+- `RiskAnalysisButton` - Navigation card on Analytics screen
+
+---
+
 ### 3.10 Settings and Personalization
 **Purpose:** To allow users to customize their app experience with comprehensive settings including profile, theme, language, and notification preferences.
 
@@ -961,6 +1031,7 @@ composeApp/src/
 │       ├── core/                     # Core utilities and abstractions
 │       ├── di/                       # Dependency Injection (Koin)
 │       ├── portfolio/                # Portfolio management module
+│       ├── risk/                     # Risk analysis module
 │       ├── settings/                 # Settings and personalization module
 │       ├── theme/                    # UI theme and styles
 │       ├── trade/                    # Buy/sell module
@@ -1003,5 +1074,5 @@ composeApp/src/
 
 ---
 
-**Last Updated:** 2025
-**Documentation Version:** 1.4
+**Last Updated:** December 2025
+**Documentation Version:** 1.5

@@ -77,6 +77,7 @@
 - 💾 **Offline Support**: Local database for offline access to your portfolio
 - 📤 **Export Data**: Export portfolio and transactions to CSV or JSON
 - 📱 **Home Screen Widgets**: Quick access to portfolio value and coin prices (Android)
+- ⚠️ **Risk Analysis**: Portfolio volatility and risk scoring algorithm
 
 ## ✨ Features
 
@@ -156,6 +157,15 @@
   - Transaction statistics (total, buy, sell counts)
   - Individual coin performance tracking
   - Color-coded profit/loss indicators
+
+- **⚠️ Risk Analysis**
+  - Portfolio volatility calculation using 24h price changes
+  - Risk score algorithm (0-100 scale)
+  - Risk levels: Low, Moderate, High, Critical
+  - Diversification score tracking
+  - Concentration risk assessment
+  - Per-coin risk contribution metrics
+  - Animated risk gauge visualization
 
 - **📜 Transaction History**
   - Complete buy/sell transaction records
@@ -274,6 +284,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   ├── di/                      # Dependency injection
 │   │   ├── portfolio/               # Portfolio management
 │   │   ├── analytics/               # Portfolio analytics
+│   │   ├── risk/                    # Risk analysis
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
 │   │   ├── export/                  # Export portfolio data (CSV/JSON)
@@ -358,7 +369,7 @@ cd Cointy
 - [x] User profile management
 - [x] Notification settings
 - [x] Widgets (Android/IOS)
-- [ ] Additional languages (German, French, Spanish)
+- [x] Risk Analysis (portfolio volatility & scoring)
 
 ## 📄 License
 
