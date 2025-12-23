@@ -50,9 +50,9 @@ fun App() {
 
     var startDestination by remember { mutableStateOf<Any?>(null) }
 
-    LaunchedEffect(settingsState.isOnboardingCompleted) {
-        if (startDestination == null) {
-            startDestination = if (settingsState.isOnboardingCompleted) Biometric else Onboarding
+    LaunchedEffect(settingsState.isDataLoaded, settingsState.isOnboardingCompleted) {
+        if (startDestination == null && settingsState.isDataLoaded) {
+            startDestination = if (settingsState.isOnboardingCompleted) Portfolio else Onboarding
         }
     }
 

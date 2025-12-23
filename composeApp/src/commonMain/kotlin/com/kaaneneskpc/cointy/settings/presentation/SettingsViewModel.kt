@@ -39,7 +39,8 @@ class SettingsViewModel(
             isPriceAlertsEnabled = values[5] as Boolean,
             isOnboardingCompleted = values[6] as Boolean,
             isLoading = values[7] as Boolean,
-            isEditProfileDialogVisible = values[8] as Boolean
+            isEditProfileDialogVisible = values[8] as Boolean,
+            isDataLoaded = true
         )
     }.stateIn(
         scope = viewModelScope,
