@@ -55,6 +55,7 @@ import com.kaaneneskpc.cointy.coins.domain.model.CoinModel
 import com.kaaneneskpc.cointy.core.domain.Result
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -82,12 +83,13 @@ fun CreateAlertScreen(
             }
         }
     }
+    val strings = LocalStringResources.current
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Create Alert",
+                        text = strings.createAlert,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -96,7 +98,7 @@ fun CreateAlertScreen(
                     IconButton(onClick = onBackClicked) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = strings.back
                         )
                     }
                 },
@@ -222,7 +224,7 @@ private fun CreateAlertContent(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Current Price",
+                            text = LocalStringResources.current.currentPrice,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
@@ -255,14 +257,14 @@ private fun CreateAlertContent(
                     .padding(24.dp)
             ) {
                 Text(
-                    text = "Alert Condition",
+                    text = LocalStringResources.current.alertCondition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Notify me when price goes",
+                    text = LocalStringResources.current.notifyWhenPrice,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
@@ -276,7 +278,7 @@ private fun CreateAlertContent(
                         onClick = { onConditionChange(AlertCondition.ABOVE) },
                         label = {
                             Text(
-                                text = "Above",
+                                text = LocalStringResources.current.above,
                                 fontWeight = if (selectedCondition == AlertCondition.ABOVE) FontWeight.Bold else FontWeight.Normal
                             )
                         },
@@ -291,7 +293,7 @@ private fun CreateAlertContent(
                         onClick = { onConditionChange(AlertCondition.BELOW) },
                         label = {
                             Text(
-                                text = "Below",
+                                text = LocalStringResources.current.below,
                                 fontWeight = if (selectedCondition == AlertCondition.BELOW) FontWeight.Bold else FontWeight.Normal
                             )
                         },
@@ -310,8 +312,8 @@ private fun CreateAlertContent(
                             onTargetPriceChange(value)
                         }
                     },
-                    label = { Text("Target Price ($)") },
-                    placeholder = { Text("Enter target price") },
+                    label = { Text(LocalStringResources.current.enterTargetPrice) },
+                    placeholder = { Text(LocalStringResources.current.targetPricePlaceholder) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -336,7 +338,7 @@ private fun CreateAlertContent(
             shape = RoundedCornerShape(16.dp)
         ) {
             Text(
-                text = "Create Alert",
+                text = LocalStringResources.current.createAlert,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary

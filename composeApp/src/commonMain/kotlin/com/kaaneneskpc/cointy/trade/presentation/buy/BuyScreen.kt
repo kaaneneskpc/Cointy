@@ -16,6 +16,7 @@ import org.koin.core.parameter.parametersOf
 fun BuyScreen(
     coinId: String,
     navigateToPortfolio: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val viewModel = koinViewModel<BuyViewModel>(
@@ -41,6 +42,7 @@ fun BuyScreen(
         state = state,
         tradeType = TradeType.BUY,
         onAmountChange = viewModel::onAmountChanged,
-        onSubmitClicked = viewModel::onBuyClicked
+        onSubmitClicked = viewModel::onBuyClicked,
+        onBackClicked = onBackClicked
     )
 }

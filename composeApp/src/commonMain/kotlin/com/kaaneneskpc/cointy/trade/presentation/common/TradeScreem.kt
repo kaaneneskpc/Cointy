@@ -27,6 +27,14 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -50,20 +58,50 @@ import coil3.compose.AsyncImage
 import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TradeScreen(
     state: TradeState,
     tradeType: TradeType,
     onAmountChange: (String) -> Unit,
     onSubmitClicked: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val strings = LocalStringResources.current
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = when (tradeType) {
+                            TradeType.BUY -> strings.buyCoin
+                            TradeType.SELL -> strings.sellCoin
+                        },
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClicked) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = strings.back
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .imePadding()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
         if (state.isLoading) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -275,6 +313,7 @@ fun TradeScreen(
                 }
             }
         }
+    }
     }
 }
 

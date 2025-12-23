@@ -16,6 +16,7 @@ import org.koin.core.parameter.parametersOf
 fun SellScreen(
     coinId: String,
     navigateToPortfolio: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val viewModel = koinViewModel<SellViewModel>(
@@ -41,6 +42,7 @@ fun SellScreen(
         state = state,
         tradeType = TradeType.SELL,
         onAmountChange = viewModel::onAmountChanged,
-        onSubmitClicked = viewModel::onSellClicked
+        onSubmitClicked = viewModel::onSellClicked,
+        onBackClicked = onBackClicked
     )
 }

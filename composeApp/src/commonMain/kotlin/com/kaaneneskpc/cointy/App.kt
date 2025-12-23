@@ -163,6 +163,9 @@ fun App() {
                             },
                             onCreateAlertClicked = { coinId ->
                                 navController.navigate(CreateAlert(coinId))
+                            },
+                            onBackClicked = {
+                                navController.popBackStack()
                             }
                         )
                     }
@@ -174,6 +177,9 @@ fun App() {
                                 navController.navigate(Portfolio) {
                                     popUpTo(Portfolio) { inclusive = true }
                                 }
+                            },
+                            onBackClicked = {
+                                navController.popBackStack()
                             }
                         )
                     }
@@ -185,6 +191,9 @@ fun App() {
                                 navController.navigate(Portfolio) {
                                     popUpTo(Portfolio) { inclusive = true }
                                 }
+                            },
+                            onBackClicked = {
+                                navController.popBackStack()
                             }
                         )
                     }

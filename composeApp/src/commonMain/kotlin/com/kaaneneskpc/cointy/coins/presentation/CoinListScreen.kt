@@ -35,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +44,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -50,7 +52,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,15 +78,18 @@ import com.kaaneneskpc.cointy.coins.presentation.component.TradingViewChart
 import com.kaaneneskpc.cointy.core.util.formatCoinPrice
 import kotlinx.datetime.Clock
 import com.kaaneneskpc.cointy.core.util.formatCoinPricePercentage
+import com.kaaneneskpc.cointy.core.localization.LocalStringResources
 import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinListScreen(
     onCoinClicked: (String) -> Unit,
-    onCreateAlertClicked: (String) -> Unit = {}
+    onCreateAlertClicked: (String) -> Unit = {},
+    onBackClicked: () -> Unit
 ) {
     val coinListViewModel = koinViewModel<CoinListViewModel>()
     val state by coinListViewModel.state.collectAsStateWithLifecycle()
@@ -94,10 +102,12 @@ fun CoinListScreen(
         onSearchQueryChanged = { coinListViewModel.onSearchQueryChanged(it) },
         onSearchActiveChanged = { coinListViewModel.onSearchActiveChanged(it) },
         onSortOptionChanged = { coinListViewModel.onSortOptionChanged(it) },
-        onFilterOptionChanged = { coinListViewModel.onFilterOptionChanged(it) }
+        onFilterOptionChanged = { coinListViewModel.onFilterOptionChanged(it) },
+        onBackClicked = onBackClicked
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinListContent(
     state: CoinState,
@@ -108,43 +118,73 @@ fun CoinListContent(
     onSearchQueryChanged: (String) -> Unit,
     onSearchActiveChanged: (Boolean) -> Unit,
     onSortOptionChanged: (CoinSortOption) -> Unit,
-    onFilterOptionChanged: (CoinFilterOption) -> Unit
+    onFilterOptionChanged: (CoinFilterOption) -> Unit,
+    onBackClicked: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
-    ) {
-        if (state.chartState != null) {
-            CoinChartDialog(
-                uiChartState = state.chartState,
-                onDismiss = onDismissChart,
+    val strings = LocalStringResources.current
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = strings.discoverCoins,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClicked) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = strings.back
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
-        when {
-            state.coins.isEmpty() && state.error == null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = LocalCoinRoutineColorsPalette.current.profitGreen,
-                        modifier = Modifier.size(48.dp)
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            if (state.chartState != null) {
+                CoinChartDialog(
+                    uiChartState = state.chartState,
+                    onDismiss = onDismissChart,
+                )
+            }
+            when {
+                state.coins.isEmpty() && state.error == null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = LocalCoinRoutineColorsPalette.current.profitGreen,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                }
+                state.error != null -> {
+                    ErrorContent(error = state.error)
+                }
+                else -> {
+                    CoinListWithSearch(
+                        state = state,
+                        onCoinLongPressed = onCoinLongPressed,
+                        onCoinClicked = onCoinClicked,
+                        onCreateAlertClicked = onCreateAlertClicked,
+                        onSearchQueryChanged = onSearchQueryChanged,
+                        onSearchActiveChanged = onSearchActiveChanged,
+                        onSortOptionChanged = onSortOptionChanged,
+                        onFilterOptionChanged = onFilterOptionChanged
                     )
                 }
-            }
-            state.error != null -> {
-                ErrorContent(error = state.error)
-            }
-            else -> {
-                CoinListWithSearch(
-                    state = state,
-                    onCoinLongPressed = onCoinLongPressed,
-                    onCoinClicked = onCoinClicked,
-                    onCreateAlertClicked = onCreateAlertClicked,
-                    onSearchQueryChanged = onSearchQueryChanged,
-                    onSearchActiveChanged = onSearchActiveChanged,
-                    onSortOptionChanged = onSortOptionChanged,
-                    onFilterOptionChanged = onFilterOptionChanged
-                )
             }
         }
     }

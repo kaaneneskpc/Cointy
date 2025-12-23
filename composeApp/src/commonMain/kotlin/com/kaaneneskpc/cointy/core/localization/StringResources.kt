@@ -133,7 +133,13 @@ data class StringResources(
     val lowRisk: String,
     val moderateRisk: String,
     val highRisk: String,
-    val criticalRisk: String
+    val criticalRisk: String,
+    val createAlert: String,
+    val currentPrice: String,
+    val alertCondition: String,
+    val notifyWhenPrice: String,
+    val targetPricePlaceholder: String,
+    val enterTargetPrice: String
 )
 
 val EnglishStrings = StringResources(
@@ -264,7 +270,13 @@ val EnglishStrings = StringResources(
     lowRisk = "Low Risk",
     moderateRisk = "Moderate",
     highRisk = "High Risk",
-    criticalRisk = "Critical"
+    criticalRisk = "Critical",
+    createAlert = "Create Alert",
+    currentPrice = "Current Price",
+    alertCondition = "Alert Condition",
+    notifyWhenPrice = "Notify me when price goes",
+    targetPricePlaceholder = "Enter target price",
+    enterTargetPrice = "Target Price ($)"
 )
 
 val TurkishStrings = StringResources(
@@ -395,7 +407,13 @@ val TurkishStrings = StringResources(
     lowRisk = "Düşük Risk",
     moderateRisk = "Orta",
     highRisk = "Yüksek Risk",
-    criticalRisk = "Kritik"
+    criticalRisk = "Kritik",
+    createAlert = "Uyarı Oluştur",
+    currentPrice = "Mevcut Fiyat",
+    alertCondition = "Uyarı Koşulu",
+    notifyWhenPrice = "Fiyat şu yöne gittiğinde bildir",
+    targetPricePlaceholder = "Hedef fiyatı girin",
+    enterTargetPrice = "Hedef Fiyat ($)"
 )
 
 fun getStringResources(language: Language): StringResources {
