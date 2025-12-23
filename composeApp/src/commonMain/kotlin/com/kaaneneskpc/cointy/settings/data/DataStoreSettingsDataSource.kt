@@ -24,6 +24,8 @@ class DataStoreSettingsDataSource(
         val USER_PROFILE_PHOTO_URI = stringPreferencesKey("user_profile_photo_uri")
         val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         val PRICE_ALERTS_ENABLED = booleanPreferencesKey("price_alerts_enabled")
+        val VOLATILITY_ALERTS_ENABLED = booleanPreferencesKey("volatility_alerts_enabled")
+        val VOLATILITY_THRESHOLD = stringPreferencesKey("volatility_threshold")
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
     }
     override fun getThemeMode(): Flow<ThemeMode> = dataStore.data.map { preferences ->
@@ -85,6 +87,22 @@ class DataStoreSettingsDataSource(
     override suspend fun setPriceAlertsEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.PRICE_ALERTS_ENABLED] = enabled
+        }
+    }
+    override fun getVolatilityAlertsEnabled(): Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.VOLATILITY_ALERTS_ENABLED] ?: true
+    }
+    override suspend fun setVolatilityAlertsEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.VOLATILITY_ALERTS_ENABLED] = enabled
+        }
+    }
+    override fun getVolatilityThreshold(): Flow<Double> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.VOLATILITY_THRESHOLD]?.toDoubleOrNull() ?: 5.0
+    }
+    override suspend fun setVolatilityThreshold(threshold: Double) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.VOLATILITY_THRESHOLD] = threshold.toString()
         }
     }
     override fun isOnboardingCompleted(): Flow<Boolean> = dataStore.data.map { preferences ->

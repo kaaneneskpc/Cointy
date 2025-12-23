@@ -19,6 +19,10 @@ interface SettingsDataSource {
     suspend fun setNotificationsEnabled(enabled: Boolean)
     fun getPriceAlertsEnabled(): Flow<Boolean>
     suspend fun setPriceAlertsEnabled(enabled: Boolean)
+    fun getVolatilityAlertsEnabled(): Flow<Boolean>
+    suspend fun setVolatilityAlertsEnabled(enabled: Boolean)
+    fun getVolatilityThreshold(): Flow<Double>
+    suspend fun setVolatilityThreshold(threshold: Double)
     fun isOnboardingCompleted(): Flow<Boolean>
     suspend fun setOnboardingCompleted(completed: Boolean)
 }

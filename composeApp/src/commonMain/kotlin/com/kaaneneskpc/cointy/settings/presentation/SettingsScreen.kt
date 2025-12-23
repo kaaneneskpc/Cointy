@@ -143,11 +143,19 @@ fun SettingsScreen(
             NotificationsCard(
                 isNotificationsEnabled = state.isNotificationsEnabled,
                 isPriceAlertsEnabled = state.isPriceAlertsEnabled,
+                isVolatilityAlertsEnabled = state.isVolatilityAlertsEnabled,
+                volatilityThreshold = state.volatilityThreshold,
                 onNotificationsEnabledChanged = { enabled ->
                     viewModel.updateNotificationsEnabled(enabled)
                 },
                 onPriceAlertsEnabledChanged = { enabled ->
                     viewModel.updatePriceAlertsEnabled(enabled)
+                },
+                onVolatilityAlertsEnabledChanged = { enabled ->
+                    viewModel.updateVolatilityAlertsEnabled(enabled)
+                },
+                onVolatilityThresholdChanged = { threshold ->
+                    viewModel.updateVolatilityThreshold(threshold)
                 }
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -604,10 +612,16 @@ private fun ThemeModeItem(
 private fun NotificationsCard(
     isNotificationsEnabled: Boolean,
     isPriceAlertsEnabled: Boolean,
+    isVolatilityAlertsEnabled: Boolean,
+    volatilityThreshold: Double,
     onNotificationsEnabledChanged: (Boolean) -> Unit,
-    onPriceAlertsEnabledChanged: (Boolean) -> Unit
+    onPriceAlertsEnabledChanged: (Boolean) -> Unit,
+    onVolatilityAlertsEnabledChanged: (Boolean) -> Unit,
+    onVolatilityThresholdChanged: (Double) -> Unit
 ) {
     val strings = LocalStringResources.current
+    var isThresholdExpanded by remember { mutableStateOf(false) }
+    val thresholdOptions = listOf(3.0, 5.0, 10.0, 15.0)
     SettingsCard {
         Column(
             modifier = Modifier
@@ -617,7 +631,7 @@ private fun NotificationsCard(
             NotificationItem(
                 title = strings.notifications,
                 description = strings.enableNotifications,
-                icon = "🔔",
+                icon = "\uD83D\uDD14",
                 isEnabled = isNotificationsEnabled,
                 onEnabledChanged = onNotificationsEnabledChanged
             )
@@ -628,11 +642,79 @@ private fun NotificationsCard(
             NotificationItem(
                 title = strings.priceAlerts,
                 description = strings.getPriceAlertNotifications,
-                icon = "📈",
+                icon = "\uD83D\uDCC8",
                 isEnabled = isPriceAlertsEnabled && isNotificationsEnabled,
                 onEnabledChanged = onPriceAlertsEnabledChanged,
                 enabled = isNotificationsEnabled
             )
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
+            NotificationItem(
+                title = strings.volatilityAlerts,
+                description = strings.volatilityAlertsDescription,
+                icon = "\uD83D\uDCCA",
+                isEnabled = isVolatilityAlertsEnabled && isNotificationsEnabled,
+                onEnabledChanged = onVolatilityAlertsEnabledChanged,
+                enabled = isNotificationsEnabled
+            )
+            if (isVolatilityAlertsEnabled && isNotificationsEnabled) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isThresholdExpanded = !isThresholdExpanded }
+                        .padding(horizontal = 56.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = strings.volatilityThreshold,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                    )
+                    Text(
+                        text = "${volatilityThreshold.toInt()}%",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                if (isThresholdExpanded) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 56.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        thresholdOptions.forEach { threshold ->
+                            val isSelected = volatilityThreshold == threshold
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        onVolatilityThresholdChanged(threshold)
+                                        isThresholdExpanded = false
+                                    }
+                                    .background(
+                                        if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.surfaceVariant
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${threshold.toInt()}%",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

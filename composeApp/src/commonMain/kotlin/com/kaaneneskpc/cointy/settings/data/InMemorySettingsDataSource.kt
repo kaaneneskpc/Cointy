@@ -15,6 +15,8 @@ class InMemorySettingsDataSource : SettingsDataSource {
     private val userProfileFlow: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile())
     private val notificationsEnabledFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val priceAlertsEnabledFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val volatilityAlertsEnabledFlow: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val volatilityThresholdFlow: MutableStateFlow<Double> = MutableStateFlow(5.0)
     private val onboardingCompletedFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     override fun getThemeMode(): Flow<ThemeMode> = themeModeFlow.asStateFlow()
@@ -40,6 +42,14 @@ class InMemorySettingsDataSource : SettingsDataSource {
     override fun getPriceAlertsEnabled(): Flow<Boolean> = priceAlertsEnabledFlow.asStateFlow()
     override suspend fun setPriceAlertsEnabled(enabled: Boolean) {
         priceAlertsEnabledFlow.value = enabled
+    }
+    override fun getVolatilityAlertsEnabled(): Flow<Boolean> = volatilityAlertsEnabledFlow.asStateFlow()
+    override suspend fun setVolatilityAlertsEnabled(enabled: Boolean) {
+        volatilityAlertsEnabledFlow.value = enabled
+    }
+    override fun getVolatilityThreshold(): Flow<Double> = volatilityThresholdFlow.asStateFlow()
+    override suspend fun setVolatilityThreshold(threshold: Double) {
+        volatilityThresholdFlow.value = threshold
     }
 
     override fun isOnboardingCompleted(): Flow<Boolean> = onboardingCompletedFlow.asStateFlow()

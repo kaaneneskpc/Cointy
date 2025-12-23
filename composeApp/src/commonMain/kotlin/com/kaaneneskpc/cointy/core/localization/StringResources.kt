@@ -139,7 +139,10 @@ data class StringResources(
     val alertCondition: String,
     val notifyWhenPrice: String,
     val targetPricePlaceholder: String,
-    val enterTargetPrice: String
+    val enterTargetPrice: String,
+    val volatilityAlerts: String,
+    val volatilityAlertsDescription: String,
+    val volatilityThreshold: String
 )
 
 val EnglishStrings = StringResources(
@@ -276,7 +279,10 @@ val EnglishStrings = StringResources(
     alertCondition = "Alert Condition",
     notifyWhenPrice = "Notify me when price goes",
     targetPricePlaceholder = "Enter target price",
-    enterTargetPrice = "Target Price ($)"
+    enterTargetPrice = "Target Price ($)",
+    volatilityAlerts = "Price Change Notifications",
+    volatilityAlertsDescription = "Get notified when coins move significantly",
+    volatilityThreshold = "Threshold"
 )
 
 val TurkishStrings = StringResources(
@@ -413,7 +419,10 @@ val TurkishStrings = StringResources(
     alertCondition = "Uyarı Koşulu",
     notifyWhenPrice = "Fiyat şu yöne gittiğinde bildir",
     targetPricePlaceholder = "Hedef fiyatı girin",
-    enterTargetPrice = "Hedef Fiyat ($)"
+    enterTargetPrice = "Hedef Fiyat ($)",
+    volatilityAlerts = "Fiyat Değişim Bildirimleri",
+    volatilityAlertsDescription = "Coinler önemli hareket ettiğinde bildirim al",
+    volatilityThreshold = "Eşik Değeri"
 )
 
 fun getStringResources(language: Language): StringResources {

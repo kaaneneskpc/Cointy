@@ -47,6 +47,39 @@ class IosNotificationService : NotificationService {
             }
         }
     }
+
+    override fun showVolatilityNotification(
+        title: String,
+        message: String,
+        coinId: String,
+        changePercent: Double
+    ) {
+        println("IosNotificationService: Sending volatility notification - $title")
+        val notificationId = kotlinx.datetime.Clock.System.now().toEpochMilliseconds()
+        val content = UNMutableNotificationContent().apply {
+            setTitle(title)
+            setBody(message)
+            setSound(UNNotificationSound.defaultSound)
+            setUserInfo(mapOf(
+                "coinId" to coinId,
+                "changePercent" to changePercent,
+                "type" to "volatility"
+            ))
+        }
+        val request = UNNotificationRequest.requestWithIdentifier(
+            identifier = "volatility_${coinId}_$notificationId",
+            content = content,
+            trigger = null
+        )
+        notificationCenter.addNotificationRequest(request) { error ->
+            if (error != null) {
+                println("IosNotificationService: Failed to show volatility notification: ${error.localizedDescription}")
+            } else {
+                println("IosNotificationService: Volatility notification sent successfully")
+            }
+        }
+    }
+
     override fun cancelNotification(notificationId: Int) {
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(
             listOf("price_alert_$notificationId")

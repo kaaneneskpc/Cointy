@@ -7,6 +7,12 @@ interface NotificationService {
         coinId: String,
         alertId: Long
     )
+    fun showVolatilityNotification(
+        title: String,
+        message: String,
+        coinId: String,
+        changePercent: Double
+    )
     fun cancelNotification(notificationId: Int)
     fun cancelAllNotifications()
 }

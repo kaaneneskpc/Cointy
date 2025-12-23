@@ -701,6 +701,47 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 ---
 
+### 3.16 Volatility Notifications
+**Purpose:** To automatically notify users when cryptocurrencies experience significant price changes (e.g., "Bitcoin dropped 5%") without requiring manual alert setup.
+
+**Features:**
+- **Automatic Price Change Detection:**
+  - Monitor 24h price change of all coins
+  - Configurable threshold (3%, 5%, 10%, 15%)
+  - Automatic notification when threshold is exceeded
+
+- **User Settings:**
+  - Enable/disable volatility notifications
+  - Select price change threshold percentage
+  - Integrated with general notification settings
+
+- **Spam Prevention:**
+  - 1-hour cooldown per coin after notification
+  - Prevents duplicate notifications for same coin
+  - Respects general notification settings
+
+- **Localization:**
+  - English and Turkish support
+  - Dynamic notification text with coin name and change percentage
+
+**Technical Details:**
+- `VolatilityNotificationModel` - Data model for volatility alerts
+- `CheckVolatilityAlertsUseCase` - Use case to check and send volatility notifications
+- `VolatilityNotificationTracker` - In-memory tracker for cooldown management
+- `NotificationService.showVolatilityNotification()` - Platform notification method
+- Integration with `BackgroundCheckPriceAlertsUseCase` for automatic checking
+
+**Settings Integration:**
+- `volatilityAlertsEnabled` - Boolean preference stored in DataStore
+- `volatilityThreshold` - Double preference (default: 5.0%)
+- Settings UI with toggle and threshold selector
+
+**Notification Format:**
+- Title: "{CoinSymbol} Price Alert"
+- Message: "{CoinName} dropped/rose X% in the last 24h. Current price: $X"
+
+---
+
 ### 3.13 Interactive Onboarding
 **Purpose:** To introduce the app's core concepts (Virtual Balance, Portfolio Management) and provide a smooth first-time user experience.
 

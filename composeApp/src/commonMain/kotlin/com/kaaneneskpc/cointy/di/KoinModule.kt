@@ -2,8 +2,10 @@ package com.kaaneneskpc.cointy.di
 
 import androidx.room.RoomDatabase
 import com.kaaneneskpc.cointy.alert.data.PriceAlertRepositoryImpl
+import com.kaaneneskpc.cointy.alert.data.VolatilityNotificationTracker
 import com.kaaneneskpc.cointy.alert.domain.BackgroundCheckPriceAlertsUseCase
 import com.kaaneneskpc.cointy.alert.domain.CheckPriceAlertsUseCase
+import com.kaaneneskpc.cointy.alert.domain.CheckVolatilityAlertsUseCase
 import com.kaaneneskpc.cointy.alert.domain.CreatePriceAlertUseCase
 import com.kaaneneskpc.cointy.alert.domain.DeletePriceAlertUseCase
 import com.kaaneneskpc.cointy.alert.domain.GetPriceAlertsUseCase
@@ -119,6 +121,8 @@ val sharedModule = module {
     singleOf(::DeletePriceAlertUseCase)
     singleOf(::TogglePriceAlertUseCase)
     singleOf(::CheckPriceAlertsUseCase)
+    single { VolatilityNotificationTracker() }
+    singleOf(::CheckVolatilityAlertsUseCase)
     singleOf(::BackgroundCheckPriceAlertsUseCase)
     viewModel { PriceAlertViewModel(get(), get(), get(), get()) }
     //Settings

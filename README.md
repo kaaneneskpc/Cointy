@@ -70,6 +70,7 @@
 - 📈 **Price Charts**: Professional TradingView-style charts with interactive crosshair
 - 💰 **Virtual Trading**: Practice buying and selling cryptocurrencies without real money
 - 🔔 **Price Alerts**: Set alerts for price targets and get notified
+- 📊 **Volatility Notifications**: Automatic alerts when coins move significantly
 - 🔍 **Search & Filter**: Find coins quickly with powerful search and filtering
 - 📊 **Analytics**: Detailed portfolio analytics with charts and statistics
 - 🎨 **Modern UI**: Beautiful Material Design 3 interface with smooth animations
@@ -141,6 +142,13 @@
   - Platform-native notifications (Android/iOS)
   - Track triggered alerts history
   - Automatic alert checking on coin list refresh
+
+- **📊 Volatility Notifications**
+  - Automatic notifications when coins move significantly
+  - Configurable threshold (3%, 5%, 10%, 15%)
+  - 1-hour cooldown to prevent spam
+  - No manual alert setup required
+  - Works with background price checking
 
 - **🔍 Search & Filter**
   - Real-time coin search by name or symbol
@@ -370,6 +378,7 @@ cd Cointy
 - [x] Notification settings
 - [x] Widgets (Android/IOS)
 - [x] Risk Analysis (portfolio volatility & scoring)
+- [x] Volatility Notifications (automatic price change alerts)
 
 ## 📄 License
 

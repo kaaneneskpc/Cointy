@@ -34,6 +34,14 @@ class SettingsRepositoryImpl(
     override suspend fun setPriceAlertsEnabled(enabled: Boolean) {
         settingsDataSource.setPriceAlertsEnabled(enabled)
     }
+    override fun getVolatilityAlertsEnabled(): Flow<Boolean> = settingsDataSource.getVolatilityAlertsEnabled()
+    override suspend fun setVolatilityAlertsEnabled(enabled: Boolean) {
+        settingsDataSource.setVolatilityAlertsEnabled(enabled)
+    }
+    override fun getVolatilityThreshold(): Flow<Double> = settingsDataSource.getVolatilityThreshold()
+    override suspend fun setVolatilityThreshold(threshold: Double) {
+        settingsDataSource.setVolatilityThreshold(threshold)
+    }
 
     override fun isOnboardingCompleted(): Flow<Boolean> = settingsDataSource.isOnboardingCompleted()
 

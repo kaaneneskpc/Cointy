@@ -56,6 +56,47 @@ class AndroidNotificationService(
             Log.e(TAG, "SecurityException when sending notification", e)
         }
     }
+    override fun showVolatilityNotification(
+        title: String,
+        message: String,
+        coinId: String,
+        changePercent: Double
+    ) {
+        if (!hasNotificationPermission()) {
+            Log.w(TAG, "Notification permission not granted")
+            return
+        }
+        val notificationId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_COIN_ID, coinId)
+            putExtra(EXTRA_CHANGE_PERCENT, changePercent)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notification = NotificationCompat.Builder(context, NotificationManager.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .build()
+        try {
+            NotificationManagerCompat.from(context).notify(notificationId, notification)
+            Log.d(TAG, "Volatility notification sent: $title")
+        } catch (e: SecurityException) {
+            Log.e(TAG, "SecurityException when sending volatility notification", e)
+        }
+    }
     private fun hasNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
@@ -76,6 +117,7 @@ class AndroidNotificationService(
         private const val TAG = "AndroidNotificationService"
         const val EXTRA_COIN_ID = "extra_coin_id"
         const val EXTRA_ALERT_ID = "extra_alert_id"
+        const val EXTRA_CHANGE_PERCENT = "extra_change_percent"
     }
 }
 
