@@ -38,9 +38,10 @@
 
 | Widget |
 |:-:|
-| <img src="https://github.com/user-attachments/assets/4c459443-18c5-4d6f-abd2-c77e9f4bd4be" width="200"/> |
+| <img src="https://github.com/user-attachments/assets/03f68d42-ea75-4175-a402-f25ac84914d3" width="200"/> |
 
 </div>
+
 
 ### IOS
 
@@ -56,7 +57,7 @@
 
 | Widget |
 |:-:|
-| <img src="https://github.com/user-attachments/assets/4c0bca83-9018-45f1-ac8a-72b2275e5dba" width="200"/> |
+| <img src="https://github.com/user-attachments/assets/56325ed2-e403-41ef-9e14-f508a58f8be5" width="200"/> |
 
 </div>
 
