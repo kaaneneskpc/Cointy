@@ -120,7 +120,20 @@ data class StringResources(
     val enterAmountToBuy: String,
     val enterAmountToSell: String,
     val buyNow: String,
-    val sellNow: String
+    val sellNow: String,
+    val riskAnalysis: String,
+    val riskScore: String,
+    val riskBreakdown: String,
+    val portfolioVolatility: String,
+    val diversificationScore: String,
+    val concentrationRisk: String,
+    val coinRiskContribution: String,
+    val noRiskData: String,
+    val noRiskDataDescription: String,
+    val lowRisk: String,
+    val moderateRisk: String,
+    val highRisk: String,
+    val criticalRisk: String
 )
 
 val EnglishStrings = StringResources(
@@ -238,7 +251,20 @@ val EnglishStrings = StringResources(
     enterAmountToBuy = "Enter Amount to Buy",
     enterAmountToSell = "Enter Amount to Sell",
     buyNow = "Buy Now",
-    sellNow = "Sell Now"
+    sellNow = "Sell Now",
+    riskAnalysis = "Risk Analysis",
+    riskScore = "Risk Score",
+    riskBreakdown = "Risk Breakdown",
+    portfolioVolatility = "Portfolio Volatility",
+    diversificationScore = "Diversification Score",
+    concentrationRisk = "Concentration Risk",
+    coinRiskContribution = "Coin Risk Contribution",
+    noRiskData = "No Risk Data",
+    noRiskDataDescription = "Start investing to see your portfolio risk analysis",
+    lowRisk = "Low Risk",
+    moderateRisk = "Moderate",
+    highRisk = "High Risk",
+    criticalRisk = "Critical"
 )
 
 val TurkishStrings = StringResources(
@@ -356,7 +382,20 @@ val TurkishStrings = StringResources(
     enterAmountToBuy = "Alınacak Tutarı Girin",
     enterAmountToSell = "Satılacak Tutarı Girin",
     buyNow = "Şimdi Al",
-    sellNow = "Şimdi Sat"
+    sellNow = "Şimdi Sat",
+    riskAnalysis = "Risk Analizi",
+    riskScore = "Risk Skoru",
+    riskBreakdown = "Risk Dağılımı",
+    portfolioVolatility = "Portföy Volatilitesi",
+    diversificationScore = "Çeşitlendirme Skoru",
+    concentrationRisk = "Yoğunlaşma Riski",
+    coinRiskContribution = "Coin Risk Katkısı",
+    noRiskData = "Risk Verisi Yok",
+    noRiskDataDescription = "Portföy risk analizinizi görmek için yatırım yapmaya başlayın",
+    lowRisk = "Düşük Risk",
+    moderateRisk = "Orta",
+    highRisk = "Yüksek Risk",
+    criticalRisk = "Kritik"
 )
 
 fun getStringResources(language: Language): StringResources {

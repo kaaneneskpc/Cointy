@@ -27,6 +27,7 @@ import com.kaaneneskpc.cointy.core.navigation.Portfolio
 import com.kaaneneskpc.cointy.core.navigation.Sell
 import com.kaaneneskpc.cointy.core.navigation.TransactionHistory
 import com.kaaneneskpc.cointy.core.navigation.Export
+import com.kaaneneskpc.cointy.core.navigation.RiskAnalysis
 import com.kaaneneskpc.cointy.export.presentation.ExportScreen
 import com.kaaneneskpc.cointy.onboarding.presentation.OnboardingScreen
 import com.kaaneneskpc.cointy.core.navigation.Onboarding
@@ -37,6 +38,7 @@ import com.kaaneneskpc.cointy.theme.CointyTheme
 import com.kaaneneskpc.cointy.trade.presentation.buy.BuyScreen
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellScreen
 import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryScreen
+import com.kaaneneskpc.cointy.risk.presentation.RiskAnalysisScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -115,6 +117,16 @@ fun App() {
                     }
                     composable<Analytics> {
                         AnalyticsScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
+                            },
+                            onRiskAnalysisClicked = {
+                                navController.navigate(RiskAnalysis)
+                            }
+                        )
+                    }
+                    composable<RiskAnalysis> {
+                        RiskAnalysisScreen(
                             onBackClicked = {
                                 navController.popBackStack()
                             }

@@ -52,7 +52,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsScreen(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onRiskAnalysisClicked: () -> Unit
 ) {
     val strings = LocalStringResources.current
     val viewModel = koinViewModel<AnalyticsViewModel>()
@@ -98,7 +99,7 @@ fun AnalyticsScreen(
                     EmptyAnalyticsContent()
                 }
                 else -> {
-                    AnalyticsContent(state = state)
+                    AnalyticsContent(state = state, onRiskAnalysisClicked = onRiskAnalysisClicked)
                 }
             }
         }
@@ -177,7 +178,7 @@ private fun EmptyAnalyticsContent() {
 }
 
 @Composable
-private fun AnalyticsContent(state: AnalyticsState) {
+private fun AnalyticsContent(state: AnalyticsState, onRiskAnalysisClicked: () -> Unit) {
     val strings = LocalStringResources.current
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -222,7 +223,56 @@ private fun AnalyticsContent(state: AnalyticsState) {
             }
         }
         item {
+            RiskAnalysisButton(onRiskAnalysisClicked = onRiskAnalysisClicked)
+        }
+        item {
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun RiskAnalysisButton(onRiskAnalysisClicked: () -> Unit) {
+    val strings = LocalStringResources.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        onClick = onRiskAnalysisClicked
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = strings.riskAnalysis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Analyze portfolio volatility and risk",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                )
+            }
+            Text(
+                text = "→",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }

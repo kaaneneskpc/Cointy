@@ -37,3 +37,6 @@ object Settings
 
 @Serializable
 object Export
+
+@Serializable
+object RiskAnalysis
