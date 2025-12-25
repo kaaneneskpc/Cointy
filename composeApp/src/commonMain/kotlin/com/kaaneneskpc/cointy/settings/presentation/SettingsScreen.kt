@@ -62,6 +62,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -940,14 +941,9 @@ private fun LogoutCard(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "🚪",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(end = 12.dp)
-            )
-            Text(
                 text = strings.signOut,
                 style = MaterialTheme.typography.titleMedium,
-                color = colors.lossRed,
+                color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )
         }
