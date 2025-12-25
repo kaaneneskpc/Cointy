@@ -30,6 +30,7 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 - **Serialization:** Kotlinx Serialization
 - **Date/Time:** Kotlinx DateTime
 - **Biometric Auth:** AndroidX Biometric
+- **Authentication:** Firebase Auth (GitLive KMP SDK)
 
 ### 2.2 API Integration
 - **API Provider:** CoinRanking API (https://api.coinranking.com/v2)
@@ -73,6 +74,46 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 ---
 
 ## 3. Features and Functionality
+
+### 3.0 Firebase Authentication
+**Purpose:** To provide secure user authentication with email and password, enabling personalized user experiences.
+
+**Features:**
+- **Login Screen:**
+  - Email and password input
+  - Password visibility toggle
+  - Form validation
+  - Loading and error states
+  - Navigation to registration and password reset
+
+- **Registration Screen:**
+  - Display name, email, password, and confirm password inputs
+  - Password matching validation
+  - Account creation with Firebase
+
+- **Forgot Password Screen:**
+  - Email input for password reset
+  - Success/error state display
+  - Password reset email via Firebase
+
+- **Logout:**
+  - Sign out button in Settings screen
+  - Clears session and navigates to Login
+
+**Technical Details:**
+- `AuthRepository` interface for authentication operations
+- `AuthRepositoryImpl` using GitLive Firebase SDK
+- Use cases: `SignInUseCase`, `SignUpUseCase`, `SignOutUseCase`, `ResetPasswordUseCase`
+- ViewModels: `LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`
+- MVI pattern with `StateFlow` for state management
+- Multi-language support (English/Turkish)
+
+**Navigation Flow:**
+1. First launch: Onboarding → Login → Portfolio
+2. Subsequent launches: Login → Portfolio
+3. Logout: Portfolio → Login
+
+---
 
 ### 3.1 Biometric Authentication
 **Purpose:** To enhance application security and improve user experience.

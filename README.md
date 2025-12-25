@@ -65,7 +65,8 @@
 
 - 📱 **Cross-Platform**: Single codebase for Android and iOS using Kotlin Multiplatform
 - 🚀 **Interactive Onboarding**: Engaging and animated introduction for new users
-- 🔐 **Secure**: Biometric authentication for enhanced security
+- 🔐 **Firebase Authentication**: Secure email/password login and registration system
+- 🔐 **Biometric Security**: Face ID / Touch ID for enhanced security
 - 📊 **Real-Time Data**: Live cryptocurrency prices and market data via CoinRanking API
 - 💼 **Portfolio Management**: Track your investments with detailed performance metrics
 - 📈 **Price Charts**: Professional TradingView-style charts with interactive crosshair
@@ -84,6 +85,14 @@
 ## ✨ Features
 
 ### 🏦 Core Features
+
+- **Firebase Authentication**
+  - Email and password login
+  - User registration with display name
+  - Password reset via email
+  - Persistent login state
+  - Secure sign out
+  - Multi-language support (English/Turkish)
 
 - **Interactive Onboarding**
   - Smooth first-time user experience
@@ -273,6 +282,7 @@
 ### Other Libraries
 - **Kotlinx DateTime**: Date and time handling
 - **AndroidX Biometric**: Biometric authentication
+- **GitLive Firebase SDK**: Cross-platform Firebase Authentication (KMP)
 - **KSP**: Kotlin Symbol Processing
 
 ## 🏗 Architecture
@@ -296,6 +306,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │   │   ├── risk/                    # Risk analysis
 │   │   ├── transaction/             # Transaction history
 │   │   ├── alert/                   # Price alerts
+│   │   ├── auth/                    # Firebase Authentication (login, register, forgot password)
 │   │   ├── export/                  # Export portfolio data (CSV/JSON)
 │   │   ├── settings/                # Settings and personalization
 │   │   ├── theme/                   # UI theme and styles
@@ -380,6 +391,7 @@ cd Cointy
 - [x] Widgets (Android/IOS)
 - [x] Risk Analysis (portfolio volatility & scoring)
 - [x] Volatility Notifications (automatic price change alerts)
+- [x] Firebase Authentication (email/password login & registration)
 
 ## 📄 License
 
