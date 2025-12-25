@@ -6,6 +6,15 @@ import kotlinx.serialization.Serializable
 object Biometric
 
 @Serializable
+object Login
+
+@Serializable
+object Register
+
+@Serializable
+object ForgotPassword
+
+@Serializable
 object Onboarding
 
 @Serializable
@@ -40,3 +49,4 @@ object Export
 
 @Serializable
 object RiskAnalysis
+

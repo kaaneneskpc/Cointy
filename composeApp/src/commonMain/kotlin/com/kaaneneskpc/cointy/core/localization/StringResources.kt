@@ -142,7 +142,31 @@ data class StringResources(
     val enterTargetPrice: String,
     val volatilityAlerts: String,
     val volatilityAlertsDescription: String,
-    val volatilityThreshold: String
+    val volatilityThreshold: String,
+    // Auth strings
+    val login: String,
+    val loginDescription: String,
+    val register: String,
+    val registerDescription: String,
+    val email: String,
+    val password: String,
+    val confirmPassword: String,
+    val displayName: String,
+    val enterEmail: String,
+    val enterPassword: String,
+    val enterConfirmPassword: String,
+    val enterDisplayName: String,
+    val signIn: String,
+    val signUp: String,
+    val signOut: String,
+    val forgotPassword: String,
+    val forgotPasswordDescription: String,
+    val resetPassword: String,
+    val noAccount: String,
+    val alreadyHaveAccount: String,
+    val emailSent: String,
+    val resetEmailSentDescription: String,
+    val backToLogin: String
 )
 
 val EnglishStrings = StringResources(
@@ -282,7 +306,31 @@ val EnglishStrings = StringResources(
     enterTargetPrice = "Target Price ($)",
     volatilityAlerts = "Price Change Notifications",
     volatilityAlertsDescription = "Get notified when coins move significantly",
-    volatilityThreshold = "Threshold"
+    volatilityThreshold = "Threshold",
+    // Auth strings
+    login = "Login",
+    loginDescription = "Sign in to your account to continue",
+    register = "Create Account",
+    registerDescription = "Create a new account to get started",
+    email = "Email",
+    password = "Password",
+    confirmPassword = "Confirm Password",
+    displayName = "Display Name",
+    enterEmail = "Enter your email",
+    enterPassword = "Enter your password",
+    enterConfirmPassword = "Confirm your password",
+    enterDisplayName = "Enter your name",
+    signIn = "Sign In",
+    signUp = "Sign Up",
+    signOut = "Sign Out",
+    forgotPassword = "Forgot Password?",
+    forgotPasswordDescription = "Enter your email and we'll send you a link to reset your password",
+    resetPassword = "Reset Password",
+    noAccount = "Don't have an account?",
+    alreadyHaveAccount = "Already have an account?",
+    emailSent = "Email Sent!",
+    resetEmailSentDescription = "Check your email for a link to reset your password",
+    backToLogin = "Back to Login"
 )
 
 val TurkishStrings = StringResources(
@@ -422,7 +470,31 @@ val TurkishStrings = StringResources(
     enterTargetPrice = "Hedef Fiyat ($)",
     volatilityAlerts = "Fiyat Değişim Bildirimleri",
     volatilityAlertsDescription = "Coinler önemli hareket ettiğinde bildirim al",
-    volatilityThreshold = "Eşik Değeri"
+    volatilityThreshold = "Eşik Değeri",
+    // Auth strings
+    login = "Giriş Yap",
+    loginDescription = "Devam etmek için hesabınıza giriş yapın",
+    register = "Hesap Oluştur",
+    registerDescription = "Başlamak için yeni bir hesap oluşturun",
+    email = "E-posta",
+    password = "Şifre",
+    confirmPassword = "Şifre Tekrar",
+    displayName = "Ad Soyad",
+    enterEmail = "E-posta adresinizi girin",
+    enterPassword = "Şifrenizi girin",
+    enterConfirmPassword = "Şifrenizi tekrar girin",
+    enterDisplayName = "Adınızı girin",
+    signIn = "Giriş Yap",
+    signUp = "Kayıt Ol",
+    signOut = "Çıkış Yap",
+    forgotPassword = "Şifremi Unuttum",
+    forgotPasswordDescription = "E-posta adresinizi girin, şifrenizi sıfırlamak için size bir bağlantı gönderelim",
+    resetPassword = "Şifreyi Sıfırla",
+    noAccount = "Hesabınız yok mu?",
+    alreadyHaveAccount = "Zaten hesabınız var mı?",
+    emailSent = "E-posta Gönderildi!",
+    resetEmailSentDescription = "Şifrenizi sıfırlamak için e-postanızı kontrol edin",
+    backToLogin = "Girişe Dön"
 )
 
 fun getStringResources(language: Language): StringResources {

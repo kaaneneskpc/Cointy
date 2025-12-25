@@ -16,6 +16,17 @@ import com.kaaneneskpc.cointy.analytics.data.AnalyticsRepositoryImpl
 import com.kaaneneskpc.cointy.analytics.domain.AnalyticsRepository
 import com.kaaneneskpc.cointy.analytics.domain.GetPortfolioAnalyticsUseCase
 import com.kaaneneskpc.cointy.analytics.presentation.AnalyticsViewModel
+import com.kaaneneskpc.cointy.auth.data.AuthRepositoryImpl
+import com.kaaneneskpc.cointy.auth.domain.AuthRepository
+import com.kaaneneskpc.cointy.auth.domain.GetAuthStateUseCase
+import com.kaaneneskpc.cointy.auth.domain.GetCurrentUserUseCase
+import com.kaaneneskpc.cointy.auth.domain.ResetPasswordUseCase
+import com.kaaneneskpc.cointy.auth.domain.SignInUseCase
+import com.kaaneneskpc.cointy.auth.domain.SignOutUseCase
+import com.kaaneneskpc.cointy.auth.domain.SignUpUseCase
+import com.kaaneneskpc.cointy.auth.presentation.forgot_password.ForgotPasswordViewModel
+import com.kaaneneskpc.cointy.auth.presentation.login.LoginViewModel
+import com.kaaneneskpc.cointy.auth.presentation.register.RegisterViewModel
 import com.kaaneneskpc.cointy.risk.data.RiskAnalysisRepositoryImpl
 import com.kaaneneskpc.cointy.risk.domain.GetPortfolioRiskAnalysisUseCase
 import com.kaaneneskpc.cointy.risk.domain.RiskAnalysisRepository
@@ -53,6 +64,8 @@ import com.kaaneneskpc.cointy.transaction.domain.GetTransactionHistoryUseCase
 import com.kaaneneskpc.cointy.transaction.domain.TransactionRepository
 import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryViewModel
 import com.kaaneneskpc.cointy.widget.domain.GetWidgetDataUseCase
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -141,4 +154,17 @@ val sharedModule = module {
 
     //Widget
     singleOf(::GetWidgetDataUseCase)
+
+    //Auth
+    single { Firebase.auth }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    singleOf(::SignInUseCase)
+    singleOf(::SignUpUseCase)
+    singleOf(::SignOutUseCase)
+    singleOf(::ResetPasswordUseCase)
+    singleOf(::GetCurrentUserUseCase)
+    singleOf(::GetAuthStateUseCase)
+    viewModel { LoginViewModel(get()) }
+    viewModel { RegisterViewModel(get()) }
+    viewModel { ForgotPasswordViewModel(get()) }
 }

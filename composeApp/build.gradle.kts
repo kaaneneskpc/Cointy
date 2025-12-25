@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -76,6 +77,10 @@ kotlin {
             implementation(libs.coil.network.ktor)
 
             implementation(libs.datastore.preferences.core)
+
+            // Firebase Auth (GitLive KMP)
+            implementation(libs.firebase.auth)
+            implementation(libs.firebase.common)
         }
         iosMain.dependencies {
             implementation(libs.ktor.ios)

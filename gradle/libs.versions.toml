@@ -26,6 +26,8 @@ core-ktx = "1.7.0"
 datastore = "1.1.1"
 work-runtime = "2.9.1"
 glance = "1.1.0"
+gitlive-firebase = "2.1.0"
+google-services = "4.4.2"
 
 [libraries]
 # Shared Libraries
@@ -86,6 +88,10 @@ glance = { module = "androidx.glance:glance", version.ref = "glance" }
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 
+# Firebase Libraries (GitLive KMP)
+firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase" }
+firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "gitlive-firebase" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -96,6 +102,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 
 [bundles]

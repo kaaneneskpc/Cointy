@@ -56,17 +56,26 @@ import com.kaaneneskpc.cointy.settings.domain.model.Currency
 import com.kaaneneskpc.cointy.settings.domain.model.Language
 import com.kaaneneskpc.cointy.settings.domain.model.ThemeMode
 import com.kaaneneskpc.cointy.settings.domain.model.UserProfile
+import com.kaaneneskpc.cointy.auth.domain.SignOutUseCase
+import com.kaaneneskpc.cointy.theme.LocalCoinRoutineColorsPalette
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onLogout: () -> Unit = {}
 ) {
     val viewModel = koinViewModel<SettingsViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val strings = LocalStringResources.current
     val scrollState = rememberScrollState()
+    val signOutUseCase: SignOutUseCase = koinInject()
+    val coroutineScope = rememberCoroutineScope()
+    val colors = LocalCoinRoutineColorsPalette.current
     if (state.isEditProfileDialogVisible) {
         EditProfileDialog(
             currentProfile = state.userProfile,
@@ -161,6 +170,15 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
             SectionTitle(title = strings.about)
             AboutCard()
+            Spacer(modifier = Modifier.height(24.dp))
+            LogoutCard(
+                onLogout = {
+                    coroutineScope.launch {
+                        signOutUseCase.execute()
+                        onLogout()
+                    }
+                }
+            )
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
@@ -893,3 +911,46 @@ private fun SettingsCard(
         content()
     }
 }
+
+@Composable
+private fun LogoutCard(
+    onLogout: () -> Unit
+) {
+    val strings = LocalStringResources.current
+    val colors = LocalCoinRoutineColorsPalette.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable(onClick = onLogout),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.lossRed
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "🚪",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(end = 12.dp)
+            )
+            Text(
+                text = strings.signOut,
+                style = MaterialTheme.typography.titleMedium,
+                color = colors.lossRed,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+

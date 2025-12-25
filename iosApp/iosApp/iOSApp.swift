@@ -1,10 +1,12 @@
 import SwiftUI
 import BackgroundTasks
+import FirebaseCore
 
 @main
 struct iOSApp: App {
     @Environment(\.scenePhase) private var scenePhase
     init() {
+        FirebaseApp.configure()
         registerBackgroundTasks()
     }
     var body: some Scene {

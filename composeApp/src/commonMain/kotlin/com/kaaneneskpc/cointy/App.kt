@@ -12,6 +12,10 @@ import androidx.navigation.toRoute
 import com.kaaneneskpc.cointy.alert.presentation.CreateAlertScreen
 import com.kaaneneskpc.cointy.alert.presentation.PriceAlertScreen
 import com.kaaneneskpc.cointy.analytics.presentation.AnalyticsScreen
+import com.kaaneneskpc.cointy.auth.domain.AuthRepository
+import com.kaaneneskpc.cointy.auth.presentation.forgot_password.ForgotPasswordScreen
+import com.kaaneneskpc.cointy.auth.presentation.login.LoginScreen
+import com.kaaneneskpc.cointy.auth.presentation.register.RegisterScreen
 import com.kaaneneskpc.cointy.biometric.BiometricScreen
 import com.kaaneneskpc.cointy.coins.presentation.CoinListScreen
 import com.kaaneneskpc.cointy.core.localization.ProvideStringResources
@@ -19,7 +23,10 @@ import com.kaaneneskpc.cointy.core.navigation.Analytics
 import com.kaaneneskpc.cointy.core.navigation.Biometric
 import com.kaaneneskpc.cointy.core.navigation.Buy
 import com.kaaneneskpc.cointy.core.navigation.CreateAlert
+import com.kaaneneskpc.cointy.core.navigation.ForgotPassword
+import com.kaaneneskpc.cointy.core.navigation.Login
 import com.kaaneneskpc.cointy.core.navigation.PriceAlerts
+import com.kaaneneskpc.cointy.core.navigation.Register
 import com.kaaneneskpc.cointy.core.navigation.Settings
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.kaaneneskpc.cointy.core.navigation.Coins
@@ -39,6 +46,7 @@ import com.kaaneneskpc.cointy.trade.presentation.buy.BuyScreen
 import com.kaaneneskpc.cointy.trade.presentation.sell.SellScreen
 import com.kaaneneskpc.cointy.transaction.presentation.TransactionHistoryScreen
 import com.kaaneneskpc.cointy.risk.presentation.RiskAnalysisScreen
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -47,12 +55,18 @@ fun App() {
     val navController: NavHostController = rememberNavController()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
     val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
+    val authRepository: AuthRepository = koinInject()
 
     var startDestination by remember { mutableStateOf<Any?>(null) }
 
     LaunchedEffect(settingsState.isDataLoaded, settingsState.isOnboardingCompleted) {
         if (startDestination == null && settingsState.isDataLoaded) {
-            startDestination = if (settingsState.isOnboardingCompleted) Portfolio else Onboarding
+            val isLoggedIn = authRepository.isUserLoggedIn()
+            startDestination = when {
+                !settingsState.isOnboardingCompleted -> Onboarding
+                !isLoggedIn -> Login
+                else -> Portfolio
+            }
         }
     }
 
@@ -64,9 +78,46 @@ fun App() {
                     startDestination = startDestination!!,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    composable<Login> {
+                        LoginScreen(
+                            onLoginSuccess = {
+                                navController.navigate(Portfolio) {
+                                    popUpTo(Login) { inclusive = true }
+                                }
+                            },
+                            onNavigateToRegister = {
+                                navController.navigate(Register)
+                            },
+                            onNavigateToForgotPassword = {
+                                navController.navigate(ForgotPassword)
+                            }
+                        )
+                    }
+                    composable<Register> {
+                        RegisterScreen(
+                            onRegistrationSuccess = {
+                                navController.navigate(Onboarding) {
+                                    popUpTo(Login) { inclusive = true }
+                                }
+                            },
+                            onNavigateToLogin = {
+                                navController.popBackStack()
+                            },
+                            onBackClicked = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                    composable<ForgotPassword> {
+                        ForgotPasswordScreen(
+                            onBackToLogin = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                     composable<Onboarding> {
                         OnboardingScreen {
-                            navController.navigate(Portfolio) {
+                            navController.navigate(Login) {
                                 popUpTo(Onboarding) { inclusive = true }
                             }
                         }
@@ -105,6 +156,11 @@ fun App() {
                         SettingsScreen(
                             onBackClicked = {
                                 navController.popBackStack()
+                            },
+                            onLogout = {
+                                navController.navigate(Login) {
+                                    popUpTo(0) { inclusive = true }
+                                }
                             }
                         )
                     }
