@@ -36,12 +36,11 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|
 | <img src="https://github.com/user-attachments/assets/8735d96c-f089-4480-a386-091081b25929" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/ab387b01-aa74-4f50-b70b-f3ad5d7f4653" width="100"/> <img src="https://github.com/user-attachments/assets/4883e7d8-092d-4595-b9bf-7ddd2f0b407b" width="100"/></td></tr></table> | <table><tr><td> <img src="https://github.com/user-attachments/assets/6ac37ed7-b189-4d4e-9457-862bc9152e9d" width="100"/> <img src="https://github.com/user-attachments/assets/8a60298e-1112-4a23-a68b-bee4dc0136a2" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d3dde0ac-459c-4b76-9fa7-a9b7b6fd7c53" width="200"/> | <img src="https://github.com/user-attachments/assets/bd1a2c01-529a-4db5-a095-3856f804db2b" width="200"/> | <table><tr><td> <img src="https://github.com/user-attachments/assets/9f46474e-942e-4df2-8fe0-742f68badba3" width="100"/> <img src="https://github.com/user-attachments/assets/feda169c-8000-4957-8cd7-bb15ffae32f9" width="100"/></td></tr></table>
 
-| Widget |
-|:-:|
-| <img src="https://github.com/user-attachments/assets/03f68d42-ea75-4175-a402-f25ac84914d3" width="200"/> |
+| Widget | Login | Portfolio Analysis |
+|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/03f68d42-ea75-4175-a402-f25ac84914d3" width="200"/> | <img src="https://github.com/user-attachments/assets/90e13df6-dc54-43f8-baf1-eba38ba4dd7c" width="200"/> | <img src="https://github.com/user-attachments/assets/12837608-5e89-4cf4-8161-4178e185e013" width="200"/> |
 
 </div>
-
 
 ### IOS
 
@@ -55,9 +54,9 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|
 | <img src="https://github.com/user-attachments/assets/1fd7deea-b2f8-4afe-ba74-a92ef4f801a3" width="200"/> |  <table><tr><td><img src="https://github.com/user-attachments/assets/2a65d11c-1fc1-42e5-838d-23708abf8bad" width="100"/> <img src="https://github.com/user-attachments/assets/50d56405-6a19-480b-9125-5cc6251bee31" width="100"/></td></tr></table> | <table><tr><td><img src="https://github.com/user-attachments/assets/9306e199-955e-49c7-888b-6dc1b8eef491" width="100"/> <img src="https://github.com/user-attachments/assets/3e520688-77b1-4a85-a478-312dd178edfc" width="100"/></td></tr></table> | <img src="https://github.com/user-attachments/assets/d0738910-06a0-4b46-9b75-bf7fc115084e" width="200"/> | <img src="https://github.com/user-attachments/assets/17560334-aae8-403f-b4a1-23ec2209e579" width="200"/> | <img src="https://github.com/user-attachments/assets/50ca013b-692e-4544-8668-450fffeb9424" width="200"/> |
 
-| Widget |
-|:-:|
-| <img src="https://github.com/user-attachments/assets/56325ed2-e403-41ef-9e14-f508a58f8be5" width="200"/> |
+| Widget | Login | Portfolio Analysis |
+|:-:|:-:|:-:|
+| <img src="https://github.com/user-attachments/assets/03f68d42-ea75-4175-a402-f25ac84914d3" width="200"/> | <img src="https://github.com/user-attachments/assets/67a80d96-fe57-4b78-81c5-3cea1ecbc15f" width="200"/> | <img src="https://github.com/user-attachments/assets/0db13e6d-1a55-4240-b6a5-5a0328931f6a" width="200"/> |
 
 </div>
 
