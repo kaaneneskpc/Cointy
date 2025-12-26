@@ -80,38 +80,118 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 **Features:**
 - **Login Screen:**
-  - Email and password input
-  - Password visibility toggle
-  - Form validation
-  - Loading and error states
-  - Navigation to registration and password reset
+  - Email and password input fields with Material Design 3 styling
+  - Password visibility toggle (eye icon)
+  - Real-time form validation with error messages
+  - Loading state with circular progress indicator during authentication
+  - Error state display with user-friendly error messages
+  - Keyboard navigation support (Next/Done actions)
+  - Navigation to registration and password reset screens
+  - Automatic navigation to portfolio on successful login
+  - Multi-language support (English/Turkish)
 
 - **Registration Screen:**
   - Display name, email, password, and confirm password inputs
   - Password matching validation
   - Account creation with Firebase
+  - Display name update after registration
+  - Error handling and validation feedback
 
 - **Forgot Password Screen:**
   - Email input for password reset
   - Success/error state display
   - Password reset email via Firebase
+  - User-friendly feedback messages
 
 - **Logout:**
   - Sign out button in Settings screen
-  - Clears session and navigates to Login
+  - Clears Firebase session and navigates to Login
+  - Clears local user state
 
 **Technical Details:**
-- `AuthRepository` interface for authentication operations
-- `AuthRepositoryImpl` using GitLive Firebase SDK
-- Use cases: `SignInUseCase`, `SignUpUseCase`, `SignOutUseCase`, `ResetPasswordUseCase`
-- ViewModels: `LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`
-- MVI pattern with `StateFlow` for state management
-- Multi-language support (English/Turkish)
+
+**Architecture:**
+- Clean Architecture with Domain, Data, and Presentation layers
+- Repository pattern for data abstraction
+- Use Case pattern for business logic separation
+- MVVM pattern with StateFlow for reactive state management
+
+**Domain Layer:**
+- `AuthRepository` interface defining authentication contract
+- `SignInUseCase` - Executes email/password sign-in
+- `SignUpUseCase` - Executes user registration
+- `SignOutUseCase` - Executes user sign-out
+- `ResetPasswordUseCase` - Sends password reset email
+- `GetAuthStateUseCase` - Observes authentication state changes
+- `GetCurrentUserUseCase` - Gets current authenticated user
+
+**Data Layer:**
+- `AuthRepositoryImpl` - Implementation using GitLive Firebase SDK
+- `FirebaseAuth` integration for authentication operations
+- `FirebaseUser` to domain `User` model mapping
+- Error handling with try-catch blocks
+- Flow-based reactive state observation
+
+**Presentation Layer:**
+- `LoginViewModel` - Manages login screen state and logic
+  - `LoginState` data class with email, password, loading, error states
+  - Email and password input handlers
+  - Password visibility toggle
+  - Form validation (email format, password length)
+  - Sign-in execution with error handling
+  - Success state management for navigation
+- `LoginScreen` - Compose UI component
+  - Material Design 3 OutlinedTextField components
+  - Password visibility toggle with emoji icons
+  - Loading indicator during authentication
+  - Error message display
+  - Navigation callbacks for registration and forgot password
+  - Keyboard actions (Next/Done)
+  - Localization support via StringResources
+- `RegisterViewModel` - Manages registration screen state
+- `ForgotPasswordViewModel` - Manages password reset state
+
+**State Management:**
+- `LoginState` - Contains:
+  - email: String
+  - password: String
+  - isLoading: Boolean
+  - isPasswordVisible: Boolean
+  - errorMessage: String?
+  - isLoginSuccessful: Boolean
+  - user: User?
+- `AuthState` - Sealed interface:
+  - Loading
+  - Authenticated(User)
+  - Unauthenticated
+- `AuthResult` - Sealed interface:
+  - Success(User)
+  - Error(String)
+
+**Form Validation:**
+- Email validation: Checks for valid email format
+- Password validation: Minimum 6 characters required
+- Real-time validation feedback
+- Error messages displayed below input fields
+
+**Error Handling:**
+- Firebase authentication errors caught and converted to user-friendly messages
+- Network errors handled gracefully
+- Invalid credentials error display
+- Form validation errors shown before API call
 
 **Navigation Flow:**
 1. First launch: Onboarding → Login → Portfolio
-2. Subsequent launches: Login → Portfolio
-3. Logout: Portfolio → Login
+2. Subsequent launches: Login → Portfolio (if authenticated)
+3. Logout: Portfolio → Settings → Logout → Login
+4. Registration: Login → Register → Login (after registration)
+5. Forgot Password: Login → Forgot Password → Login
+
+**Authentication State Management:**
+- `authStateChanged` Flow observes Firebase authentication state
+- Automatic navigation based on authentication state
+- Persistent login session (Firebase handles session persistence)
+- Session restoration on app restart
 
 ---
 
@@ -859,10 +939,13 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 
 ### 4.1 Application Startup Flow
 1. Application opens.
-2. If onboarding not completed → Goes to Onboarding flow.
-3. If onboarding completed → Goes to Biometric Authentication screen.
-4. User completes authentication.
-5. Redirected to portfolio screen.
+2. Check Firebase authentication state:
+   - If user is authenticated → Goes to Biometric Authentication screen → Portfolio
+   - If user is not authenticated → Goes to Login screen
+3. If onboarding not completed → Goes to Onboarding flow → Login screen.
+4. If onboarding completed and user not authenticated → Goes to Login screen.
+5. User completes login → Goes to Biometric Authentication screen.
+6. User completes biometric authentication → Redirected to portfolio screen.
 
 ### 4.9 Onboarding Flow
 1. Application opens for the first time.
@@ -873,7 +956,31 @@ To provide a secure and user-friendly platform that makes it easy for users to t
    - Portfolio Management explanation.
 4. User taps "Get Started" or "Skip".
 5. Onboarding state is saved as completed in preferences.
-6. Redirected to Biometric Authentication screen.
+6. Redirected to Login screen.
+
+### 4.10 Login Flow
+1. User arrives at Login screen (from onboarding or app startup if not authenticated).
+2. On Login screen:
+   - Email input field is displayed
+   - Password input field is displayed with visibility toggle
+   - "Forgot Password" link is available
+   - "Sign In" button is displayed
+   - "Don't have an account? Sign Up" link is displayed
+3. User enters email and password:
+   - Real-time validation checks email format
+   - Password validation checks minimum 6 characters
+   - Error messages displayed if validation fails
+4. User taps "Sign In" button:
+   - Loading indicator is shown
+   - Button is disabled during authentication
+   - Firebase authentication is executed
+5. Authentication result:
+   - **Success:** User is authenticated, navigates to Biometric Authentication screen
+   - **Error:** Error message is displayed below input fields (e.g., "Invalid email or password")
+6. User can navigate to:
+   - Registration screen via "Sign Up" link
+   - Forgot Password screen via "Forgot Password" link
+7. After successful login → Goes to Biometric Authentication screen → Portfolio screen.
 
 ### 4.2 Portfolio Viewing Flow
 1. On portfolio screen:
@@ -911,10 +1018,15 @@ To provide a secure and user-friendly platform that makes it easy for users to t
    - **About Section:**
      - Version information
      - Terms of Service, Privacy Policy, Rate App links
+   - **Logout Section:**
+     - Sign out button to log out from Firebase
+     - Clears authentication session
+     - Navigates back to Login screen
 3. User taps desired option
 4. Changes apply immediately without app restart
 5. Language change updates all UI texts instantly
-6. If back button is tapped → Returns to portfolio screen
+6. If logout button is tapped → Firebase session cleared → Navigates to Login screen
+7. If back button is tapped → Returns to portfolio screen
 
 ### 4.3 Coin Discovery and Purchase Flow
 1. All coins are displayed on coin list screen
@@ -1007,6 +1119,7 @@ To provide a secure and user-friendly platform that makes it easy for users to t
 - Coil 3.0.0
 - Kotlinx Serialization 1.7.3
 - Kotlinx DateTime 0.6.1
+- GitLive Firebase SDK (Firebase Auth for Kotlin Multiplatform)
 
 ### 5.3 Performance Requirements
 - Timeout management for API calls
@@ -1117,7 +1230,27 @@ composeApp/src/
 │       ├── settings/                 # Settings and personalization module
 │       ├── theme/                    # UI theme and styles
 │       ├── trade/                    # Buy/sell module
-│       └── transaction/              # Transaction history module
+│       ├── transaction/             # Transaction history module
+│       └── auth/                     # Firebase Authentication module
+│           ├── data/                 # Data layer
+│           │   └── AuthRepositoryImpl.kt
+│           ├── domain/              # Domain layer
+│           │   ├── AuthRepository.kt
+│           │   ├── SignInUseCase.kt
+│           │   ├── SignUpUseCase.kt
+│           │   ├── SignOutUseCase.kt
+│           │   ├── ResetPasswordUseCase.kt
+│           │   └── model/           # Domain models
+│           │       ├── User.kt
+│           │       ├── AuthState.kt
+│           │       └── AuthResult.kt
+│           └── presentation/        # Presentation layer
+│               ├── login/           # Login screen
+│               │   ├── LoginScreen.kt
+│               │   ├── LoginViewModel.kt
+│               │   └── LoginState.kt
+│               ├── register/        # Registration screen
+│               └── forgot_password/  # Forgot password screen
 ├── androidMain/                      # Android-specific code
 └── iosMain/                          # iOS-specific code
 ```

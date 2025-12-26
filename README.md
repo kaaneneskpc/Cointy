@@ -87,12 +87,18 @@
 ### 🏦 Core Features
 
 - **Firebase Authentication**
-  - Email and password login
+  - Email and password login with form validation
+  - Real-time input validation (email format, password length)
+  - Password visibility toggle for better UX
   - User registration with display name
   - Password reset via email
-  - Persistent login state
-  - Secure sign out
+  - Persistent login state (automatic session restoration)
+  - Secure sign out with session clearing
+  - Loading states and error handling
   - Multi-language support (English/Turkish)
+  - Clean Architecture with Repository and Use Case patterns
+  - MVVM pattern with StateFlow for reactive state management
+  - GitLive Firebase SDK for Kotlin Multiplatform
 
 - **Interactive Onboarding**
   - Smooth first-time user experience
@@ -272,6 +278,7 @@
 - **Ktor Client**: Modern HTTP client
 - **Kotlinx Serialization**: JSON serialization/deserialization
 - **CoinRanking API**: Cryptocurrency data provider
+- **GitLive Firebase SDK**: Cross-platform Firebase Authentication (KMP)
 
 ### Asynchronous Programming
 - **Kotlin Coroutines**: Asynchronous programming
